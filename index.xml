@@ -10,11 +10,20 @@
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Resume</title>
-      <link>https://intmagician.github.io/about/resume/</link>
+      <link>https://intmagician.github.io/resume/</link>
       <pubDate>Sun, 03 May 2026 10:36:58 +0800</pubDate>
-      <guid>https://intmagician.github.io/about/resume/</guid>
+      <guid>https://intmagician.github.io/resume/</guid>
       <description>&lt;h1 id=&#34;单片机嵌入式软件工程师&#34;&gt;单片机/嵌入式软件工程师&lt;/h1&gt;
 &lt;p&gt;单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)&lt;/p&gt;
+&lt;h2 id=&#34;个人技术栈&#34;&gt;个人技术栈&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;嵌入式开发的基础(C，单片机，外设，常用通信协议，makefile交叉编译，ARM工具链)&lt;/li&gt;
+&lt;li&gt;调试能力（通信bug，系统bug等）&lt;/li&gt;
+&lt;li&gt;调试工具（串口打印调试，示波器分析时钟频率，定时器频率，逻辑分析仪分析通信bug，串口+Python绘图）&lt;/li&gt;
+&lt;li&gt;能快速梳理复杂SDK系统结构（基于事件 + task模型）&lt;/li&gt;
+&lt;li&gt;理解事件驱动机制（SYS_EVENT_HANDLER）&lt;/li&gt;
+&lt;li&gt;能通过有限源码分析任务调度与事件流转&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;控制系统&#34;&gt;控制系统&lt;/h2&gt;
 &lt;p&gt;个人目前想做的其中一个方向&lt;/p&gt;
 &lt;p&gt;偏向于传感器、滤波器、控制器、执行机构、被控对象。&lt;/p&gt;
@@ -61,17 +70,17 @@
     </item>
     <item>
       <title>My Story</title>
-      <link>https://intmagician.github.io/about/mystory/</link>
+      <link>https://intmagician.github.io/aboutme/</link>
       <pubDate>Sun, 03 May 2026 10:33:33 +0800</pubDate>
-      <guid>https://intmagician.github.io/about/mystory/</guid>
+      <guid>https://intmagician.github.io/aboutme/</guid>
       <description>&lt;p&gt;在这个栏目里，我不做掩饰，直接展示我最真实的一面，不分好坏，只讲事实。&lt;/p&gt;
 &lt;h1 id=&#34;我的校园生活&#34;&gt;我的校园生活&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;2019.09~2019.12&lt;/strong&gt; 初入校园，没有改变高中的生活方式，早上起来很早，还去早读。参与院学生会的选拔，我比较内向，在草地上做小组讨论时，我还是站了出来讲了一些话，最终加入了院学生会，生活权益部。参与学院的实验室培训，买了学习套件，一个盒子里，很多带脚的元器件和芯片，一块面包板，一本很厚的模拟电子技术书，然后每周固定晚上去参加培训。还去参加学院以及学校组织的活动，去当志愿者，认识了很多好朋友。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2020.01～2020.07&lt;/strong&gt; 我通过了实验室的选拔，老师让我学FPGA，后来疫情来了，学校回不去了，我就在家学fpga，老师还把小脚丫fpga板子寄到我家里，学verilogHDL，在小脚丫上跑demo，点灯，PWM呼吸灯，状态机设计等等。就这样停顿了几个月，我还记得上课没有课本，CAD课听不懂，学不会，到复习了，难的还哭了一场，🤣。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2020.07~2020.10&lt;/strong&gt; 报名参加互联网+竞赛，老师给的项目，我组了队伍，写项目计划书。项目名叫钢琴定时器，用FFT做频谱分析，识别钢琴音色，做定时。然后项目计划书也写了，结果是院赛都没出。大一成绩还好，加点学分，能到年级10+。不过选修网课有个课错过了考试，挂了科，没有奖学金，很可惜。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2020.10～2021.01&lt;/strong&gt; 实验室老师推荐我跟着研究生导师做项目，主要涉及FPGA。那个项目是个电网与家庭用电之间的路由器，用于逆变将多余的电回收进电网。然后做FPGA设计SVPWM控制器，给我DSP的一个SVPWM框图。按照老师的波形出输出要求设计了一个，用Modelsim做了仿真。给老师看了波形。后来拿到板子上去试，结果我当时操作失误，买的杜邦线跟板子的尺寸不一，把杜邦线头拆了，直接插引脚上，然后没注意，IO短接了，芯片烧了。老师觉得这个项目一时半会做不完，就让我回去自学RT-thread。自己很多项目要交，还要评职称，就搁置了。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2021.03～2021.7&lt;/strong&gt; 回学校就开始准备电赛，当时有老师培训运放电路设计，B站看了很多讲电赛的视频，我记得有一个叫杨老师讲电赛的UP主。还让我准备一些常用电路，还有模块。到了5月份还进行了模拟考试，一个电赛题目，叫多信号发生仪好像，给我们一个固定型号运放，让我们输出固定频率方波，正弦波，锯齿波，还有啥忘了。看到这个题目，考场直接懵逼了，拿着模电书翻来翻去，干着急，最后就设计出来了1个，组员去抄了学长的2个，以免分太低丢人。这个题对我打击很大，就感觉自己水平太低。然后别的实验室有好多满分，提前培训过这个题目。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2020.10～2021.01&lt;/strong&gt; 实验室老师推荐我跟着研究生导师做项目，主要涉及FPGA。那个项目是个电网与家庭用电之间的路由器，用于逆变将多余的电回收进电网。然后做FPGA设计SVPWM控制器，给我DSP的一个SVPWM框图。按照老师的波形出输出要求设计了一个，用Modelsim做了仿真。给老师看了波形。后来拿到板子上去试，结果我当时操作失误，买的杜邦线跟板子的尺寸不一，把杜邦线头拆了，直接插引脚上，然后没注意，IO短接了，芯片烧了。老师觉得这个项目一时半会做不完，就让我回去自学RT-thread，他有很多项目要交，还要评职称，就搁置了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2021.03～2021.7&lt;/strong&gt; 回学校就开始准备电赛，当时有老师培训运放电路设计，B站看了很多讲电赛的视频，我记得有一个叫唐老师讲电赛的UP主。还让我准备一些常用电路，还有模块。到了5月份还进行了模拟考试，一个电赛题目，叫多信号发生仪好像，给我们一个固定型号运放，让我们输出固定频率方波，正弦波，锯齿波，还有啥忘了。看到这个题目，考场直接懵逼了，拿着模电书翻来翻去，干着急，最后就设计出来了1个，组员去抄了学长的2个，以免分太低丢人。这个题对我打击很大，就感觉自己水平太低。然后别的实验室有好多满分，提前培训过这个题目。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2021.07～2021.09&lt;/strong&gt; 没回家，在学校准备电赛，结果电赛延期了，8月份推迟到10月份，还经历了郑州721大暴雨，又一个人生难忘的经历。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2021.09～2022.01&lt;/strong&gt; 暑假的那段时间，我在学校身体发生了变化，我得了耳鸣，找不到病因，这是我人生的转折，后来我电赛也没参加。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2022.01～2022.07&lt;/strong&gt; 不舒服，想回到没耳鸣的时候。人有点浮躁，就感觉我活不久了，有点颓废，想着还得考研，备考几个月坚持不下去，放弃了。&lt;/li&gt;
