@@ -7,8 +7,62 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
-    <lastBuildDate>Sun, 03 May 2026 10:36:58 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 04 May 2026 14:28:23 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RealTimeSystemDebug</title>
+      <link>https://intmagician.github.io/notes/realtimesystemdebug/</link>
+      <pubDate>Mon, 04 May 2026 14:28:23 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/realtimesystemdebug/</guid>
+      <description>&lt;h1 id=&#34;如何控制时序使得不影响控制节奏&#34;&gt;如何控制时序使得不影响控制节奏&lt;/h1&gt;
+&lt;p&gt;本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。&lt;/p&gt;
+&lt;h2 id=&#34;为什么要处理实时性&#34;&gt;为什么要处理实时性&lt;/h2&gt;
+&lt;p&gt;首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。&lt;/p&gt;
+&lt;h3 id=&#34;1-调参效果很玄&#34;&gt;1. 调参效果很玄&lt;/h3&gt;
+&lt;p&gt;正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\theta$在0附近就开始来回抖，松手就倒。&lt;/p&gt;
+&lt;h3 id=&#34;2-系统响应迟钝&#34;&gt;2. 系统响应迟钝&lt;/h3&gt;
+&lt;p&gt;$K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。&lt;/p&gt;
+&lt;h2 id=&#34;5ms控制周期&#34;&gt;5ms控制周期&lt;/h2&gt;
+&lt;p&gt;经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。&lt;/p&gt;
+&lt;h3 id=&#34;1-系统响应依然慢&#34;&gt;1. 系统响应依然慢&lt;/h3&gt;
+&lt;p&gt;上述现象没有好转。&lt;/p&gt;
+&lt;h3 id=&#34;2-检查配置和时序&#34;&gt;2. 检查配置和时序&lt;/h3&gt;
+&lt;h4 id=&#34;中断频率不是200hz&#34;&gt;中断频率不是200Hz&lt;/h4&gt;
+&lt;p&gt;首先看中断1s进多少次是不是5ms：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;volatile&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32_t&lt;/span&gt; mpu_irq_cnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;HAL_GPIO_EXTI_Callback&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;uint16_t&lt;/span&gt; GPIO_Pin)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (GPIO_Pin &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; MPU_INT_Pin)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        mpu_irq_cnt&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        mpu_flag &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32_t&lt;/span&gt; last_ms &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32_t&lt;/span&gt; last_cnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;HAL_GetTick&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; last_ms &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32_t&lt;/span&gt; now_cnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mpu_irq_cnt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;irq_per_sec=%lu&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, now_cnt &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; last_cnt);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    last_cnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; now_cnt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    last_ms &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;HAL_GetTick&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;打印出来结果是532～534次。&lt;/p&gt;
+&lt;p&gt;检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。&lt;/p&gt;
+&lt;h4 id=&#34;注释中断内的函数&#34;&gt;注释中断内的函数&lt;/h4&gt;
+&lt;p&gt;注释掉中断里数据获取和处理的函数，打印出来结果205次。
+通过逐个查看&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;last &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; DWT&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;CYCCNT;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;test_function&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; DWT&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;CYCCNT;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;curr - last = %dus&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, (curr &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; last) &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;72U&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;结果是mpu6050读加速度计和陀螺仪数据站用太久了。
+直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Resume</title>
       <link>https://intmagician.github.io/resume/</link>
@@ -67,21 +121,20 @@
 &lt;p&gt;实际上的倾斜角&lt;/p&gt;
 &lt;p&gt;$$\theta_{true} = \theta + \theta_a$$&lt;/p&gt;
 &lt;p&gt;所以&lt;/p&gt;
-&lt;p&gt;$$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta + K_p * dt * \omega = K_p * \theta + Kd * \omega $$&lt;/p&gt;</description>
+&lt;p&gt;$$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta + K_p * dt * \omega = K_p * \theta + K_d * \omega $$&lt;/p&gt;</description>
     </item>
     <item>
       <title>My Story</title>
       <link>https://intmagician.github.io/aboutme/</link>
       <pubDate>Sun, 03 May 2026 10:33:33 +0800</pubDate>
       <guid>https://intmagician.github.io/aboutme/</guid>
-      <description>&lt;p&gt;在这个栏目里，我不做掩饰，直接展示我最真实的一面，不分好坏，只讲事实。&lt;/p&gt;
-&lt;h1 id=&#34;我的校园生活&#34;&gt;我的校园生活&lt;/h1&gt;
+      <description>&lt;h1 id=&#34;我的校园生活&#34;&gt;我的校园生活&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;2019.09~2019.12&lt;/strong&gt; 初入校园，没有改变高中的生活方式，早上起来很早，还去早读。参与院学生会的选拔，我比较内向，在草地上做小组讨论时，我还是站了出来讲了一些话，最终加入了院学生会，生活权益部。参与学院的实验室培训，买了学习套件，一个盒子里，很多带脚的元器件和芯片，一块面包板，一本很厚的模拟电子技术书，然后每周固定晚上去参加培训。还去参加学院以及学校组织的活动，去当志愿者，认识了很多好朋友。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2020.01～2020.07&lt;/strong&gt; 我通过了实验室的选拔，老师让我学FPGA，后来疫情来了，学校回不去了，我就在家学fpga，老师还把小脚丫fpga板子寄到我家里，学verilogHDL，在小脚丫上跑demo，点灯，PWM呼吸灯，状态机设计等等。就这样停顿了几个月，我还记得上课没有课本，CAD课听不懂，学不会，到复习了，难的还哭了一场，🤣。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2020.07~2020.10&lt;/strong&gt; 报名参加互联网+竞赛，老师给的项目，我组了队伍，写项目计划书。项目名叫钢琴定时器，用FFT做频谱分析，识别钢琴音色，做定时。然后项目计划书也写了，结果是院赛都没出。大一成绩还好，加点学分，能到年级10+。不过选修网课有个课错过了考试，挂了科，没有奖学金，很可惜。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2020.10～2021.01&lt;/strong&gt; 实验室老师推荐我跟着研究生导师做项目，主要涉及FPGA。那个项目是个电网与家庭用电之间的路由器，用于逆变将多余的电回收进电网。然后做FPGA设计SVPWM控制器，给我DSP的一个SVPWM框图。按照老师的波形出输出要求设计了一个，用Modelsim做了仿真。给老师看了波形。后来拿到板子上去试，结果我当时操作失误，买的杜邦线跟板子的尺寸不一，把杜邦线头拆了，直接插引脚上，然后没注意，IO短接了，芯片烧了。老师觉得这个项目一时半会做不完，就让我回去自学RT-thread，他有很多项目要交，还要评职称，就搁置了。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2021.03～2021.7&lt;/strong&gt; 回学校就开始准备电赛，当时有老师培训运放电路设计，B站看了很多讲电赛的视频，我记得有一个叫唐老师讲电赛的UP主。还让我准备一些常用电路，还有模块。到了5月份还进行了模拟考试，一个电赛题目，叫多信号发生仪好像，给我们一个固定型号运放，让我们输出固定频率方波，正弦波，锯齿波，还有啥忘了。看到这个题目，考场直接懵逼了，拿着模电书翻来翻去，干着急，最后就设计出来了1个，组员去抄了学长的2个，以免分太低丢人。这个题对我打击很大，就感觉自己水平太低。然后别的实验室有好多满分，提前培训过这个题目。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2021.03～2021.7&lt;/strong&gt; 回学校就开始准备电赛，当时有老师培训运放电路设计，B站看了很多讲电赛的视频，我记得有一个叫唐老师讲电赛的UP主。老师让我准备一些常用电路，还有模块。到了5月份还进行了模拟考试，一个电赛题目，叫多信号发生仪好像，给我们一个固定型号运放，让我们输出固定频率方波，正弦波，锯齿波，还有啥忘了。看到这个题目，考场直接懵逼了，拿着模电书翻来翻去，干着急，最后就设计出来了1个，组员去抄了学长的2个，以免分太低丢人。这个题对我打击很大，就感觉自己水平太低。然后别的实验室有好多满分，提前培训过这个题目。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2021.07～2021.09&lt;/strong&gt; 没回家，在学校准备电赛，结果电赛延期了，8月份推迟到10月份，还经历了郑州721大暴雨，又一个人生难忘的经历。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2021.09～2022.01&lt;/strong&gt; 暑假的那段时间，我在学校身体发生了变化，我得了耳鸣，找不到病因，这是我人生的转折，后来我电赛也没参加。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2022.01～2022.07&lt;/strong&gt; 不舒服，想回到没耳鸣的时候。人有点浮躁，就感觉我活不久了，有点颓废，想着还得考研，备考几个月坚持不下去，放弃了。&lt;/li&gt;
@@ -98,7 +151,7 @@
 &lt;li&gt;&lt;strong&gt;2024.06～2024.10&lt;/strong&gt; 自己偶尔玩了一个游戏，然后就靠游戏赚了点钱，就这样做了一段时间网赚。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2024.10～2025.02&lt;/strong&gt; 亲戚给我内推了工作，我就去面试，然后去别的城市转了转，这个时候又有一个新游戏，然后就双线做网赚。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2025.02～2025.05&lt;/strong&gt; 去了内推的公司上班，工作内容不是做嵌入式，去了之后，工作环境不好，工作内容不喜欢，虽然很轻松，最终离职了。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2025.05～2025.10&lt;/strong&gt; 在3月份偶尔接触了区块链，然后进去炒币，赶上大牛，但是也没多少资本，没赚多少钱，然后还参与区块链项目交互撸空投，撸空投被坑惨了，还炒了meme币，我资本小，没亏多少。赚的钱都进了项目方和meme币诈骗方的口袋。不过本金没亏，交互了好几个月没结果，就黯然离场，庆幸自己没有发那种暴富梦，我也没碰杠杆，见过合约一个亿被爆仓归零的。如果你看到这里，有这个想法我劝你别来，给你讲个抽象概念，你拿白纸跟圈内人换币，等你要出来的时候，你要拿币换别人手里的纸，这个纸你不知道颜色，这是巨大的风险，如果是黑的，你的银行卡就被封了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2025.05～2025.10&lt;/strong&gt; 在3月份偶尔接触了区块链，然后进去炒币，赶上大牛，但是也没多少资本，没赚多少钱，然后还参与区块链项目交互撸空投，撸空投被坑惨了，还炒了meme币，我资本小，没亏多少。赚的钱都进了项目方和meme币诈骗方的口袋。不过本金没亏，交互了好几个月没结果，就黯然离场，庆幸自己没有发那种暴富梦，我也没碰杠杆，见过合约一个亿被爆仓归零的。如果你看到这里，有这个想法我劝你别来。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2025.10～2026.1&lt;/strong&gt; 做网赚但已经不想继续，探索新的方向，做自媒体，想闲鱼卖服务。OpenClaw霸屏社媒，我在本地部署了龙虾，但没有API就停了，第一时间想去闲鱼卖服务，国内一点声音都没有就没做，过了很长时间突然传到国内，排队装OpenClaw炒作，我也没去蹭热点。我接触了tts和stt，chatgpt写视频文案脚本，试着做了自媒体，在B站做了几期视频，挺多困难的，比如文案，配音，剪辑，固定更新频率。做一个持续输出内容的3分钟视频都难，也是个有门槛的赛道，想做到赚钱估计得半年以上。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;2026.01～至今&lt;/strong&gt; 复习嵌入式，投简历，找了一份嵌入式工作。但入职没签正式合同，签了试用期合同。工作时间9点到8点半，大小周。工作内容是项目移植，芯片移植，有个20年经验的老工程师在，很有经验，除了能跟着老工程师学本事，别的都没啥，这个工作强度太高了，身体有点撑不住。&lt;/li&gt;
 &lt;/ul&gt;</description>

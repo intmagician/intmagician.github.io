@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RealTimeSystemDebug | Intmagician</title>
+<meta name="keywords" content="">
+<meta name="description" content="如何控制时序使得不影响控制节奏
+本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。
+为什么要处理实时性
+首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。
+1. 调参效果很玄
+正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\theta$在0附近就开始来回抖，松手就倒。
+2. 系统响应迟钝
+$K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。
+5ms控制周期
+经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。
+1. 系统响应依然慢
+上述现象没有好转。
+2. 检查配置和时序
+中断频率不是200Hz
+首先看中断1s进多少次是不是5ms：
+volatile uint32_t mpu_irq_cnt = 0;
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == MPU_INT_Pin)
+    {
+        mpu_irq_cnt&#43;&#43;;
+        mpu_flag = 1;
+    }
+}
+static uint32_t last_ms = 0;
+static uint32_t last_cnt = 0;
+
+if (HAL_GetTick() - last_ms &gt;= 1000)
+{
+    uint32_t now_cnt = mpu_irq_cnt;
+    printf(&#34;irq_per_sec=%lu\r\n&#34;, now_cnt - last_cnt);
+
+    last_cnt = now_cnt;
+    last_ms = HAL_GetTick();
+}
+打印出来结果是532～534次。
+检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。
+注释中断内的函数
+注释掉中断里数据获取和处理的函数，打印出来结果205次。
+通过逐个查看
+last = DWT-&gt;CYCCNT;
+test_function();
+curr = DWT-&gt;CYCCNT;
+
+printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U);
+结果是mpu6050读加速度计和陀螺仪数据站用太久了。
+直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/projects/balance-car/realtimesystemdebug/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/projects/balance-car/realtimesystemdebug/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/notes/" title="Notes">
+                    <span>Notes</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/aboutme" title="About me">
+                    <span>About me</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/resume" title="Resume">
+                    <span>Resume</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    <a href='http://localhost:1313/'>Home</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="http://localhost:1313/projects/">自平衡车</a></nav>
+    <h1 class="post-title entry-hint-parent">
+      RealTimeSystemDebug
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-05-04 14:28:23 +0800 CST'>May 4, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><h1 id="如何控制时序使得不影响控制节奏">如何控制时序使得不影响控制节奏<a hidden class="anchor" aria-hidden="true" href="#如何控制时序使得不影响控制节奏">#</a></h1>
+<p>本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。</p>
+<h2 id="为什么要处理实时性">为什么要处理实时性<a hidden class="anchor" aria-hidden="true" href="#为什么要处理实时性">#</a></h2>
+<p>首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。</p>
+<h3 id="1-调参效果很玄">1. 调参效果很玄<a hidden class="anchor" aria-hidden="true" href="#1-调参效果很玄">#</a></h3>
+<p>正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\theta$在0附近就开始来回抖，松手就倒。</p>
+<h3 id="2-系统响应迟钝">2. 系统响应迟钝<a hidden class="anchor" aria-hidden="true" href="#2-系统响应迟钝">#</a></h3>
+<p>$K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。</p>
+<h2 id="5ms控制周期">5ms控制周期<a hidden class="anchor" aria-hidden="true" href="#5ms控制周期">#</a></h2>
+<p>经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。</p>
+<h3 id="1-系统响应依然慢">1. 系统响应依然慢<a hidden class="anchor" aria-hidden="true" href="#1-系统响应依然慢">#</a></h3>
+<p>上述现象没有好转。</p>
+<h3 id="2-检查配置和时序">2. 检查配置和时序<a hidden class="anchor" aria-hidden="true" href="#2-检查配置和时序">#</a></h3>
+<h4 id="中断频率不是200hz">中断频率不是200Hz<a hidden class="anchor" aria-hidden="true" href="#中断频率不是200hz">#</a></h4>
+<p>首先看中断1s进多少次是不是5ms：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">uint32_t</span> mpu_irq_cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">HAL_GPIO_EXTI_Callback</span>(<span style="color:#66d9ef">uint16_t</span> GPIO_Pin)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (GPIO_Pin <span style="color:#f92672">==</span> MPU_INT_Pin)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        mpu_irq_cnt<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>        mpu_flag <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">uint32_t</span> last_ms <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">uint32_t</span> last_cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">HAL_GetTick</span>() <span style="color:#f92672">-</span> last_ms <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> now_cnt <span style="color:#f92672">=</span> mpu_irq_cnt;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;irq_per_sec=%lu</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, now_cnt <span style="color:#f92672">-</span> last_cnt);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    last_cnt <span style="color:#f92672">=</span> now_cnt;
+</span></span><span style="display:flex;"><span>    last_ms <span style="color:#f92672">=</span> <span style="color:#a6e22e">HAL_GetTick</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>打印出来结果是532～534次。</p>
+<p>检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。</p>
+<h4 id="注释中断内的函数">注释中断内的函数<a hidden class="anchor" aria-hidden="true" href="#注释中断内的函数">#</a></h4>
+<p>注释掉中断里数据获取和处理的函数，打印出来结果205次。
+通过逐个查看</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>last <span style="color:#f92672">=</span> DWT<span style="color:#f92672">-&gt;</span>CYCCNT;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">test_function</span>();
+</span></span><span style="display:flex;"><span>curr <span style="color:#f92672">=</span> DWT<span style="color:#f92672">-&gt;</span>CYCCNT;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;curr - last = %dus</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, (curr <span style="color:#f92672">-</span> last) <span style="color:#960050;background-color:#1e0010">\</span> <span style="color:#ae81ff">72U</span>);
+</span></span></code></pre></div><p>结果是mpu6050读加速度计和陀螺仪数据站用太久了。
+直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。</p>
+<h4 id="主循环处理中断置标志">主循环处理，中断置标志<a hidden class="anchor" aria-hidden="true" href="#主循环处理中断置标志">#</a></h4>
+<p>将整个处理程序放到了主循环。然后这次觉得时序问题应该解决了。
+继续调参数，小车还是救不了，用手按着头还能行，一松手就倒。</p>
+<h4 id="再检查中断是不是5ms">再检查中断是不是5ms<a hidden class="anchor" aria-hidden="true" href="#再检查中断是不是5ms">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>old <span style="color:#f92672">=</span> new;
+</span></span><span style="display:flex;"><span>new <span style="color:#f92672">=</span> DWT<span style="color:#f92672">-&gt;</span>CYCCNT;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;curr - last = %dus</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, (new <span style="color:#f92672">-</span> old) <span style="color:#960050;background-color:#1e0010">\</span> <span style="color:#ae81ff">72U</span>);
+</span></span></code></pre></div><p>然后发现打印出来是2500+us。正在我怀疑的时候,我改了下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>old <span style="color:#f92672">=</span> new;
+</span></span><span style="display:flex;"><span>new <span style="color:#f92672">=</span> DWT<span style="color:#f92672">-&gt;</span>CYCCNT;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;curr - last = %dus</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, (new <span style="color:#f92672">-</span> old) <span style="color:#f92672">/</span> (SystemCoreClock <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000000U</span>));
+</span></span></code></pre></div><p>然后结果是5000+us。然后打印了系统时钟是36Mhz。难以置信，看了SystemClock_Config()好几遍，来回看，后来发现宏用错了，分频就没生效。</p>
+<h4 id="一切都变好了">一切都变好了<a hidden class="anchor" aria-hidden="true" href="#一切都变好了">#</a></h4>
+<p>到这里，系统速度变快了一倍，也就是i2c的读取速度，计算速度等等都变快了一倍，5ms间隔完全够用。一切诡异的现象，一切难以处理的问题基本上都消失，系统看起来也很正常。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>如何控制时序不影响控制节奏：</p>
+<ul>
+<li>系统频率足够快</li>
+<li>数据获取的速度快，不拖慢后续处理节奏，如通信频率多少，一个周期获取多少数据，一共占用多久</li>
+<li>除了调试阶段，不要保留printf</li>
+<li>通过Tick打印对应函数占用时间，精准计算时间是否宽裕，再去做相应的优化。</li>
+</ul>
+<p>本篇文章主要是个人从一开始就没有做系统设计，也没有考虑过实时性，觉得小车控制很简单，然后尝试过程中，四处碰壁，然后观察分析，最后逐步调整5ms控制周期的。希望这个记录能提供一些经验。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>© 2026 intmagician | Embedded Systems | Control | Learning by Building</span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
