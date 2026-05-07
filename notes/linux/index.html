@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Notes | Intmagician</title>
+<title>再战Linux驱动 | Intmagician</title>
 <meta name="keywords" content="">
-<meta name="description" content="Notes - Intmagician">
+<meta name="description" content="再战Linux驱动 - Intmagician">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/">
+<link rel="canonical" href="https://intmagician.github.io/notes/linux/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://intmagician.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
@@ -18,8 +18,8 @@
 <link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://intmagician.github.io/notes/index.xml" title="rss">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/">
+<link rel="alternate" type="application/rss+xml" href="https://intmagician.github.io/notes/linux/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/">
 <noscript>
     <style>
         #theme-toggle,
@@ -65,14 +65,14 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/">
+</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/">
   <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Notes">
+  <meta property="og:title" content="再战Linux驱动">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="website">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Notes">
+  <meta name="twitter:title" content="再战Linux驱动">
 
 
 <script type="application/ld+json">
@@ -85,6 +85,12 @@
       "position":  1 ,
       "name": "Notes",
       "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "再战Linux驱动",
+      "item": "https://intmagician.github.io/notes/linux/"
     }
   ]
 }
@@ -126,7 +132,7 @@
             </li>
             <li>
                 <a href="https://intmagician.github.io/notes/" title="Notes">
-                    <span class="active">Notes</span>
+                    <span>Notes</span>
                 </a>
             </li>
             <li>
@@ -149,46 +155,34 @@
 </header>
 <main class="main"> 
 <header class="page-header"><nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a></nav>
+    <a href='https://intmagician.github.io/'>Home</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/">Notes</a></nav>
   <h1>
-    Notes
+    再战Linux驱动
   </h1>
 </header>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">再战Linux驱动
+    <h2 class="entry-hint-parent">编译环境搭建
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>摘要 如果你很随意的选择内核和工具链，等待你的是无尽的折磨。我就是那一个。我本来只是想编一个 hello.ko，结果真正折磨人的不是驱动代码，而是复现厂家当年的内核编译环境。
+Docker Ubuntu 20.04 自带的 arm-linux-gnueabihf-gcc 是 GCC 9，但板子当前内核是 GCC 4.9 编出来的。新 GCC 编老 BSP 会出现各种奇怪问题，zImage 都出不来。
+最后改成官方推荐的 GCC 4.9 工具链，我去了下载的地方，一看，WTF，没有Mac平台，赶紧回到PC虚拟机，下了x86_64平台的，避开 menuconfig，直接使用配置文件，并在编译时加 HOSTCFLAGS=&#34;-fcommon&#34;，才让老内核顺利编过，最终看到 zImage is ready。
+我是如何折腾环境的 mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.
+我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。
+打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
+总结 老 BSP 不要随便用新 GCC。 i.MX6ULL 这类旧内核工程，优先使用厂家推荐的交叉编译器版本。 cat /proc/version 很重要。 它可以直接看到当前板子内核当初是用哪个 GCC 编译的。 CROSS_COMPILE 和 HOSTCC 是两套东西。 arm-linux-gnueabihf-gcc 编 ARM 内核代码； 宿主机 gcc 编 scripts/dtc、menuconfig、modpost 等构建工具。 menuconfig 不是必须步骤。 如果只是复现已有配置，可以直接使用厂家 defconfig 或现成 .config。 老内核遇到 yylloc 多重定义，可以考虑 HOSTCFLAGS=&#34;-fcommon&#34; 或修改 scripts/dtc。 外部模块能不能加载，不只看 hello.ko 是否生成。 还要看 vermagic、Module.symvers、module_layout、CONFIG_MODVERSIONS 是否对齐。 Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-06 12:26:09 +0800 CST'>May 6, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
-  <a class="entry-link" aria-label="post link to 再战Linux驱动" href="https://intmagician.github.io/notes/linux/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">再战控制系统
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p></p>
-  </div>
-  <footer class="entry-footer"><span title='2026-05-04 14:28:23 +0800 CST'>May 4, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
-  <a class="entry-link" aria-label="post link to 再战控制系统" href="https://intmagician.github.io/notes/control/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">工作累成狗
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p></p>
-  </div>
-  <footer class="entry-footer"><span>0 min</span></footer>
-  <a class="entry-link" aria-label="post link to 工作累成狗" href="https://intmagician.github.io/notes/work/"></a>
+  <footer class="entry-footer"><span title='2026-05-06 12:26:09 +0800 CST'>May 6, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <a class="entry-link" aria-label="post link to 编译环境搭建" href="https://intmagician.github.io/notes/linux/linux_env_config/"></a>
 </article>
     </main>
     

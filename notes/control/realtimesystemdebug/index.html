@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>RealTimeSystemDebug | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="如何控制时序使得不影响控制节奏
@@ -56,16 +56,16 @@ printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U);
 结果是mpu6050读加速度计和陀螺仪数据站用太久了。
 直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/notes/realtimesystemdebug/">
+<link rel="canonical" href="https://intmagician.github.io/notes/control/realtimesystemdebug/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://intmagician.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/realtimesystemdebug/">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/control/realtimesystemdebug/">
 <noscript>
     <style>
         #theme-toggle,
@@ -111,13 +111,102 @@ printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U);
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://intmagician.github.io/notes/control/realtimesystemdebug/">
+  <meta property="og:site_name" content="Intmagician">
+  <meta property="og:title" content="RealTimeSystemDebug">
+  <meta property="og:description" content="如何控制时序使得不影响控制节奏 本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。
+为什么要处理实时性 首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。
+1. 调参效果很玄 正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\theta$在0附近就开始来回抖，松手就倒。
+2. 系统响应迟钝 $K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。
+5ms控制周期 经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。
+1. 系统响应依然慢 上述现象没有好转。
+2. 检查配置和时序 中断频率不是200Hz 首先看中断1s进多少次是不是5ms：
+volatile uint32_t mpu_irq_cnt = 0; void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) { if (GPIO_Pin == MPU_INT_Pin) { mpu_irq_cnt&#43;&#43;; mpu_flag = 1; } } static uint32_t last_ms = 0; static uint32_t last_cnt = 0; if (HAL_GetTick() - last_ms &gt;= 1000) { uint32_t now_cnt = mpu_irq_cnt; printf(&#34;irq_per_sec=%lu\r\n&#34;, now_cnt - last_cnt); last_cnt = now_cnt; last_ms = HAL_GetTick(); } 打印出来结果是532～534次。
+检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。
+注释中断内的函数 注释掉中断里数据获取和处理的函数，打印出来结果205次。 通过逐个查看
+last = DWT-&gt;CYCCNT; test_function(); curr = DWT-&gt;CYCCNT; printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U); 结果是mpu6050读加速度计和陀螺仪数据站用太久了。 直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="notes">
+    <meta property="article:published_time" content="2026-05-04T14:28:23+08:00">
+    <meta property="article:modified_time" content="2026-05-04T14:28:23+08:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="RealTimeSystemDebug">
+  <meta name="twitter:description" content="如何控制时序使得不影响控制节奏 本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。
+为什么要处理实时性 首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。
+1. 调参效果很玄 正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\theta$在0附近就开始来回抖，松手就倒。
+2. 系统响应迟钝 $K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。
+5ms控制周期 经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。
+1. 系统响应依然慢 上述现象没有好转。
+2. 检查配置和时序 中断频率不是200Hz 首先看中断1s进多少次是不是5ms：
+volatile uint32_t mpu_irq_cnt = 0; void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) { if (GPIO_Pin == MPU_INT_Pin) { mpu_irq_cnt&#43;&#43;; mpu_flag = 1; } } static uint32_t last_ms = 0; static uint32_t last_cnt = 0; if (HAL_GetTick() - last_ms &gt;= 1000) { uint32_t now_cnt = mpu_irq_cnt; printf(&#34;irq_per_sec=%lu\r\n&#34;, now_cnt - last_cnt); last_cnt = now_cnt; last_ms = HAL_GetTick(); } 打印出来结果是532～534次。
+检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。
+注释中断内的函数 注释掉中断里数据获取和处理的函数，打印出来结果205次。 通过逐个查看
+last = DWT-&gt;CYCCNT; test_function(); curr = DWT-&gt;CYCCNT; printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U); 结果是mpu6050读加速度计和陀螺仪数据站用太久了。 直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Notes",
+      "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "再战控制系统",
+      "item": "https://intmagician.github.io/notes/control/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "RealTimeSystemDebug",
+      "item": "https://intmagician.github.io/notes/control/realtimesystemdebug/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RealTimeSystemDebug",
+  "name": "RealTimeSystemDebug",
+  "description": "如何控制时序使得不影响控制节奏 本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。\n为什么要处理实时性 首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。\n1. 调参效果很玄 正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\\theta$在0附近就开始来回抖，松手就倒。\n2. 系统响应迟钝 $K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。\n5ms控制周期 经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。\n1. 系统响应依然慢 上述现象没有好转。\n2. 检查配置和时序 中断频率不是200Hz 首先看中断1s进多少次是不是5ms：\nvolatile uint32_t mpu_irq_cnt = 0; void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) { if (GPIO_Pin == MPU_INT_Pin) { mpu_irq_cnt++; mpu_flag = 1; } } static uint32_t last_ms = 0; static uint32_t last_cnt = 0; if (HAL_GetTick() - last_ms \u0026gt;= 1000) { uint32_t now_cnt = mpu_irq_cnt; printf(\u0026#34;irq_per_sec=%lu\\r\\n\u0026#34;, now_cnt - last_cnt); last_cnt = now_cnt; last_ms = HAL_GetTick(); } 打印出来结果是532～534次。\n检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。\n注释中断内的函数 注释掉中断里数据获取和处理的函数，打印出来结果205次。 通过逐个查看\nlast = DWT-\u0026gt;CYCCNT; test_function(); curr = DWT-\u0026gt;CYCCNT; printf(\u0026#34;curr - last = %dus\\r\\n\u0026#34;, (curr - last) \\ 72U); 结果是mpu6050读加速度计和陀螺仪数据站用太久了。 直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "如何控制时序使得不影响控制节奏 本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。\n为什么要处理实时性 首先，不考虑实时性，不想别的，就把串口，printf，oled，mpu6050驱动，定时器，pwm电机驱动，key构建好，直接在主循环里，读mpu6050的数据，然后做简单滤波和换算，丢给P或者PD控制器，现象是什么呢。\n1. 调参效果很玄 正常情况，调大$K_p$然后到震荡，就可以考虑调$K_d$，抑制震荡。结果是，怎么加$K_p$都救不了车。尝试PD控制，加了$K_d$，倾斜角$\\theta$在0附近就开始来回抖，松手就倒。\n2. 系统响应迟钝 $K_p$很大救不了车，反应慢半拍，车都要躺了，电机突然开始发力，角度太大，系统做了保护，停止了电机转动。盲调并观察一段时间就会发现这个问题。\n5ms控制周期 经过上述过程后，开始调整控制程序，将mpu6050的INT信号作为外部中断来源，也可以考虑定时做5ms定时。\n1. 系统响应依然慢 上述现象没有好转。\n2. 检查配置和时序 中断频率不是200Hz 首先看中断1s进多少次是不是5ms：\nvolatile uint32_t mpu_irq_cnt = 0; void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) { if (GPIO_Pin == MPU_INT_Pin) { mpu_irq_cnt++; mpu_flag = 1; } } static uint32_t last_ms = 0; static uint32_t last_cnt = 0; if (HAL_GetTick() - last_ms \u003e= 1000) { uint32_t now_cnt = mpu_irq_cnt; printf(\"irq_per_sec=%lu\\r\\n\", now_cnt - last_cnt); last_cnt = now_cnt; last_ms = HAL_GetTick(); } 打印出来结果是532～534次。\n检查mpu6050的寄存器，div是4，cfg是2，没错是200Hz。中断处理太慢了，导致有一次没有处理。\n注释中断内的函数 注释掉中断里数据获取和处理的函数，打印出来结果205次。 通过逐个查看\nlast = DWT-\u003eCYCCNT; test_function(); curr = DWT-\u003eCYCCNT; printf(\"curr - last = %dus\\r\\n\", (curr - last) \\ 72U); 结果是mpu6050读加速度计和陀螺仪数据站用太久了。 直接把soft i2c里的delay_us全给批量注释了。从533压缩到265。其实没注意系统时钟，这里误以为系统时钟是72Mhz，事实上是36Mhz。\n主循环处理，中断置标志 将整个处理程序放到了主循环。然后这次觉得时序问题应该解决了。 继续调参数，小车还是救不了，用手按着头还能行，一松手就倒。\n再检查中断是不是5ms old = new; new = DWT-\u003eCYCCNT; printf(\"curr - last = %dus\\r\\n\", (new - old) \\ 72U); 然后发现打印出来是2500+us。正在我怀疑的时候,我改了下\nold = new; new = DWT-\u003eCYCCNT; printf(\"curr - last = %dus\\r\\n\", (new - old) / (SystemCoreClock / 1000000U)); 然后结果是5000+us。然后打印了系统时钟是36Mhz。难以置信，看了SystemClock_Config()好几遍，来回看，后来发现宏用错了，分频就没生效。\n一切都变好了 到这里，系统速度变快了一倍，也就是i2c的读取速度，计算速度等等都变快了一倍，5ms间隔完全够用。一切诡异的现象，一切难以处理的问题基本上都消失，系统看起来也很正常。\n总结 如何控制时序不影响控制节奏：\n系统频率足够快 数据获取的速度快，不拖慢后续处理节奏，如通信频率多少，一个周期获取多少数据，一共占用多久 除了调试阶段，不要保留printf 通过Tick打印对应函数占用时间，精准计算时间是否宽裕，再去做相应的优化。 本篇文章主要是个人从一开始就没有做系统设计，也没有考虑过实时性，觉得小车控制很简单，然后尝试过程中，四处碰壁，然后观察分析，最后逐步调整5ms控制周期的。希望这个记录能提供一些经验。\n",
+  "wordCount" : "145",
+  "inLanguage": "en",
+  "datePublished": "2026-05-04T14:28:23+08:00",
+  "dateModified": "2026-05-04T14:28:23+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://intmagician.github.io/notes/control/realtimesystemdebug/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Intmagician",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://intmagician.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -143,27 +232,27 @@ printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U);
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="http://localhost:1313/" title="Home">
+                <a href="https://intmagician.github.io/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/notes/" title="Notes">
+                <a href="https://intmagician.github.io/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/projects/" title="Projects">
+                <a href="https://intmagician.github.io/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/aboutme" title="About me">
+                <a href="https://intmagician.github.io/aboutme" title="About me">
                     <span>About me</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/resume" title="Resume">
+                <a href="https://intmagician.github.io/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -175,12 +264,17 @@ printf(&#34;curr - last = %dus\r\n&#34;, (curr - last) \ 72U);
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='http://localhost:1313/'>Home</a>
+    <a href='https://intmagician.github.io/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="http://localhost:1313/notes/">Notes</a></nav>
+            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/control/">再战控制系统</a></nav>
     <h1 class="post-title entry-hint-parent">
       RealTimeSystemDebug
     </h1>
