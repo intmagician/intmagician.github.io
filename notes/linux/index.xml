@@ -23,21 +23,9 @@
 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.&lt;/p&gt;
 &lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。&lt;/p&gt;
 &lt;p&gt;打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&amp;quot;-fcommon&amp;quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。&lt;/p&gt;
+&lt;h2 id=&#34;驱动学习日后感悟&#34;&gt;驱动学习日后感悟&lt;/h2&gt;
+&lt;p&gt;原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。&lt;/p&gt;
 &lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;老 BSP 不要随便用新 GCC。
-i.MX6ULL 这类旧内核工程，优先使用厂家推荐的交叉编译器版本。&lt;/li&gt;
-&lt;li&gt;cat /proc/version 很重要。
-它可以直接看到当前板子内核当初是用哪个 GCC 编译的。&lt;/li&gt;
-&lt;li&gt;CROSS_COMPILE 和 HOSTCC 是两套东西。
-arm-linux-gnueabihf-gcc 编 ARM 内核代码；
-宿主机 gcc 编 scripts/dtc、menuconfig、modpost 等构建工具。&lt;/li&gt;
-&lt;li&gt;menuconfig 不是必须步骤。
-如果只是复现已有配置，可以直接使用厂家 defconfig 或现成 .config。&lt;/li&gt;
-&lt;li&gt;老内核遇到 yylloc 多重定义，可以考虑 HOSTCFLAGS=&amp;quot;-fcommon&amp;quot; 或修改 scripts/dtc。&lt;/li&gt;
-&lt;li&gt;外部模块能不能加载，不只看 hello.ko 是否生成。
-还要看 vermagic、Module.symvers、module_layout、CONFIG_MODVERSIONS 是否对齐。&lt;/li&gt;
-&lt;/ol&gt;
 &lt;h2 id=&#34;linux驱动编译的前提&#34;&gt;Linux驱动编译的前提&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15)&lt;/li&gt;
@@ -52,7 +40,11 @@ arm-linux-gnueabihf-gcc 编 ARM 内核代码；
 &lt;li&gt;insmod 然后 rmmod。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;mac环境不适合老旧项目&#34;&gt;Mac环境不适合老旧项目&lt;/h2&gt;
-&lt;p&gt;在Mac上交叉编译Linux的内核会有哪些问题&lt;/p&gt;</description>
+&lt;p&gt;在Mac上交叉编译Linux的内核会有哪些问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;老旧项目用的工具链没有Mac平台，有x86_64.&lt;/li&gt;
+&lt;li&gt;Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
   </channel>
 </rss>

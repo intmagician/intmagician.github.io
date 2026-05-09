@@ -7,6 +7,33 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
+    <lastBuildDate>Sat, 09 May 2026 21:51:07 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/notes/work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>调试日记</title>
+      <link>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
+      <pubDate>Sat, 09 May 2026 21:51:07 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
+      <description>&lt;h1 id=&#34;目录&#34;&gt;目录&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%9B%AE%E5%BD%95&#34;&gt;目录&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#adc%E9%87%87%E6%A0%B7%E6%95%B0%E5%80%BC%E4%B8%8D%E5%AF%B9-2026-05-06&#34;&gt;ADC采样数值不对-2026-05-06&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%94%B5%E6%B5%81%E6%A3%80%E6%B5%8B%E5%A5%87%E8%91%A9bug-2026-05-09&#34;&gt;电流检测奇葩bug-2026-05-09&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;adc采样数值不对-2026-05-06&#34;&gt;ADC采样数值不对-2026-05-06&lt;/h1&gt;
+&lt;p&gt;bug背景：一个热敏电阻的ADC采集电路&lt;/p&gt;
+&lt;p&gt;项目背景：公司已有项目移植&lt;/p&gt;
+&lt;p&gt;调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。&lt;/p&gt;
+&lt;p&gt;然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。&lt;/p&gt;
+&lt;p&gt;我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。&lt;/p&gt;
+&lt;p&gt;把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。&lt;/p&gt;
+&lt;p&gt;我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。&lt;/p&gt;
+&lt;h1 id=&#34;电流检测奇葩bug-2026-05-09&#34;&gt;电流检测奇葩bug-2026-05-09&lt;/h1&gt;
+&lt;p&gt;bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。&lt;/p&gt;
+&lt;p&gt;项目背景：公司已有项目移植&lt;/p&gt;
+&lt;p&gt;调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。&lt;/p&gt;
+&lt;p&gt;直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。&lt;/p&gt;
+&lt;p&gt;硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>

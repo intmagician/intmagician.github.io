@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>调试日记 | Intmagician</title>
+<meta name="keywords" content="">
+<meta name="description" content="目录
+
+目录
+ADC采样数值不对-2026-05-06
+电流检测奇葩bug-2026-05-09
+
+ADC采样数值不对-2026-05-06
+bug背景：一个热敏电阻的ADC采集电路
+项目背景：公司已有项目移植
+调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。
+然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。
+我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。
+把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。
+我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。
+电流检测奇葩bug-2026-05-09
+bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。
+项目背景：公司已有项目移植
+调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。
+直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。
+硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。">
+<meta name="author" content="">
+<link rel="canonical" href="https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://intmagician.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/">
+  <meta property="og:site_name" content="Intmagician">
+  <meta property="og:title" content="调试日记">
+  <meta property="og:description" content="目录 目录 ADC采样数值不对-2026-05-06 电流检测奇葩bug-2026-05-09 ADC采样数值不对-2026-05-06 bug背景：一个热敏电阻的ADC采集电路
+项目背景：公司已有项目移植
+调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。
+然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。
+我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。
+把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。
+我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。
+电流检测奇葩bug-2026-05-09 bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。
+项目背景：公司已有项目移植
+调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。
+直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。
+硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="notes">
+    <meta property="article:published_time" content="2026-05-09T21:51:07+08:00">
+    <meta property="article:modified_time" content="2026-05-09T21:51:07+08:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="调试日记">
+  <meta name="twitter:description" content="目录 目录 ADC采样数值不对-2026-05-06 电流检测奇葩bug-2026-05-09 ADC采样数值不对-2026-05-06 bug背景：一个热敏电阻的ADC采集电路
+项目背景：公司已有项目移植
+调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。
+然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。
+我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。
+把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。
+我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。
+电流检测奇葩bug-2026-05-09 bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。
+项目背景：公司已有项目移植
+调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。
+直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。
+硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Notes",
+      "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "工作累成狗",
+      "item": "https://intmagician.github.io/notes/work/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "调试日记",
+      "item": "https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "调试日记",
+  "name": "调试日记",
+  "description": "目录 目录 ADC采样数值不对-2026-05-06 电流检测奇葩bug-2026-05-09 ADC采样数值不对-2026-05-06 bug背景：一个热敏电阻的ADC采集电路\n项目背景：公司已有项目移植\n调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。\n然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。\n我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。\n把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。\n我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是\u0026amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。\n电流检测奇葩bug-2026-05-09 bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。\n项目背景：公司已有项目移植\n调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。\n直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。\n硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "目录 目录 ADC采样数值不对-2026-05-06 电流检测奇葩bug-2026-05-09 ADC采样数值不对-2026-05-06 bug背景：一个热敏电阻的ADC采集电路\n项目背景：公司已有项目移植\n调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。\n然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。\n我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。\n把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。\n我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是\u0026=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。\n电流检测奇葩bug-2026-05-09 bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。\n项目背景：公司已有项目移植\n调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。\n直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。\n硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。\n",
+  "wordCount" : "18",
+  "inLanguage": "en",
+  "datePublished": "2026-05-09T21:51:07+08:00",
+  "dateModified": "2026-05-09T21:51:07+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Intmagician",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://intmagician.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://intmagician.github.io/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/notes/" title="Notes">
+                    <span>Notes</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/aboutme" title="About me">
+                    <span>About me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/resume" title="Resume">
+                    <span>Resume</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    <a href='https://intmagician.github.io/'>Home</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/work/">工作累成狗</a></nav>
+    <h1 class="post-title entry-hint-parent">
+      调试日记
+    </h1>
+    <div class="post-meta"><span title='2026-05-09 21:51:07 +0800 CST'>May 9, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><h1 id="目录">目录<a hidden class="anchor" aria-hidden="true" href="#目录">#</a></h1>
+<ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#adc%E9%87%87%E6%A0%B7%E6%95%B0%E5%80%BC%E4%B8%8D%E5%AF%B9-2026-05-06">ADC采样数值不对-2026-05-06</a></li>
+<li><a href="#%E7%94%B5%E6%B5%81%E6%A3%80%E6%B5%8B%E5%A5%87%E8%91%A9bug-2026-05-09">电流检测奇葩bug-2026-05-09</a></li>
+</ul>
+<h1 id="adc采样数值不对-2026-05-06">ADC采样数值不对-2026-05-06<a hidden class="anchor" aria-hidden="true" href="#adc采样数值不对-2026-05-06">#</a></h1>
+<p>bug背景：一个热敏电阻的ADC采集电路</p>
+<p>项目背景：公司已有项目移植</p>
+<p>调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。</p>
+<p>然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。</p>
+<p>我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。</p>
+<p>把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。</p>
+<p>我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。</p>
+<h1 id="电流检测奇葩bug-2026-05-09">电流检测奇葩bug-2026-05-09<a hidden class="anchor" aria-hidden="true" href="#电流检测奇葩bug-2026-05-09">#</a></h1>
+<p>bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。</p>
+<p>项目背景：公司已有项目移植</p>
+<p>调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。</p>
+<p>直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。</p>
+<p>硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>© 2026 intmagician | Embedded Systems | Control | Learning by Building</span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
