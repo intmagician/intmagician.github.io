@@ -10,41 +10,60 @@
     <lastBuildDate>Sat, 09 May 2026 21:51:07 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>调试日记</title>
+      <title>调试记录</title>
       <link>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
       <pubDate>Sat, 09 May 2026 21:51:07 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
       <description>&lt;h1 id=&#34;目录&#34;&gt;目录&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#%E7%9B%AE%E5%BD%95&#34;&gt;目录&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#adc%E9%87%87%E6%A0%B7%E6%95%B0%E5%80%BC%E4%B8%8D%E5%AF%B9-2026-05-06&#34;&gt;ADC采样数值不对-2026-05-06&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%B8%A9%E5%BA%A6%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%AF%B9-2026-05-06&#34;&gt;温度显示不对-2026-05-06&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#%E7%94%B5%E6%B5%81%E6%A3%80%E6%B5%8B%E5%A5%87%E8%91%A9bug-2026-05-09&#34;&gt;电流检测奇葩bug-2026-05-09&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id=&#34;adc采样数值不对-2026-05-06&#34;&gt;ADC采样数值不对-2026-05-06&lt;/h1&gt;
-&lt;p&gt;bug背景：一个热敏电阻的ADC采集电路&lt;/p&gt;
-&lt;p&gt;项目背景：公司已有项目移植&lt;/p&gt;
-&lt;p&gt;调试记录：我首先是给了一个固定的adc数值，目标是将数据链路切割，看完后续结果，说明数据处理这块肯定是没问题的。&lt;/p&gt;
-&lt;p&gt;然后我没有去拿万用表测热敏电阻的电压还有引脚电压。我是发了一段愣，总工交给我的时候我也不知道程序有没有什么问题，老板子都能工作，新板子不能。&lt;/p&gt;
-&lt;p&gt;我把板子的供电电源给降低了，然后温度数值变了，再降还变，我把电源给到稳定5v，温度又不正常，然后我觉得VDD有问题，因为ADC设置的参考电压是5v。&lt;/p&gt;
-&lt;p&gt;把ADC数值拿出来，一看4095。用万用表测热敏电阻电压，2.2v。奇怪了，怎么满量程了，马上想到参考电压配置没生效，去看了参考电压设置，寄存器操作。&lt;/p&gt;
-&lt;p&gt;我一眼就看出了问题。我当时有点生气，因为adc通道设置是寄存器0～2bit。结果adc通道寄存器设置的时候是&amp;amp;=0xf7;|=vref。感觉被人耍了一样。我改成0xf8就对了。&lt;/p&gt;
+&lt;h1 id=&#34;温度显示不对-2026-05-06&#34;&gt;温度显示不对-2026-05-06&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;问题描述&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;环境：一个热敏电阻测量电路。参考电压5v，5v-10k-ADC-B3950-GND。&lt;/li&gt;
+&lt;li&gt;现象：温度显示始终是-1°C&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;分析与排查&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;在adc采样后，给定一个固定adc数值，查看温度显示结果。可以变化,数值正确。证明后续处理正常。&lt;/li&gt;
+&lt;li&gt;用万用表测量热敏电阻电压2.2v，测量引脚电压2.2v。&lt;/li&gt;
+&lt;li&gt;降低供电电源电压从5V降低到4v，温度显示结果变化。&lt;/li&gt;
+&lt;li&gt;显示ADC采样结果，4095.满量程。参考电压没有生效。&lt;/li&gt;
+&lt;li&gt;检查参考电压配置函数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;解决方案&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;参考电压寄存器操作写错。&amp;amp;=0xf7;改成&amp;amp;=0xf8.解决。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;总结&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;遇到ADC问题首先检查ADC的配置是否正确，是否生效。先排查软件，再排查硬件。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h1 id=&#34;电流检测奇葩bug-2026-05-09&#34;&gt;电流检测奇葩bug-2026-05-09&lt;/h1&gt;
 &lt;p&gt;bug背景：一个充电板，用于给电瓶充电，芯片上电启动不了。&lt;/p&gt;
 &lt;p&gt;项目背景：公司已有项目移植&lt;/p&gt;
 &lt;p&gt;调试记录：充电板接220v交流电，芯片正常上电，充电板不接220v交流电，输出端接直流电源，芯片正常。充电板不接220v交流电，输出端接电瓶，芯片不工作。&lt;/p&gt;
 &lt;p&gt;直觉是电流不够，芯片不能启动。因为之前遇到过mpu6050，电池没电状态，驱动电机会导致mpu6050不工作。查了资料得知，电机驱动时电池没电，会抽电流。mpu6050，电压不够，挂了。然后通信正常。但传感器数值读出来都是0。&lt;/p&gt;
-&lt;p&gt;硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。&lt;/p&gt;</description>
+&lt;p&gt;硬件工程师测了很久，突然发现把电流检测电路给断了，就可以了，一顿猜，pwm初始化注释掉，adc初始化注释掉。adc电流检测端口高阻输入。都试了没用。最后一个大招，给adc电流检测电路串了10k电阻。done。&lt;/p&gt;
+&lt;p&gt;总结：电流检测电路要串一个10k电阻，防止一个压降导致芯片不能启动。有可能是抑制在复位状态。&lt;/p&gt;</description>
     </item>
     <item>
       <title>编译环境搭建</title>
       <link>https://intmagician.github.io/notes/linux/linux_env_config/</link>
       <pubDate>Wed, 06 May 2026 12:26:09 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_env_config/</guid>
-      <description>&lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
-&lt;p&gt;如果你很随意的选择内核和工具链，等待你的是无尽的折磨。我就是那一个。我本来只是想编一个 hello.ko，结果真正折磨人的不是驱动代码，而是复现厂家当年的内核编译环境。&lt;/p&gt;
-&lt;p&gt;Docker Ubuntu 20.04 自带的 arm-linux-gnueabihf-gcc 是 GCC 9，但板子当前内核是 GCC 4.9 编出来的。新 GCC 编老 BSP 会出现各种奇怪问题，zImage 都出不来。&lt;/p&gt;
-&lt;p&gt;最后改成官方推荐的 GCC 4.9 工具链，我去了下载的地方，一看，WTF，没有Mac平台，赶紧回到PC虚拟机，下了x86_64平台的，避开 menuconfig，直接使用配置文件，并在编译时加 HOSTCFLAGS=&amp;quot;-fcommon&amp;quot;，才让老内核顺利编过，最终看到 zImage is ready。&lt;/p&gt;
-&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
+      <description>&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
 &lt;p&gt;mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。
 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.&lt;/p&gt;
 &lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。&lt;/p&gt;

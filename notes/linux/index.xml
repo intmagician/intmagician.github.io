@@ -14,11 +14,7 @@
       <link>https://intmagician.github.io/notes/linux/linux_env_config/</link>
       <pubDate>Wed, 06 May 2026 12:26:09 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_env_config/</guid>
-      <description>&lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
-&lt;p&gt;如果你很随意的选择内核和工具链，等待你的是无尽的折磨。我就是那一个。我本来只是想编一个 hello.ko，结果真正折磨人的不是驱动代码，而是复现厂家当年的内核编译环境。&lt;/p&gt;
-&lt;p&gt;Docker Ubuntu 20.04 自带的 arm-linux-gnueabihf-gcc 是 GCC 9，但板子当前内核是 GCC 4.9 编出来的。新 GCC 编老 BSP 会出现各种奇怪问题，zImage 都出不来。&lt;/p&gt;
-&lt;p&gt;最后改成官方推荐的 GCC 4.9 工具链，我去了下载的地方，一看，WTF，没有Mac平台，赶紧回到PC虚拟机，下了x86_64平台的，避开 menuconfig，直接使用配置文件，并在编译时加 HOSTCFLAGS=&amp;quot;-fcommon&amp;quot;，才让老内核顺利编过，最终看到 zImage is ready。&lt;/p&gt;
-&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
+      <description>&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
 &lt;p&gt;mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。
 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.&lt;/p&gt;
 &lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。&lt;/p&gt;
