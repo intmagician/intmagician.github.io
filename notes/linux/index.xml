@@ -7,21 +7,92 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
-    <lastBuildDate>Wed, 06 May 2026 12:26:09 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2026 16:56:50 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/notes/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>开发调试环境搭建</title>
+      <link>https://intmagician.github.io/notes/linux/linux_mini_dts/</link>
+      <pubDate>Sat, 16 May 2026 16:56:50 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/linux/linux_mini_dts/</guid>
+      <description>&lt;h1 id=&#34;开发调试环境搭建&#34;&gt;开发调试环境搭建&lt;/h1&gt;
+&lt;p&gt;首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。&lt;/p&gt;
+&lt;p&gt;现阶段主要是devicetree还有linux驱动API和linux驱动。&lt;/p&gt;
+&lt;h2 id=&#34;准备&#34;&gt;准备&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;板子厂商提供的uboot&lt;/li&gt;
+&lt;li&gt;一个最小dts&lt;/li&gt;
+&lt;li&gt;一个被验证过能用的内核&lt;/li&gt;
+&lt;li&gt;一个rootfs&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;获得uboot&#34;&gt;获得uboot&lt;/h2&gt;
+&lt;p&gt;百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot
+然后克隆到本地。实在是没人搬运，只能去下个百度网盘。&lt;/p&gt;
+&lt;p&gt;关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。&lt;/p&gt;
+&lt;h2 id=&#34;准备内核和rootfs&#34;&gt;准备内核和rootfs&lt;/h2&gt;
+&lt;p&gt;搜索busybox，然后选择自己需要的版本，比如1.29.0或者1.38.0
+懒省事可以直接拿zImage还有dtb，rootfs直接用。&lt;/p&gt;
+&lt;h3 id=&#34;busybox天坑对于gcc1415&#34;&gt;busybox天坑，对于GCC14/15&lt;/h3&gt;
+&lt;p&gt;我比较喜欢用Debian，刚好Debian13出来了，我就用了debian13.&lt;/p&gt;
+&lt;p&gt;使用menuconfig时，出现找不到ncurses.h，依赖库全装，就是找不到&lt;/p&gt;
+&lt;p&gt;首先，打开&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;vim scrips/kconfig/lxdialog/check-lxdialog.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后找到这里&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;check&lt;span style=&#34;color:#f92672&#34;&gt;(){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $cc -x c - -o $tmp 2&amp;gt;/dev/null &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;lt;&amp;lt;&amp;#39;EOF&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#include CURSES_LOC
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;main() {}#旧版本GCC不检查，写的也不规范，新版本直接Warning变error。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;EOF&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;-&amp;gt;int main&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{}&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#改成这个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make defconfig
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make menuconfig
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make install CONFIG_PREFIX&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;../rootfs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;最后就OK了&lt;/p&gt;
+&lt;p&gt;相关链接点击👉&lt;a href=&#34;https://stackoverflow.com/questions/78491346/busybox-build-fails-with-ncurses-header-not-found-in-archlinux-spoiler-i-alrea&#34;&gt;原帖&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;将uboot写进sd卡的mdr分区&#34;&gt;将uboot写进SD卡的MDR分区&lt;/h2&gt;
+&lt;p&gt;通过imxdownload工具将uboot.bin写进SD卡。设置SD卡启动。&lt;/p&gt;
+&lt;h3 id=&#34;分区&#34;&gt;分区&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo fdisk /dev/sdb
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;o#传统MBR分区
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;n#new
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p#partition
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;enter#默认则回车键
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;enter
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;+256M
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;t#type
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;c#W95 FAT32
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;n#new
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p#partition
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;enter
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;enter
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;enter
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;w#write
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#格式化分区&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo mkfs.vfat -F &lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt; -n “BOOT” /dev/sdb1
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo mkfs.ext4 -O ^64bit,^metadata_csum -L &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ROOTFS&amp;#34;&lt;/span&gt; /dev/sdb2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后通过MobaXterm控制uboot。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>编译环境搭建</title>
       <link>https://intmagician.github.io/notes/linux/linux_env_config/</link>
       <pubDate>Wed, 06 May 2026 12:26:09 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_env_config/</guid>
       <description>&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
-&lt;p&gt;mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。
-然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.&lt;/p&gt;
-&lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。&lt;/p&gt;
-&lt;p&gt;打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&amp;quot;-fcommon&amp;quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。&lt;/p&gt;
-&lt;h2 id=&#34;驱动学习日后感悟&#34;&gt;驱动学习日后感悟&lt;/h2&gt;
-&lt;p&gt;原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。&lt;/p&gt;
-&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。&lt;/p&gt;
+&lt;p&gt;既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。&lt;/p&gt;
+&lt;p&gt;一如既往，先瞎折腾，踩一遍坑。&lt;/p&gt;
+&lt;p&gt;找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)&lt;/p&gt;
+&lt;p&gt;依然是不看官网教程pdf，然后瞎搞。&lt;/p&gt;
+&lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。&lt;/p&gt;
+&lt;p&gt;通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)&lt;/p&gt;
+&lt;p&gt;知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。&lt;/p&gt;
+&lt;p&gt;打开PC linux虚拟机，下载4.9 x86_64的版本。&lt;/p&gt;
+&lt;p&gt;编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&amp;quot;-fcommon&amp;quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。&lt;/p&gt;
 &lt;h2 id=&#34;linux驱动编译的前提&#34;&gt;Linux驱动编译的前提&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15)&lt;/li&gt;

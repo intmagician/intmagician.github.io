@@ -8,13 +8,16 @@
 <title>编译环境搭建 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="我是如何折腾环境的
-mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。
-然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.
-我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。
-打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&quot;-fcommon&quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
-驱动学习日后感悟
-原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。
-总结
+在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
+既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
+一如既往，先瞎折腾，踩一遍坑。
+找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)
+依然是不看官网教程pdf，然后瞎搞。
+我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
+通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
+知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
+打开PC linux虚拟机，下载4.9 x86_64的版本。
+编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&quot;-fcommon&quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
 Linux驱动编译的前提
 
 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15)
@@ -93,11 +96,17 @@ Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题�
 </script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_env_config/">
   <meta property="og:site_name" content="Intmagician">
   <meta property="og:title" content="编译环境搭建">
-  <meta property="og:description" content="我是如何折腾环境的 mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.
-我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。
-打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
-驱动学习日后感悟 原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。
-总结 Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
+  <meta property="og:description" content="我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
+既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
+一如既往，先瞎折腾，踩一遍坑。
+找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)
+依然是不看官网教程pdf，然后瞎搞。
+我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
+通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
+知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
+打开PC linux虚拟机，下载4.9 x86_64的版本。
+编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
+Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
 老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="article">
@@ -107,11 +116,17 @@ Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题�
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="编译环境搭建">
-  <meta name="twitter:description" content="我是如何折腾环境的 mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.
-我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。
-打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
-驱动学习日后感悟 原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。
-总结 Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
+  <meta name="twitter:description" content="我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
+既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
+一如既往，先瞎折腾，踩一遍坑。
+找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)
+依然是不看官网教程pdf，然后瞎搞。
+我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
+通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
+知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
+打开PC linux虚拟机，下载4.9 x86_64的版本。
+编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
+Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
 老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。">
 
 
@@ -147,12 +162,12 @@ Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题�
   "@type": "BlogPosting",
   "headline": "编译环境搭建",
   "name": "编译环境搭建",
-  "description": "我是如何折腾环境的 mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.\n我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。\n打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=\u0026quot;-fcommon\u0026quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\n驱动学习日后感悟 原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。\n总结 Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
+  "description": "我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。\n既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。\n一如既往，先瞎折腾，踩一遍坑。\n找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)\n依然是不看官网教程pdf，然后瞎搞。\n我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。\n通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)\n知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。\n打开PC linux虚拟机，下载4.9 x86_64的版本。\n编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=\u0026quot;-fcommon\u0026quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\nLinux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
   "keywords": [
     
   ],
-  "articleBody": "我是如何折腾环境的 mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。 然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.\n我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。\n打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=\"-fcommon\"，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\n驱动学习日后感悟 原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。\n总结 Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
-  "wordCount" : "36",
+  "articleBody": "我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。\n既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。\n一如既往，先瞎折腾，踩一遍坑。\n找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)\n依然是不看官网教程pdf，然后瞎搞。\n我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。\n通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)\n知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。\n打开PC linux虚拟机，下载4.9 x86_64的版本。\n编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=\"-fcommon\"，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\nLinux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
+  "wordCount" : "38",
   "inLanguage": "en",
   "datePublished": "2026-05-06T12:26:09+08:00",
   "dateModified": "2026-05-06T12:26:09+08:00",
@@ -252,13 +267,16 @@ Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题�
 </div>
   </header> 
   <div class="post-content md-content"><h2 id="我是如何折腾环境的">我是如何折腾环境的<a hidden class="anchor" aria-hidden="true" href="#我是如何折腾环境的">#</a></h2>
-<p>mac用着很爽啊，既然mac能编stm32裸机程序，那linux的驱动应该也可以吧，然后我分析了一下，发现mac不是原生linux，可能会出很多问题，改用了Docker上轻量Ubuntu20.04。
-然后刚开始不知道内核要先编译一遍生成zImage，然后我直接用内核编译了hello.ko,编译失败，说缺少module.symvers.</p>
-<p>我用deconfig编译了一下生成.config。然后执行了.sh脚本。我不知道怎么样是编译成功，看起来没有报错，然后我就编译了hello.ko，这次成了。赶紧scp -O到板子上，然后insmod，Fuck，没有layout。然后折磨开始了，我还没意识到问题。来回折腾老半天，在内核里一顿编译，就是缺少layout。最后我被折磨够了，赶紧看了官方的资料，4.9的版本，看了下载的包，找mac，WTF，No way！没有Mac平台。我赶紧把Mac丢进了垃圾桶🤣。</p>
-<p>打开PC linux虚拟机，下载4.9 x86_64的版本，啊，编译内核，过了几秒钟，一个error。找不到依赖，编译不过menuconfig，图形界面配置干脆不要了，注释掉，再编译一下，在看yylloc重定义，🤔，求救一番之后，加了HOSTCFLAGS=&quot;-fcommon&quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。</p>
-<h2 id="驱动学习日后感悟">驱动学习日后感悟<a hidden class="anchor" aria-hidden="true" href="#驱动学习日后感悟">#</a></h2>
-<p>原来我以为Linux驱动学习需要一个开发版，但是，实际上不需要，只需要一个Linux环境，Docker不行，因为Docker的内核是定制的，和generic的内核版本不一样，驱动编译好不能直接验证，最终还是需要Linux虚拟机。所以Mac不是不能做驱动开发，只是老工具链的问题，工具链实际上就是特定平台的ELF文件。</p>
-<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。</p>
+<p>既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。</p>
+<p>一如既往，先瞎折腾，踩一遍坑。</p>
+<p>找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)</p>
+<p>依然是不看官网教程pdf，然后瞎搞。</p>
+<p>我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。</p>
+<p>通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)</p>
+<p>知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。</p>
+<p>打开PC linux虚拟机，下载4.9 x86_64的版本。</p>
+<p>编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&quot;-fcommon&quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。</p>
 <h2 id="linux驱动编译的前提">Linux驱动编译的前提<a hidden class="anchor" aria-hidden="true" href="#linux驱动编译的前提">#</a></h2>
 <ol>
 <li>拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15)</li>
