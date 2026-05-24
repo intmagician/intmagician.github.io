@@ -7,8 +7,69 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
-    <lastBuildDate>Sat, 16 May 2026 16:56:50 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2026 10:20:17 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/notes/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Devicetree note 01</title>
+      <link>https://intmagician.github.io/notes/linux/devicetree01/</link>
+      <pubDate>Sun, 24 May 2026 10:20:17 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/linux/devicetree01/</guid>
+      <description>&lt;h2 id=&#34;devicetree-specfication&#34;&gt;devicetree specfication&lt;/h2&gt;
+&lt;h3 id=&#34;dts语法&#34;&gt;dts语法&lt;/h3&gt;
+&lt;h4 id=&#34;node&#34;&gt;node&lt;/h4&gt;
+&lt;p&gt;node有以下三种形式，带label的方便其他node引用，&amp;amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;node_name&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; &lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;label: node_name&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;address {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;amp;label {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;amp;label可以用来补充被引用的node&lt;/p&gt;
+&lt;h4 id=&#34;property&#34;&gt;property&lt;/h4&gt;
+&lt;p&gt;除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;compatible
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;compatible&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;b&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;device_type
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;device_type
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;cells
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;address-cells&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;size-cells&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;interuppt-cells&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;reg
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;reg&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;address, size&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;ranges
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ranges
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;phandle
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;phandle
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;status
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;interrupt and mapping(important)
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;dts一般有哪些node&#34;&gt;dts一般有哪些node&lt;/h3&gt;
+&lt;h3 id=&#34;如何生成dtb&#34;&gt;如何生成dtb&lt;/h3&gt;
+&lt;h3 id=&#34;linux的dts规范&#34;&gt;linux的dts规范&lt;/h3&gt;
+&lt;h3 id=&#34;芯片厂的dts规范&#34;&gt;芯片厂的dts规范&lt;/h3&gt;
+&lt;h3 id=&#34;原厂dts修改方法&#34;&gt;原厂dts修改方法&lt;/h3&gt;
+&lt;h2 id=&#34;uboot-dtb怎么交接给linux&#34;&gt;uboot-&amp;gt;dtb怎么交接给linux&lt;/h2&gt;
+&lt;h3 id=&#34;uboot-流程&#34;&gt;uboot 流程&lt;/h3&gt;
+&lt;h2 id=&#34;linux怎么解析dtb&#34;&gt;linux怎么解析dtb&lt;/h2&gt;
+&lt;h3 id=&#34;openfirmware-函数&#34;&gt;openfirmware 函数&lt;/h3&gt;</description>
+    </item>
     <item>
       <title>开发调试环境搭建</title>
       <link>https://intmagician.github.io/notes/linux/linux_mini_dts/</link>
@@ -86,9 +147,9 @@
 &lt;p&gt;在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。&lt;/p&gt;
 &lt;p&gt;既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。&lt;/p&gt;
 &lt;p&gt;一如既往，先瞎折腾，踩一遍坑。&lt;/p&gt;
-&lt;p&gt;找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)&lt;/p&gt;
+&lt;p&gt;找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)&lt;/p&gt;
 &lt;p&gt;依然是不看官网教程pdf，然后瞎搞。&lt;/p&gt;
-&lt;p&gt;我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。&lt;/p&gt;
+&lt;p&gt;我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。&lt;/p&gt;
 &lt;p&gt;通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)&lt;/p&gt;
 &lt;p&gt;知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。&lt;/p&gt;
 &lt;p&gt;打开PC linux虚拟机，下载4.9 x86_64的版本。&lt;/p&gt;

@@ -168,6 +168,21 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Devicetree note 01
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
+node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
+property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
+compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells #address-cells = &lt;&gt; #size-cells = &lt;&gt; #interuppt-cells = &lt;&gt; reg reg = &lt;address, size&gt; ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <a class="entry-link" aria-label="post link to Devicetree note 01" href="https://intmagician.github.io/notes/linux/devicetree01/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">开发调试环境搭建
     </h2>
   </header>
@@ -201,9 +216,9 @@ make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK�
     <p>我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
 既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
 一如既往，先瞎折腾，踩一遍坑。
-找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译deconfig，还有zImage)
+找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)
 依然是不看官网教程pdf，然后瞎搞。
-我用deconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
+我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
 通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
 知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
 打开PC linux虚拟机，下载4.9 x86_64的版本。
