@@ -175,9 +175,24 @@
     <p>devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
 node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
 property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
-compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells #address-cells = &lt;&gt; #size-cells = &lt;&gt; #interuppt-cells = &lt;&gt; reg reg = &lt;address, size&gt; ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数</p>
+compatible
+compatible = &#34;manufacturer,model&#34;; compatible = &#34;arm,cortex-a7&#34;; compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
+device_type
+device_type = &#34;cpu&#34;; cells
+#address-cells = &lt;&gt; #size-cells = &lt;&gt; #interrupt-cells = &lt;&gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。
+reg
+reg = &lt;address, size&gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
+ranges
+ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
+phandle
+phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
+interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
+status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
+interrupt and mapping(important)
+interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>
   <a class="entry-link" aria-label="post link to Devicetree note 01" href="https://intmagician.github.io/notes/linux/devicetree01/"></a>
 </article>
 

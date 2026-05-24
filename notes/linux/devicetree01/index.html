@@ -26,34 +26,93 @@ label: node_name@address {
 property
 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
 
+
 compatible
-compatible = &#34;a&#34;, &#34;b&#34;;
+compatible = &#34;manufacturer,model&#34;;
+compatible = &#34;arm,cortex-a7&#34;;
+compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;;
+compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
+
 
 device_type
-device_type
+device_type = &#34;cpu&#34;;
+
 
 cells
 #address-cells = &lt;&gt;
 #size-cells = &lt;&gt;
-#interuppt-cells = &lt;&gt;
+#interrupt-cells = &lt;&gt;
+cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。
+address-cells指的是地址是多少位的。
+size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。
+interrupt也一样。
+
 
 reg
 reg = &lt;address, size&gt;
+对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
+
 
 ranges
-ranges
+ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;;
+对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
+
 
 phandle
-phandle
+phandle = &lt;1&gt;;
+phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
+interrupt-parent = &lt;1&gt;;
+interrupt-parent = &lt;&amp;label&gt;;
+
 
 status
-status
+status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;;
+用于指示设备的状态
+
 
 interrupt and mapping(important)
-status
+interrupt-controller;
+#interrupt-cells = &lt;1&gt;;
+
+
+interrupt-parent = &lt;&amp;label&gt;;
 
 
 dts一般有哪些node
+
+root node
+/ {
+     compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;;
+}
+
+cpus node
+/{
+
+ ............
+
+     cpus {
+         #address-cells = &lt;1&gt;;
+         #size-cells = &lt;0&gt;;
+
+         cpu0: cpu@0 {
+             compatible = &#34;arm,cortex-a7&#34;;
+             device_type = &#34;cpu&#34;;
+             reg = &lt;0&gt;;
+         }
+     } 
+}
+
+soc node
+memory node
+bus node
+gpio node
+interrupt-controller node
+spi node
+uart node
+aliases node
+chosen node
+&hellip;&hellip;&hellip;&hellip;
+
 如何生成dtb
 linux的dts规范
 芯片厂的dts规范
@@ -61,7 +120,29 @@ linux的dts规范
 uboot-&gt;dtb怎么交接给linux
 uboot 流程
 linux怎么解析dtb
-openfirmware 函数">
+openfirmware 函数
+struct device_node{
+    const char * name;
+    const char * type;
+    phandle phandle;
+    const char * full_name;
+    struct fwnode_handle fwnode;
+    struct property * properties;
+    struct property * deadprops;
+    struct device_node * parent;
+    struct device_node * child;
+    struct device_node * sibling;
+    struct kobject kobj;
+    unsigned long _flags;
+    void * data;
+#if defined(CONFIG_SPARC)
+    const char * path_component_name;
+    unsigned int unique_id;
+    struct of_irq_controller * irq_trans;
+#endif
+};
+查找节点的openfirmware函数
+node_name">
 <meta name="author" content="">
 <link rel="canonical" href="https://intmagician.github.io/notes/linux/devicetree01/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
@@ -124,7 +205,21 @@ openfirmware 函数">
   <meta property="og:description" content="devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
 node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
 property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
-compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells #address-cells = &lt;&gt; #size-cells = &lt;&gt; #interuppt-cells = &lt;&gt; reg reg = &lt;address, size&gt; ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数">
+compatible
+compatible = &#34;manufacturer,model&#34;; compatible = &#34;arm,cortex-a7&#34;; compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
+device_type
+device_type = &#34;cpu&#34;; cells
+#address-cells = &lt;&gt; #size-cells = &lt;&gt; #interrupt-cells = &lt;&gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。
+reg
+reg = &lt;address, size&gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
+ranges
+ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
+phandle
+phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
+interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
+status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
+interrupt and mapping(important)
+interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="article">
     <meta property="article:section" content="notes">
@@ -136,7 +231,21 @@ compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells 
   <meta name="twitter:description" content="devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
 node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
 property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
-compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells #address-cells = &lt;&gt; #size-cells = &lt;&gt; #interuppt-cells = &lt;&gt; reg reg = &lt;address, size&gt; ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数">
+compatible
+compatible = &#34;manufacturer,model&#34;; compatible = &#34;arm,cortex-a7&#34;; compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
+device_type
+device_type = &#34;cpu&#34;; cells
+#address-cells = &lt;&gt; #size-cells = &lt;&gt; #interrupt-cells = &lt;&gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。
+reg
+reg = &lt;address, size&gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
+ranges
+ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
+phandle
+phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
+interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
+status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
+interrupt and mapping(important)
+interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name">
 
 
 <script type="application/ld+json">
@@ -171,12 +280,12 @@ compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells 
   "@type": "BlogPosting",
   "headline": "Devicetree note 01",
   "name": "Devicetree note 01",
-  "description": "devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，\u0026amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026amp;label { } \u0026amp;label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible compatible = \u0026#34;a\u0026#34;, \u0026#34;b\u0026#34;; device_type device_type cells #address-cells = \u0026lt;\u0026gt; #size-cells = \u0026lt;\u0026gt; #interuppt-cells = \u0026lt;\u0026gt; reg reg = \u0026lt;address, size\u0026gt; ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-\u0026gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数",
+  "description": "devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，\u0026amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026amp;label { } \u0026amp;label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible\ncompatible = \u0026#34;manufacturer,model\u0026#34;; compatible = \u0026#34;arm,cortex-a7\u0026#34;; compatible = \u0026#34;fsl,imx6ull-gpmi-nand\u0026#34;, \u0026#34;fsl,imx6ull-gpmi-nand\u0026#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。\ndevice_type\ndevice_type = \u0026#34;cpu\u0026#34;; cells\n#address-cells = \u0026lt;\u0026gt; #size-cells = \u0026lt;\u0026gt; #interrupt-cells = \u0026lt;\u0026gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。\nreg\nreg = \u0026lt;address, size\u0026gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。\nranges\nranges = \u0026lt;child-bus-address parent-bus-address length\u0026gt; / \u0026lt;empty\u0026gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。\nphandle\nphandle = \u0026lt;1\u0026gt;; phandle跟label的作用一样，label需要\u0026amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。\ninterrupt-parent = \u0026lt;1\u0026gt;; interrupt-parent = \u0026lt;\u0026amp;label\u0026gt;; status\nstatus = \u0026#34;okay\u0026#34;/\u0026#34;disable\u0026#34;/\u0026#34;fail\u0026#34;/\u0026#34;fail-ass\u0026#34;; 用于指示设备的状态\ninterrupt and mapping(important)\ninterrupt-controller; #interrupt-cells = \u0026lt;1\u0026gt;; interrupt-parent = \u0026lt;\u0026amp;label\u0026gt;; dts一般有哪些node root node / { compatible = \u0026#34;fsl,imx6ull-alientek-evk\u0026#34;, \u0026#34;fsl,imx6ull\u0026#34;; } cpus node /{ ............ cpus { #address-cells = \u0026lt;1\u0026gt;; #size-cells = \u0026lt;0\u0026gt;; cpu0: cpu@0 { compatible = \u0026#34;arm,cortex-a7\u0026#34;; device_type = \u0026#34;cpu\u0026#34;; reg = \u0026lt;0\u0026gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node \u0026hellip;\u0026hellip;\u0026hellip;\u0026hellip; 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-\u0026gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name\n",
   "keywords": [
     
   ],
-  "articleBody": "devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，\u0026label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026label { } \u0026label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible compatible = \"a\", \"b\"; device_type device_type cells #address-cells = \u003c\u003e #size-cells = \u003c\u003e #interuppt-cells = \u003c\u003e reg reg = \u003caddress, size\u003e ranges ranges phandle phandle status status interrupt and mapping(important) status dts一般有哪些node 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-\u003edtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 ",
-  "wordCount" : "61",
+  "articleBody": "devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，\u0026label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026label { } \u0026label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible\ncompatible = \"manufacturer,model\"; compatible = \"arm,cortex-a7\"; compatible = \"fsl,imx6ull-gpmi-nand\", \"fsl,imx6ull-gpmi-nand\"; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。\ndevice_type\ndevice_type = \"cpu\"; cells\n#address-cells = \u003c\u003e #size-cells = \u003c\u003e #interrupt-cells = \u003c\u003e cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。\nreg\nreg = \u003caddress, size\u003e 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。\nranges\nranges = \u003cchild-bus-address parent-bus-address length\u003e / \u003cempty\u003e; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。\nphandle\nphandle = \u003c1\u003e; phandle跟label的作用一样，label需要\u0026label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。\ninterrupt-parent = \u003c1\u003e; interrupt-parent = \u003c\u0026label\u003e; status\nstatus = \"okay\"/\"disable\"/\"fail\"/\"fail-ass\"; 用于指示设备的状态\ninterrupt and mapping(important)\ninterrupt-controller; #interrupt-cells = \u003c1\u003e; interrupt-parent = \u003c\u0026label\u003e; dts一般有哪些node root node / { compatible = \"fsl,imx6ull-alientek-evk\", \"fsl,imx6ull\"; } cpus node /{ ............ cpus { #address-cells = \u003c1\u003e; #size-cells = \u003c0\u003e; cpu0: cpu@0 { compatible = \"arm,cortex-a7\"; device_type = \"cpu\"; reg = \u003c0\u003e; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-\u003edtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name\nstruct device_node * of_find_node_by_name(struct device_node * from, const char * name); device_type\nstruct device_node * of_find_node_by_type(struct device_node * from, const char * type); device_type and compatible\nstruct device_node * of_find_compatible_node(struct device_node * from, const char * type, const char * compatible); of_device_id\nstruct device_node * of_find_matching_node_and_match(struct device_node * from, const struct of_device_id * matches, const struct of_device_id ** match); path\ninline struct device_node * of_find_node_by_path(const char * path); 查找父/子节点 struct device_node * of_get_parent(const struct device_node * node); struct device_node * of_get_next_child(const struct device_node * node, struct device_node * prev); 获取property struct property { char * name; int length; void * value; struct property * next; unsigned long _flags; unsigned int unique_id; struct bin_attribute attr; }; property * of_find_property(const struct device_node * np, const char * name, int * lenp); int of_property_count_elems_of_size(const struct device_node * np, const char * propname, int elem_size) int of_property_read_u32_index(const struct device_node * np, const char * propname, u32 index, u32 * out_value); int of_property_read_u8/u16/u32/u64_array(const struct device_node * np, const char * propname, u8/u16/u32/u64 * out_values, size_t sz); int of_property_read_u8/u16/u32/u64(const struct device_node * np, const char * propname, u8/u16/u32/u64 * out_value); int of_property_read_string(struct device_node * np, const char * propname, const char ** out_string); int of_n_addr_cells(struct device_node * np); int of_n_size_cells(struct device_node * np); *compat == compatible ?\nint of_device_is_compatible(const struct device_node * device, const char * compat); 获得地址相关属性，index用啥值没搞懂，标记。\nconst __be32 * of_get_address(struct device_node * dev, int index, u64 * size, unsigned int * flags); 将从设备树读取的地址转换为物理地址\nu64 of_translate_address(struct device_node * dev, const __be32 * in_addr); 将物理地址映射为虚拟地址，index用啥值没搞懂，标记。\nvoid __iomem * of_iomap(struct device_node * np, int index); struct resource { resource_size_t start; resource_size_t end; const char * name; unsigned long flags; struct resource * parent, * sibling, * child; } int of_address_to_resource(struct device_node * dev, int index, struct resource * r); ",
+  "wordCount" : "514",
   "inLanguage": "en",
   "datePublished": "2026-05-24T10:20:17+08:00",
   "dateModified": "2026-05-24T10:20:17+08:00",
@@ -271,7 +380,7 @@ compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells 
     <h1 class="post-title entry-hint-parent">
       Devicetree note 01
     </h1>
-    <div class="post-meta"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
+    <div class="post-meta"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>3 min</span>
 
 </div>
   </header> 
@@ -294,34 +403,93 @@ compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells 
 <h4 id="property">property<a hidden class="anchor" aria-hidden="true" href="#property">#</a></h4>
 <p>除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。</p>
 <ol>
-<li>compatible
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>;
+<li>
+<p>compatible</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;manufacturer,model&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;arm,cortex-a7&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;fsl,imx6ull-gpmi-nand&#34;</span>, <span style="color:#e6db74">&#34;fsl,imx6ull-gpmi-nand&#34;</span>;
+</span></span></code></pre></div><p>compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。</p>
+</li>
+<li>
+<p>device_type</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">device_type</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cpu&#34;</span>;
 </span></span></code></pre></div></li>
-<li>device_type
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span>device_type
-</span></span></code></pre></div></li>
-<li>cells
+<li>
+<p>cells</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#f92672">#</span><span style="color:#a6e22e">address-cells</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">#</span><span style="color:#a6e22e">size-cells</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span><span style="color:#a6e22e">interuppt-cells</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;&gt;</span>
-</span></span></code></pre></div></li>
-<li>reg
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span><span style="color:#a6e22e">interrupt-cells</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;&gt;</span>
+</span></span></code></pre></div><p>cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。
+address-cells指的是地址是多少位的。
+size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。
+interrupt也一样。</p>
+</li>
+<li>
+<p>reg</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">reg</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>address, size<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。</p>
+</li>
+<li>
+<p>ranges</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">ranges</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>child-bus-address parent-bus-address length<span style="color:#f92672">&gt;</span> <span style="color:#f92672">/</span> <span style="color:#f92672">&lt;</span>empty<span style="color:#f92672">&gt;</span>;
+</span></span></code></pre></div><p>对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。</p>
+</li>
+<li>
+<p>phandle</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">phandle</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;</span>;
+</span></span></code></pre></div><p>phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">interrupt-parent</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">interrupt-parent</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;label<span style="color:#f92672">&gt;</span>;
 </span></span></code></pre></div></li>
-<li>ranges
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span>ranges
-</span></span></code></pre></div></li>
-<li>phandle
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span>phandle
-</span></span></code></pre></div></li>
-<li>status
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#66d9ef">status</span>
-</span></span></code></pre></div></li>
-<li>interrupt and mapping(important)
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#66d9ef">status</span>
+<li>
+<p>status</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#66d9ef">status</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;okay&#34;</span><span style="color:#f92672">/</span><span style="color:#e6db74">&#34;disable&#34;</span><span style="color:#f92672">/</span><span style="color:#e6db74">&#34;fail&#34;</span><span style="color:#f92672">/</span><span style="color:#e6db74">&#34;fail-ass&#34;</span>;
+</span></span></code></pre></div><p>用于指示设备的状态</p>
+</li>
+<li>
+<p>interrupt and mapping(important)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">interrupt-controller</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">#</span><span style="color:#a6e22e">interrupt-cells</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">interrupt-parent</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;label<span style="color:#f92672">&gt;</span>;
 </span></span></code></pre></div></li>
 </ol>
 <h3 id="dts一般有哪些node">dts一般有哪些node<a hidden class="anchor" aria-hidden="true" href="#dts一般有哪些node">#</a></h3>
+<ol>
+<li>root node
+<pre tabindex="0"><code>/ {
+     compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;;
+}
+</code></pre></li>
+<li>cpus node
+<pre tabindex="0"><code>/{
+
+ ............
+
+     cpus {
+         #address-cells = &lt;1&gt;;
+         #size-cells = &lt;0&gt;;
+
+         cpu0: cpu@0 {
+             compatible = &#34;arm,cortex-a7&#34;;
+             device_type = &#34;cpu&#34;;
+             reg = &lt;0&gt;;
+         }
+     } 
+}
+</code></pre></li>
+<li>soc node</li>
+<li>memory node</li>
+<li>bus node</li>
+<li>gpio node</li>
+<li>interrupt-controller node</li>
+<li>spi node</li>
+<li>uart node</li>
+<li>aliases node</li>
+<li>chosen node</li>
+<li>&hellip;&hellip;&hellip;&hellip;</li>
+</ol>
 <h3 id="如何生成dtb">如何生成dtb<a hidden class="anchor" aria-hidden="true" href="#如何生成dtb">#</a></h3>
 <h3 id="linux的dts规范">linux的dts规范<a hidden class="anchor" aria-hidden="true" href="#linux的dts规范">#</a></h3>
 <h3 id="芯片厂的dts规范">芯片厂的dts规范<a hidden class="anchor" aria-hidden="true" href="#芯片厂的dts规范">#</a></h3>
@@ -330,7 +498,104 @@ compatible compatible = &#34;a&#34;, &#34;b&#34;; device_type device_type cells 
 <h3 id="uboot-流程">uboot 流程<a hidden class="anchor" aria-hidden="true" href="#uboot-流程">#</a></h3>
 <h2 id="linux怎么解析dtb">linux怎么解析dtb<a hidden class="anchor" aria-hidden="true" href="#linux怎么解析dtb">#</a></h2>
 <h3 id="openfirmware-函数">openfirmware 函数<a hidden class="anchor" aria-hidden="true" href="#openfirmware-函数">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> type;
+</span></span><span style="display:flex;"><span>    phandle phandle;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> full_name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> fwnode_handle fwnode;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> property <span style="color:#f92672">*</span> properties;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> property <span style="color:#f92672">*</span> deadprops;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> parent;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> child;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> sibling;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> kobject kobj;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> _flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span> data;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if defined(CONFIG_SPARC)
+</span></span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> path_component_name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> unique_id;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> of_irq_controller <span style="color:#f92672">*</span> irq_trans;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h4 id="查找节点的openfirmware函数">查找节点的openfirmware函数<a hidden class="anchor" aria-hidden="true" href="#查找节点的openfirmware函数">#</a></h4>
+<p>node_name</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_node_by_name</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> from,
+</span></span><span style="display:flex;"><span>                                         <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> name);
+</span></span></code></pre></div><p>device_type</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_node_by_type</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> from, 
+</span></span><span style="display:flex;"><span>                                         <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> type);
+</span></span></code></pre></div><p>device_type and compatible</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_compatible_node</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> from,
+</span></span><span style="display:flex;"><span>                                            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> type,
+</span></span><span style="display:flex;"><span>                                            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> compatible);
+</span></span></code></pre></div><p>of_device_id</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_matching_node_and_match</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> from,
+</span></span><span style="display:flex;"><span>                                                    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> of_device_id <span style="color:#f92672">*</span> matches,
+</span></span><span style="display:flex;"><span>                                                    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> of_device_id <span style="color:#f92672">**</span> match);
+</span></span></code></pre></div><p>path</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_node_by_path</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> path);
+</span></span></code></pre></div><h4 id="查找父子节点">查找父/子节点<a hidden class="anchor" aria-hidden="true" href="#查找父子节点">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_get_parent</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> node);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_get_next_child</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> node,
+</span></span><span style="display:flex;"><span>                                      <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> prev);
+</span></span></code></pre></div><h4 id="获取property">获取property<a hidden class="anchor" aria-hidden="true" href="#获取property">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> property {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> length;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span> value;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> property <span style="color:#f92672">*</span> next;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> _flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> unique_id;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> bin_attribute attr;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>property <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_find_property</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                           <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> name,
+</span></span><span style="display:flex;"><span>                           <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span> lenp);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_property_count_elems_of_size</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                               <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> propname,
+</span></span><span style="display:flex;"><span>                               <span style="color:#66d9ef">int</span> elem_size)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_property_read_u32_index</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                              <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> propname,
+</span></span><span style="display:flex;"><span>                              u32 index,
+</span></span><span style="display:flex;"><span>                              u32 <span style="color:#f92672">*</span> out_value);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> of_property_read_u8<span style="color:#f92672">/</span>u16<span style="color:#f92672">/</span>u32<span style="color:#f92672">/</span><span style="color:#a6e22e">u64_array</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                                         <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> propname,
+</span></span><span style="display:flex;"><span>                                         u8<span style="color:#f92672">/</span>u16<span style="color:#f92672">/</span>u32<span style="color:#f92672">/</span>u64 <span style="color:#f92672">*</span> out_values,
+</span></span><span style="display:flex;"><span>                                         <span style="color:#66d9ef">size_t</span> sz);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> of_property_read_u8<span style="color:#f92672">/</span>u16<span style="color:#f92672">/</span>u32<span style="color:#f92672">/</span><span style="color:#a6e22e">u64</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                                    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> propname,
+</span></span><span style="display:flex;"><span>                                    u8<span style="color:#f92672">/</span>u16<span style="color:#f92672">/</span>u32<span style="color:#f92672">/</span>u64 <span style="color:#f92672">*</span> out_value);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_property_read_string</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                           <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> propname,
+</span></span><span style="display:flex;"><span>                           <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span> out_string);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_n_addr_cells</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_n_size_cells</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np);
+</span></span></code></pre></div><p>*compat == compatible ?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_device_is_compatible</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> device,
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> compat);
+</span></span></code></pre></div><p>获得地址相关属性，index用啥值没搞懂，标记。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> __be32 <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_get_address</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> dev,
+</span></span><span style="display:flex;"><span>                             <span style="color:#66d9ef">int</span> index,
+</span></span><span style="display:flex;"><span>                             u64 <span style="color:#f92672">*</span> size,
+</span></span><span style="display:flex;"><span>                             <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span> flags);
+</span></span></code></pre></div><p>将从设备树读取的地址转换为物理地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>u64 <span style="color:#a6e22e">of_translate_address</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> dev,
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">const</span> __be32 <span style="color:#f92672">*</span> in_addr);
+</span></span></code></pre></div><p>将物理地址映射为虚拟地址，index用啥值没搞懂，标记。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> __iomem <span style="color:#f92672">*</span> <span style="color:#a6e22e">of_iomap</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> np,
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> index);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> resource {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">resource_size_t</span> start;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">resource_size_t</span> end;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> resource <span style="color:#f92672">*</span> parent, <span style="color:#f92672">*</span> sibling, <span style="color:#f92672">*</span> child;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">of_address_to_resource</span>(<span style="color:#66d9ef">struct</span> device_node <span style="color:#f92672">*</span> dev,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">int</span> index,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">struct</span> resource <span style="color:#f92672">*</span> r);
+</span></span></code></pre></div>
 
   </div>
 
