@@ -10,10 +10,10 @@
     <lastBuildDate>Tue, 26 May 2026 19:21:05 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>从原厂dts开始｜初入驱动开发(一)</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_01/</link>
+      <title>Linux驱动开发｜LED设备树驱动(一)</title>
+      <link>https://intmagician.github.io/notes/linux/linux_drv_led/</link>
       <pubDate>Tue, 26 May 2026 19:21:05 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_01/</guid>
+      <guid>https://intmagician.github.io/notes/linux/linux_drv_led/</guid>
       <description>&lt;p&gt;设备树相关的内容，已经算是入门的，现在就是要动手实操。&lt;/p&gt;
 &lt;p&gt;第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。&lt;/p&gt;
 &lt;h2 id=&#34;现阶段大慨率网驱不行&#34;&gt;现阶段大慨率网驱不行&lt;/h2&gt;
@@ -63,10 +63,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？&lt;/p&gt;</description>
     </item>
     <item>
-      <title>设备树学习懒人包-方便查阅</title>
-      <link>https://intmagician.github.io/notes/linux/devicetree01/</link>
+      <title>Linux驱动开发｜设备树学习笔记</title>
+      <link>https://intmagician.github.io/notes/linux/linux_dts/</link>
       <pubDate>Sun, 24 May 2026 10:20:17 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/devicetree01/</guid>
+      <guid>https://intmagician.github.io/notes/linux/linux_dts/</guid>
       <description>&lt;p&gt;如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。&lt;/p&gt;
 &lt;p&gt;所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。&lt;/p&gt;
 &lt;p&gt;简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。&lt;/p&gt;
@@ -207,10 +207,10 @@ interrupt也一样。&lt;/p&gt;
 &lt;p&gt;node_name&lt;/p&gt;</description>
     </item>
     <item>
-      <title>uboot网络启动、SD卡启动懒人包</title>
-      <link>https://intmagician.github.io/notes/linux/linux_mini_dts/</link>
+      <title>Linux驱动开发｜uboot网络启动与SD卡启动</title>
+      <link>https://intmagician.github.io/notes/linux/linux_startup/</link>
       <pubDate>Sat, 16 May 2026 16:56:50 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_mini_dts/</guid>
+      <guid>https://intmagician.github.io/notes/linux/linux_startup/</guid>
       <description>&lt;p&gt;首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。&lt;/p&gt;
 &lt;p&gt;现阶段主要是devicetree还有linux驱动API和linux驱动。&lt;/p&gt;
 &lt;h2 id=&#34;准备&#34;&gt;准备&lt;/h2&gt;
@@ -323,7 +323,7 @@ interrupt也一样。&lt;/p&gt;
 &lt;p&gt;总结：电流检测电路要串一个10k电阻，防止一个压降导致芯片不能启动。有可能是抑制在复位状态。&lt;/p&gt;</description>
     </item>
     <item>
-      <title>编译环境搭建</title>
+      <title>Linux驱动开发｜编译环境搭建</title>
       <link>https://intmagician.github.io/notes/linux/linux_env_config/</link>
       <pubDate>Wed, 06 May 2026 12:26:09 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_env_config/</guid>
