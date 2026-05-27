@@ -7,14 +7,69 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
-    <lastBuildDate>Sun, 24 May 2026 10:20:17 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 26 May 2026 19:21:05 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Devicetree note 01</title>
+      <title>从原厂dts开始｜初入驱动开发(一)</title>
+      <link>https://intmagician.github.io/notes/linux/linux_drv_01/</link>
+      <pubDate>Tue, 26 May 2026 19:21:05 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/linux/linux_drv_01/</guid>
+      <description>&lt;p&gt;设备树相关的内容，已经算是入门的，现在就是要动手实操。&lt;/p&gt;
+&lt;p&gt;第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。&lt;/p&gt;
+&lt;h2 id=&#34;现阶段大慨率网驱不行&#34;&gt;现阶段大慨率网驱不行&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;开发环境：debian13&lt;/li&gt;
+&lt;li&gt;启动方式：uboot -&amp;gt; Get zImage and dtb from SDcard.&lt;/li&gt;
+&lt;li&gt;开发方式：修改dts -&amp;gt; dtb. copy到SDcard的boot分区.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;led驱动实验&#34;&gt;LED驱动实验&lt;/h2&gt;
+&lt;p&gt;刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。&lt;/p&gt;
+&lt;p&gt;手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。&lt;/p&gt;
+&lt;h3 id=&#34;binding目录&#34;&gt;binding目录&lt;/h3&gt;
+&lt;p&gt;内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt&lt;/p&gt;
+&lt;p&gt;仔细看会发现两个node 一个是pinctrl，一个是gpio。&lt;/p&gt;
+&lt;h3 id=&#34;pinctrl-node-and-gpio-node&#34;&gt;pinctrl node and gpio node&lt;/h3&gt;
+&lt;p&gt;如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。&lt;/p&gt;
+&lt;p&gt;现在来到linux屋檐下，就得按规矩行事，linux下怎么配寄存器？&lt;/p&gt;
+&lt;h4 id=&#34;pinctrl-subsystem&#34;&gt;PINCTRL Subsystem&lt;/h4&gt;
+&lt;p&gt;Linux PINCTRL subsystem 链接点击👉&lt;a href=&#34;https://linuxkernel.org.cn/doc/html/latest/driver-api/pin-control.html&#34;&gt;pin-control.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;大致看了一下官方的教程，大部分现阶段用不到，这一部分可以去内核/drivers/pinctrl/pinctrl-imx6ul.c里看，官方已经把这些事情干完了。&lt;/p&gt;
+&lt;p&gt;大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux。&lt;/p&gt;
+&lt;p&gt;还是仔细看看怎么注册的吧。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; of_device_id imx6ul_pinctrl_of_match[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{ .compatible &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ul-iomuxc&amp;#34;&lt;/span&gt;, .data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;imx6ul_pinctrl_info, },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{ .compatible &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ull-iomuxc-snvs&amp;#34;&lt;/span&gt;, .data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;imx6ull_snvs_pinctrl_info, },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{ &lt;span style=&#34;color:#75715e&#34;&gt;/* sentinel */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;imx6ul_pinctrl_probe&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;pdev)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; of_device_id &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;match;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; imx_pinctrl_soc_info &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;pinctrl_info;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    const struct of_device_id *of_match_device(const struct of_device_id *match,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                                              const struct device *dev);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    Description
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    Used by a driver to check whether an platform_device present in the system is in its list of supported devices.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	match &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;of_match_device&lt;/span&gt;(imx6ul_pinctrl_of_match, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pdev&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;dev);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;match)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;ENODEV;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pinctrl_info &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; imx_pinctrl_soc_info &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;) match&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;data;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;imx_pinctrl_probe&lt;/span&gt;(pdev, pinctrl_info);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>设备树学习懒人包-方便查阅</title>
       <link>https://intmagician.github.io/notes/linux/devicetree01/</link>
       <pubDate>Sun, 24 May 2026 10:20:17 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/devicetree01/</guid>
-      <description>&lt;h2 id=&#34;devicetree-specfication&#34;&gt;devicetree specfication&lt;/h2&gt;
+      <description>&lt;p&gt;如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。&lt;/p&gt;
+&lt;p&gt;所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。&lt;/p&gt;
+&lt;p&gt;简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。&lt;/p&gt;
 &lt;h3 id=&#34;dts语法&#34;&gt;dts语法&lt;/h3&gt;
 &lt;h4 id=&#34;node&#34;&gt;node&lt;/h4&gt;
 &lt;p&gt;node有以下三种形式，带label的方便其他node引用，&amp;amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。&lt;/p&gt;
@@ -88,27 +143,27 @@ interrupt也一样。&lt;/p&gt;
 &lt;h3 id=&#34;dts一般有哪些node&#34;&gt;dts一般有哪些node&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;root node
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/ {
-     compatible = &amp;#34;fsl,imx6ull-alientek-evk&amp;#34;, &amp;#34;fsl,imx6ull&amp;#34;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; &lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     &lt;span style=&#34;color:#a6e22e&#34;&gt;compatible&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ull-alientek-evk&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ull&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;cpus node
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/{
-
- ............
-
-     cpus {
-         #address-cells = &amp;lt;1&amp;gt;;
-         #size-cells = &amp;lt;0&amp;gt;;
-
-         cpu0: cpu@0 {
-             compatible = &amp;#34;arm,cortex-a7&amp;#34;;
-             device_type = &amp;#34;cpu&amp;#34;;
-             reg = &amp;lt;0&amp;gt;;
-         }
-     } 
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;/&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ............
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     &lt;span style=&#34;color:#a6e22e&#34;&gt;cpus&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; &lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#f92672&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;address-cells&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#f92672&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;size-cells&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         cpu0: &lt;span style=&#34;color:#a6e22e&#34;&gt;cpu&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;@&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; &lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;             &lt;span style=&#34;color:#a6e22e&#34;&gt;compatible&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;arm,cortex-a7&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;             &lt;span style=&#34;color:#a6e22e&#34;&gt;device_type&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cpu&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;             &lt;span style=&#34;color:#a6e22e&#34;&gt;reg&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     } 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;soc node&lt;/li&gt;
 &lt;li&gt;memory node&lt;/li&gt;
 &lt;li&gt;bus node&lt;/li&gt;
@@ -152,12 +207,11 @@ interrupt也一样。&lt;/p&gt;
 &lt;p&gt;node_name&lt;/p&gt;</description>
     </item>
     <item>
-      <title>开发调试环境搭建</title>
+      <title>uboot网络启动、SD卡启动懒人包</title>
       <link>https://intmagician.github.io/notes/linux/linux_mini_dts/</link>
       <pubDate>Sat, 16 May 2026 16:56:50 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_mini_dts/</guid>
-      <description>&lt;h1 id=&#34;开发调试环境搭建&#34;&gt;开发调试环境搭建&lt;/h1&gt;
-&lt;p&gt;首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。&lt;/p&gt;
+      <description>&lt;p&gt;首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。&lt;/p&gt;
 &lt;p&gt;现阶段主要是devicetree还有linux驱动API和linux驱动。&lt;/p&gt;
 &lt;h2 id=&#34;准备&#34;&gt;准备&lt;/h2&gt;
 &lt;ol&gt;

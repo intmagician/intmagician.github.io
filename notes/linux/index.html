@@ -168,11 +168,39 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Devicetree note 01
+    <h2 class="entry-hint-parent">从原厂dts开始｜初入驱动开发(一)
     </h2>
   </header>
   <div class="entry-content">
-    <p>devicetree specfication dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
+    <p>设备树相关的内容，已经算是入门的，现在就是要动手实操。
+第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。
+现阶段大慨率网驱不行 开发环境：debian13 启动方式：uboot -&gt; Get zImage and dtb from SDcard. 开发方式：修改dts -&gt; dtb. copy到SDcard的boot分区. LED驱动实验 刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。
+手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。
+binding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt
+仔细看会发现两个node 一个是pinctrl，一个是gpio。
+pinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。
+现在来到linux屋檐下，就得按规矩行事，linux下怎么配寄存器？
+PINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html
+大致看了一下官方的教程，大部分现阶段用不到，这一部分可以去内核/drivers/pinctrl/pinctrl-imx6ul.c里看，官方已经把这些事情干完了。
+大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux。
+还是仔细看看怎么注册的吧。
+static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-26 19:21:05 +0800 CST'>May 26, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
+  <a class="entry-link" aria-label="post link to 从原厂dts开始｜初入驱动开发(一)" href="https://intmagician.github.io/notes/linux/linux_drv_01/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">设备树学习懒人包-方便查阅
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。
+所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。
+简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。
+dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
 node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
 property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
 compatible
@@ -193,16 +221,16 @@ interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>
-  <a class="entry-link" aria-label="post link to Devicetree note 01" href="https://intmagician.github.io/notes/linux/devicetree01/"></a>
+  <a class="entry-link" aria-label="post link to 设备树学习懒人包-方便查阅" href="https://intmagician.github.io/notes/linux/devicetree01/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">开发调试环境搭建
+    <h2 class="entry-hint-parent">uboot网络启动、SD卡启动懒人包
     </h2>
   </header>
   <div class="entry-content">
-    <p>开发调试环境搭建 首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。
+    <p>首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。
 现阶段主要是devicetree还有linux驱动API和linux驱动。
 准备 板子厂商提供的uboot 一个最小dts 一个被验证过能用的内核 一个rootfs 获得uboot 百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot 然后克隆到本地。实在是没人搬运，只能去下个百度网盘。
 关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。
@@ -219,7 +247,7 @@ make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK�
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-16 16:56:50 +0800 CST'>May 16, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
-  <a class="entry-link" aria-label="post link to 开发调试环境搭建" href="https://intmagician.github.io/notes/linux/linux_mini_dts/"></a>
+  <a class="entry-link" aria-label="post link to uboot网络启动、SD卡启动懒人包" href="https://intmagician.github.io/notes/linux/linux_mini_dts/"></a>
 </article>
 
 <article class="post-entry"> 
