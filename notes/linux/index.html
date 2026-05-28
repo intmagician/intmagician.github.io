@@ -168,6 +168,43 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Linux驱动开发｜字符设备
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p></p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-28 09:44:47 +0800 CST'>May 28, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜字符设备" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Linux驱动开发｜常用.h文件及其函数
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>[TOC]
+linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; </p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-27 14:13:30 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜常用.h文件及其函数" href="https://intmagician.github.io/notes/linux/linux_drv_header/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Linux驱动开发｜现代Linux“Driver-Bus-Device”模型
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p></p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”模型" href="https://intmagician.github.io/notes/linux/linux_drv_platform/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Linux驱动开发｜LED设备树驱动(一)
     </h2>
   </header>
@@ -187,7 +224,7 @@ PINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html
 static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-26 19:21:05 +0800 CST'>May 26, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
+  <footer class="entry-footer"><span title='2026-05-26 19:21:05 +0800 CST'>May 26, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>
   <a class="entry-link" aria-label="post link to Linux驱动开发｜LED设备树驱动(一)" href="https://intmagician.github.io/notes/linux/linux_drv_led/"></a>
 </article>
 
