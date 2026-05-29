@@ -5,9 +5,36 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Linux驱动开发｜现代Linux“Driver-Bus-Device”模型 | Intmagician</title>
+<title>Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构 | Intmagician</title>
 <meta name="keywords" content="">
-<meta name="description" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”模型 - Intmagician">
+<meta name="description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
+Driver-Bus-Device模型
+在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
+设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
+pci bus 下会有 pci_driver and pci_device.
+i2c bus 下会有 i2c_driver and i2c_device.
+platform bus 下会有 platform_driver and platform_device.
+Bus
+PCI Bus
+USB Bus
+I2C Bus
+SPI Bus
+Platform Bus
+Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
+像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
+官方公开文档点击👉Platform devices and drivers
+struct platform_driver {
+      int (*probe)(struct platform_device *);
+      void (*remove)(struct platform_device *);
+      void (*shutdown)(struct platform_device *);
+      int (*suspend)(struct platform_device *, pm_message_t state);
+      int (*resume)(struct platform_device *);
+      struct device_driver driver;
+      const struct platform_device_id *id_table;
+      bool prevent_deferred_probe;
+      bool driver_managed_dma;
+};
+">
 <meta name="author" content="">
 <link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_platform/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
@@ -66,7 +93,17 @@
 
 </script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_platform/">
   <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”模型">
+  <meta property="og:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构">
+  <meta property="og:description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
+Driver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
+设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
+pci bus 下会有 pci_driver and pci_device.
+i2c bus 下会有 i2c_driver and i2c_device.
+platform bus 下会有 platform_driver and platform_device.
+Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
+像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
+官方公开文档点击👉Platform devices and drivers
+struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; };">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="article">
     <meta property="article:section" content="notes">
@@ -74,7 +111,17 @@
     <meta property="article:modified_time" content="2026-05-27T14:05:49+08:00">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”模型">
+  <meta name="twitter:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构">
+  <meta name="twitter:description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
+Driver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
+设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
+pci bus 下会有 pci_driver and pci_device.
+i2c bus 下会有 i2c_driver and i2c_device.
+platform bus 下会有 platform_driver and platform_device.
+Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
+像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
+官方公开文档点击👉Platform devices and drivers
+struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; };">
 
 
 <script type="application/ld+json">
@@ -97,7 +144,7 @@
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”模型",
+      "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
       "item": "https://intmagician.github.io/notes/linux/linux_drv_platform/"
     }
   ]
@@ -107,14 +154,14 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜现代Linux“Driver-Bus-Device”模型",
-  "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”模型",
-  "description": "",
+  "headline": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
+  "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
+  "description": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; ",
   "keywords": [
     
   ],
-  "articleBody": "",
-  "wordCount" : "0",
+  "articleBody": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; ",
+  "wordCount" : "86",
   "inLanguage": "en",
   "datePublished": "2026-05-27T14:05:49+08:00",
   "dateModified": "2026-05-27T14:05:49+08:00",
@@ -207,12 +254,42 @@
             </svg>
             <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
-      Linux驱动开发｜现代Linux“Driver-Bus-Device”模型
+      Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构
     </h1>
-    <div class="post-meta"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>0 min</span>
+    <div class="post-meta"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
 
 </div>
   </header> 
+  <div class="post-content md-content"><p>所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。</p>
+<h2 id="driver-bus-device模型">Driver-Bus-Device模型<a hidden class="anchor" aria-hidden="true" href="#driver-bus-device模型">#</a></h2>
+<p>在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。</p>
+<p>设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。</p>
+<p>pci bus 下会有 pci_driver and pci_device.</p>
+<p>i2c bus 下会有 i2c_driver and i2c_device.</p>
+<p>platform bus 下会有 platform_driver and platform_device.</p>
+<h2 id="bus">Bus<a hidden class="anchor" aria-hidden="true" href="#bus">#</a></h2>
+<h3 id="pci-bus">PCI Bus<a hidden class="anchor" aria-hidden="true" href="#pci-bus">#</a></h3>
+<h3 id="usb-bus">USB Bus<a hidden class="anchor" aria-hidden="true" href="#usb-bus">#</a></h3>
+<h3 id="i2c-bus">I2C Bus<a hidden class="anchor" aria-hidden="true" href="#i2c-bus">#</a></h3>
+<h3 id="spi-bus">SPI Bus<a hidden class="anchor" aria-hidden="true" href="#spi-bus">#</a></h3>
+<h3 id="platform-bus">Platform Bus<a hidden class="anchor" aria-hidden="true" href="#platform-bus">#</a></h3>
+<p>Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。</p>
+<p>像很多嵌入式外设：led、电机驱动芯片、adc、key等等。</p>
+<p>官方公开文档点击👉<a href="https://linuxkernel.org.cn/doc/html/latest/driver-api/driver-model/platform.html">Platform devices and drivers</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> platform_driver {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>probe)(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>remove)(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>shutdown)(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>suspend)(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>, <span style="color:#66d9ef">pm_message_t</span> state);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>resume)(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">struct</span> device_driver driver;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> platform_device_id <span style="color:#f92672">*</span>id_table;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">bool</span> prevent_deferred_probe;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">bool</span> driver_managed_dma;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div>
+
+  </div>
 
   <footer class="post-footer">
     <ul class="post-tags">

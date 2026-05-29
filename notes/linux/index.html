@@ -172,9 +172,10 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>公开教程文档点击👉Character device drivers
+</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-28 09:44:47 +0800 CST'>May 28, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
+  <footer class="entry-footer"><span title='2026-05-28 09:44:47 +0800 CST'>May 28, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
   <a class="entry-link" aria-label="post link to Linux驱动开发｜字符设备" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/"></a>
 </article>
 
@@ -185,7 +186,7 @@
   </header>
   <div class="entry-content">
     <p>[TOC]
-linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; </p>
+linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; linux/paltform_device.h </p>
   </div>
   <footer class="entry-footer"><span title='2026-05-27 14:13:30 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
   <a class="entry-link" aria-label="post link to Linux驱动开发｜常用.h文件及其函数" href="https://intmagician.github.io/notes/linux/linux_drv_header/"></a>
@@ -193,14 +194,23 @@ linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/mod
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Linux驱动开发｜现代Linux“Driver-Bus-Device”模型
+    <h2 class="entry-hint-parent">Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构
     </h2>
   </header>
   <div class="entry-content">
-    <p></p>
+    <p>所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
+Driver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
+设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
+pci bus 下会有 pci_driver and pci_device.
+i2c bus 下会有 i2c_driver and i2c_device.
+platform bus 下会有 platform_driver and platform_device.
+Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
+像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
+官方公开文档点击👉Platform devices and drivers
+struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; </p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>0 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”模型" href="https://intmagician.github.io/notes/linux/linux_drv_platform/"></a>
+  <footer class="entry-footer"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构" href="https://intmagician.github.io/notes/linux/linux_drv_platform/"></a>
 </article>
 
 <article class="post-entry"> 

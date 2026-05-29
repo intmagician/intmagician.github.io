@@ -14,7 +14,7 @@
       <link>https://intmagician.github.io/notes/linux/linux_drv_cdev/</link>
       <pubDate>Thu, 28 May 2026 09:44:47 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_drv_cdev/</guid>
-      <description></description>
+      <description>&lt;p&gt;公开教程文档点击👉&lt;a href=&#34;https://linux-kernel-labs.github.io/refs/heads/master/labs/device_drivers.html&#34;&gt;Character device drivers&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Linux驱动开发｜常用.h文件及其函数</title>
@@ -84,14 +84,42 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;linuxofh&#34;&gt;linux/of.h&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//path:linux_kernel/include/linux/of.h
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;linux/of.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;linuxpaltform_deviceh&#34;&gt;linux/paltform_device.h&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     <item>
-      <title>Linux驱动开发｜现代Linux“Driver-Bus-Device”模型</title>
+      <title>Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构</title>
       <link>https://intmagician.github.io/notes/linux/linux_drv_platform/</link>
       <pubDate>Wed, 27 May 2026 14:05:49 +0800</pubDate>
       <guid>https://intmagician.github.io/notes/linux/linux_drv_platform/</guid>
-      <description></description>
+      <description>&lt;p&gt;所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。&lt;/p&gt;
+&lt;h2 id=&#34;driver-bus-device模型&#34;&gt;Driver-Bus-Device模型&lt;/h2&gt;
+&lt;p&gt;在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。&lt;/p&gt;
+&lt;p&gt;设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。&lt;/p&gt;
+&lt;p&gt;pci bus 下会有 pci_driver and pci_device.&lt;/p&gt;
+&lt;p&gt;i2c bus 下会有 i2c_driver and i2c_device.&lt;/p&gt;
+&lt;p&gt;platform bus 下会有 platform_driver and platform_device.&lt;/p&gt;
+&lt;h2 id=&#34;bus&#34;&gt;Bus&lt;/h2&gt;
+&lt;h3 id=&#34;pci-bus&#34;&gt;PCI Bus&lt;/h3&gt;
+&lt;h3 id=&#34;usb-bus&#34;&gt;USB Bus&lt;/h3&gt;
+&lt;h3 id=&#34;i2c-bus&#34;&gt;I2C Bus&lt;/h3&gt;
+&lt;h3 id=&#34;spi-bus&#34;&gt;SPI Bus&lt;/h3&gt;
+&lt;h3 id=&#34;platform-bus&#34;&gt;Platform Bus&lt;/h3&gt;
+&lt;p&gt;Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。&lt;/p&gt;
+&lt;p&gt;像很多嵌入式外设：led、电机驱动芯片、adc、key等等。&lt;/p&gt;
+&lt;p&gt;官方公开文档点击👉&lt;a href=&#34;https://linuxkernel.org.cn/doc/html/latest/driver-api/driver-model/platform.html&#34;&gt;Platform devices and drivers&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_driver {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;probe)(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;remove)(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;shutdown)(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;suspend)(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;pm_message_t&lt;/span&gt; state);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;resume)(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; device_driver driver;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; platform_device_id &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;id_table;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; prevent_deferred_probe;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; driver_managed_dma;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     <item>
       <title>Linux驱动开发｜LED设备树驱动(一)</title>
