@@ -7,7 +7,24 @@
 <meta name="robots" content="index, follow">
 <title>Linux驱动开发｜字符设备 | Intmagician</title>
 <meta name="keywords" content="">
-<meta name="description" content="公开教程文档点击👉Character device drivers">
+<meta name="description" content="公开教程文档点击👉Character device drivers
+仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
+注册字符设备流程-&gt;probe
+
+分配major and minor
+cdev_init
+cdev_add
+class_create
+device_create
+错误处理
+
+注销字符设备的流程-&gt;remove
+
+cdev_del
+unregister_chrdev_region
+device_destroy
+class_destroy
+">
 <meta name="author" content="">
 <link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
@@ -67,7 +84,11 @@
 </script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_cdev/">
   <meta property="og:site_name" content="Intmagician">
   <meta property="og:title" content="Linux驱动开发｜字符设备">
-  <meta property="og:description" content="公开教程文档点击👉Character device drivers">
+  <meta property="og:description" content="公开教程文档点击👉Character device drivers
+仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
+注册字符设备流程-&gt;probe
+分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-&gt;remove
+cdev_del unregister_chrdev_region device_destroy class_destroy">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="article">
     <meta property="article:section" content="notes">
@@ -76,7 +97,11 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Linux驱动开发｜字符设备">
-  <meta name="twitter:description" content="公开教程文档点击👉Character device drivers">
+  <meta name="twitter:description" content="公开教程文档点击👉Character device drivers
+仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
+注册字符设备流程-&gt;probe
+分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-&gt;remove
+cdev_del unregister_chrdev_region device_destroy class_destroy">
 
 
 <script type="application/ld+json">
@@ -111,12 +136,12 @@
   "@type": "BlogPosting",
   "headline": "Linux驱动开发｜字符设备",
   "name": "Linux驱动开发｜字符设备",
-  "description": "公开教程文档点击👉Character device drivers\n",
+  "description": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u0026gt;probe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u0026gt;remove\ncdev_del unregister_chrdev_region device_destroy class_destroy ",
   "keywords": [
     
   ],
-  "articleBody": "公开教程文档点击👉Character device drivers\n",
-  "wordCount" : "3",
+  "articleBody": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u003eprobe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u003eremove\ncdev_del unregister_chrdev_region device_destroy class_destroy ",
+  "wordCount" : "19",
   "inLanguage": "en",
   "datePublished": "2026-05-28T09:44:47+08:00",
   "dateModified": "2026-05-28T09:44:47+08:00",
@@ -216,6 +241,23 @@
 </div>
   </header> 
   <div class="post-content md-content"><p>公开教程文档点击👉<a href="https://linux-kernel-labs.github.io/refs/heads/master/labs/device_drivers.html">Character device drivers</a></p>
+<p>仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。</p>
+<p>注册字符设备流程-&gt;probe</p>
+<ol>
+<li>分配major and minor</li>
+<li>cdev_init</li>
+<li>cdev_add</li>
+<li>class_create</li>
+<li>device_create</li>
+<li>错误处理</li>
+</ol>
+<p>注销字符设备的流程-&gt;remove</p>
+<ol>
+<li>cdev_del</li>
+<li>unregister_chrdev_region</li>
+<li>device_destroy</li>
+<li>class_destroy</li>
+</ol>
 
 
   </div>
