@@ -7,8 +7,59 @@
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
-    <lastBuildDate>Thu, 28 May 2026 09:44:47 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 31 May 2026 09:10:38 +0800</lastBuildDate>
     <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Leetcode 和 Nowcoder 刷题复习</title>
+      <link>https://intmagician.github.io/notes/algorithm/</link>
+      <pubDate>Sun, 31 May 2026 09:10:38 +0800</pubDate>
+      <guid>https://intmagician.github.io/notes/algorithm/</guid>
+      <description>&lt;h2 id=&#34;数组&#34;&gt;数组&lt;/h2&gt;
+&lt;h2 id=&#34;字符串&#34;&gt;字符串&lt;/h2&gt;
+&lt;h2 id=&#34;双指针&#34;&gt;双指针&lt;/h2&gt;
+&lt;h3 id=&#34;nc4-判断链表是否有环&#34;&gt;NC4: 判断链表是否有环&lt;/h3&gt;
+&lt;p&gt;知识点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;链表&lt;/li&gt;
+&lt;li&gt;快慢指针&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;主要思路：一个指针跑得快，一个指针跑得慢，如果有环，它俩一定会相遇。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; ListNode &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; ListNode &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt;(fast &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; NULL &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; fast&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;next &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fast&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;next&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;next;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; slow&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;next;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(fast &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; slow)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; true;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;链表&#34;&gt;链表&lt;/h2&gt;
+&lt;h2 id=&#34;队列&#34;&gt;队列&lt;/h2&gt;
+&lt;p&gt;First In First Out
+实现：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;type queue[size];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; front,rear;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;enqueue&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;dequeue&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;is_empty&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;is_full&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//循环队列/环形缓冲
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;empty: front &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; rear;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;full: (rear &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; size &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; front;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rear &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (rear &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; size;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;front &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (front &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; size;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;应用场景：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;UART接收数据&lt;/li&gt;
+&lt;li&gt;CAN消息收发&lt;/li&gt;
+&lt;li&gt;RTOS消息队列&lt;/li&gt;
+&lt;li&gt;循环队列/环形缓冲&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;nc267从上往下打印二叉树&#34;&gt;NC267:从上往下打印二叉树&lt;/h3&gt;
+&lt;p&gt;知识点：&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Linux驱动开发｜字符设备</title>
       <link>https://intmagician.github.io/notes/linux/linux_drv_cdev/</link>
