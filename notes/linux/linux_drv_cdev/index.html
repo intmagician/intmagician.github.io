@@ -20,10 +20,10 @@ device_create
 
 注销字符设备的流程-&gt;remove
 
-cdev_del
-unregister_chrdev_region
 device_destroy
 class_destroy
+cdev_del
+unregister_chrdev_region
 ">
 <meta name="author" content="">
 <link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/">
@@ -88,7 +88,7 @@ class_destroy
 仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
 注册字符设备流程-&gt;probe
 分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-&gt;remove
-cdev_del unregister_chrdev_region device_destroy class_destroy">
+device_destroy class_destroy cdev_del unregister_chrdev_region">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="article">
     <meta property="article:section" content="notes">
@@ -101,7 +101,7 @@ cdev_del unregister_chrdev_region device_destroy class_destroy">
 仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
 注册字符设备流程-&gt;probe
 分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-&gt;remove
-cdev_del unregister_chrdev_region device_destroy class_destroy">
+device_destroy class_destroy cdev_del unregister_chrdev_region">
 
 
 <script type="application/ld+json">
@@ -136,11 +136,11 @@ cdev_del unregister_chrdev_region device_destroy class_destroy">
   "@type": "BlogPosting",
   "headline": "Linux驱动开发｜字符设备",
   "name": "Linux驱动开发｜字符设备",
-  "description": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u0026gt;probe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u0026gt;remove\ncdev_del unregister_chrdev_region device_destroy class_destroy ",
+  "description": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u0026gt;probe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u0026gt;remove\ndevice_destroy class_destroy cdev_del unregister_chrdev_region ",
   "keywords": [
     
   ],
-  "articleBody": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u003eprobe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u003eremove\ncdev_del unregister_chrdev_region device_destroy class_destroy ",
+  "articleBody": "公开教程文档点击👉Character device drivers\n仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。\n注册字符设备流程-\u003eprobe\n分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-\u003eremove\ndevice_destroy class_destroy cdev_del unregister_chrdev_region ",
   "wordCount" : "19",
   "inLanguage": "en",
   "datePublished": "2026-05-28T09:44:47+08:00",
@@ -253,10 +253,10 @@ cdev_del unregister_chrdev_region device_destroy class_destroy">
 </ol>
 <p>注销字符设备的流程-&gt;remove</p>
 <ol>
-<li>cdev_del</li>
-<li>unregister_chrdev_region</li>
 <li>device_destroy</li>
 <li>class_destroy</li>
+<li>cdev_del</li>
+<li>unregister_chrdev_region</li>
 </ol>
 
 

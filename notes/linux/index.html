@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <title>再战Linux驱动 | Intmagician</title>
 <meta name="keywords" content="">
-<meta name="description" content="再战Linux驱动 - Intmagician">
+<meta name="description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。">
 <meta name="author" content="">
 <link rel="canonical" href="https://intmagician.github.io/notes/linux/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
@@ -68,11 +68,13 @@
 </script><meta property="og:url" content="https://intmagician.github.io/notes/linux/">
   <meta property="og:site_name" content="Intmagician">
   <meta property="og:title" content="再战Linux驱动">
+  <meta property="og:description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。">
   <meta property="og:locale" content="zh_cn">
   <meta property="og:type" content="website">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="再战Linux驱动">
+  <meta name="twitter:description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。">
 
 
 <script type="application/ld+json">
@@ -165,6 +167,10 @@
     再战Linux驱动
   </h1>
 </header>
+<div class="post-content md-content"><p>这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。</p>
+
+
+</div>
 
 <article class="post-entry"> 
   <header class="entry-header">
@@ -176,7 +182,7 @@
 仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。
 注册字符设备流程-&gt;probe
 分配major and minor cdev_init cdev_add class_create device_create 错误处理 注销字符设备的流程-&gt;remove
-cdev_del unregister_chrdev_region device_destroy class_destroy </p>
+device_destroy class_destroy cdev_del unregister_chrdev_region </p>
   </div>
   <footer class="entry-footer"><span title='2026-05-28 09:44:47 +0800 CST'>May 28, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
   <a class="entry-link" aria-label="post link to Linux驱动开发｜字符设备" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/"></a>
@@ -210,7 +216,8 @@ platform bus 下会有 platform_driver and platform_device.
 Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
 像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
 官方公开文档点击👉Platform devices and drivers
-struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver</p>
+struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册
+...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
   <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构" href="https://intmagician.github.io/notes/linux/linux_drv_platform/"></a>
@@ -229,12 +236,9 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
 binding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt
 仔细看会发现两个node 一个是pinctrl，一个是gpio。
 pinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。
-现在来到linux屋檐下，就得按规矩行事，linux下怎么配寄存器？
 PINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html
-大致看了一下官方的教程，大部分现阶段用不到，这一部分可以去内核/drivers/pinctrl/pinctrl-imx6ul.c里看，官方已经把这些事情干完了。
-大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux。
-还是仔细看看怎么注册的吧。
-static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？
+大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。
+static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-26 19:21:05 +0800 CST'>May 26, 2026</span>&nbsp;·&nbsp;<span>4 min</span></footer>
@@ -267,7 +271,7 @@ phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来�
 interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
 status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
 interrupt and mapping(important)
-interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-&gt;dtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name
+interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>

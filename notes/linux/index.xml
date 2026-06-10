@@ -27,10 +27,10 @@
 &lt;/ol&gt;
 &lt;p&gt;注销字符设备的流程-&amp;gt;remove&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;cdev_del&lt;/li&gt;
-&lt;li&gt;unregister_chrdev_region&lt;/li&gt;
 &lt;li&gt;device_destroy&lt;/li&gt;
 &lt;li&gt;class_destroy&lt;/li&gt;
+&lt;li&gt;cdev_del&lt;/li&gt;
+&lt;li&gt;unregister_chrdev_region&lt;/li&gt;
 &lt;/ol&gt;</description>
     </item>
     <item>
@@ -164,7 +164,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; prevent_deferred_probe;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; driver_managed_dma;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;怎么注册platform_driver&#34;&gt;怎么注册Platform_driver&lt;/h4&gt;</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;怎么注册platform_driver&#34;&gt;怎么注册Platform_driver&lt;/h4&gt;
+&lt;p&gt;自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册&lt;/p&gt;</description>
     </item>
     <item>
       <title>Linux驱动开发｜LED设备树驱动(一)</title>
@@ -187,12 +188,9 @@
 &lt;p&gt;仔细看会发现两个node 一个是pinctrl，一个是gpio。&lt;/p&gt;
 &lt;h3 id=&#34;pinctrl-node-and-gpio-node&#34;&gt;pinctrl node and gpio node&lt;/h3&gt;
 &lt;p&gt;如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。&lt;/p&gt;
-&lt;p&gt;现在来到linux屋檐下，就得按规矩行事，linux下怎么配寄存器？&lt;/p&gt;
 &lt;h4 id=&#34;pinctrl-subsystem&#34;&gt;PINCTRL Subsystem&lt;/h4&gt;
 &lt;p&gt;Linux PINCTRL subsystem 链接点击👉&lt;a href=&#34;https://linuxkernel.org.cn/doc/html/latest/driver-api/pin-control.html&#34;&gt;pin-control.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;大致看了一下官方的教程，大部分现阶段用不到，这一部分可以去内核/drivers/pinctrl/pinctrl-imx6ul.c里看，官方已经把这些事情干完了。&lt;/p&gt;
-&lt;p&gt;大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux。&lt;/p&gt;
-&lt;p&gt;还是仔细看看怎么注册的吧。&lt;/p&gt;
+&lt;p&gt;大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; of_device_id imx6ul_pinctrl_of_match[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{ .compatible &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ul-iomuxc&amp;#34;&lt;/span&gt;, .data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;imx6ul_pinctrl_info, },
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{ .compatible &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fsl,imx6ull-iomuxc-snvs&amp;#34;&lt;/span&gt;, .data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;imx6ull_snvs_pinctrl_info, },
@@ -217,7 +215,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pinctrl_info &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; imx_pinctrl_soc_info &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;) match&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;data;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;imx_pinctrl_probe&lt;/span&gt;(pdev, pinctrl_info);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在imx6ul-pinfunc.h里有一个组定义，这个应该是官方自己定义的，问题是怎么解析的？&lt;/p&gt;</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置&lt;/p&gt;</description>
     </item>
     <item>
       <title>Linux驱动开发｜设备树学习笔记</title>
@@ -333,35 +331,7 @@ interrupt也一样。&lt;/p&gt;
 &lt;li&gt;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;如何生成dtb&#34;&gt;如何生成dtb&lt;/h3&gt;
-&lt;h3 id=&#34;linux的dts规范&#34;&gt;linux的dts规范&lt;/h3&gt;
-&lt;h3 id=&#34;芯片厂的dts规范&#34;&gt;芯片厂的dts规范&lt;/h3&gt;
-&lt;h3 id=&#34;原厂dts修改方法&#34;&gt;原厂dts修改方法&lt;/h3&gt;
-&lt;h2 id=&#34;uboot-dtb怎么交接给linux&#34;&gt;uboot-&amp;gt;dtb怎么交接给linux&lt;/h2&gt;
-&lt;h3 id=&#34;uboot-流程&#34;&gt;uboot 流程&lt;/h3&gt;
-&lt;h2 id=&#34;linux怎么解析dtb&#34;&gt;linux怎么解析dtb&lt;/h2&gt;
-&lt;h3 id=&#34;openfirmware-函数&#34;&gt;openfirmware 函数&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; device_node{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; name;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; type;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    phandle phandle;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; full_name;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; fwnode_handle fwnode;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; property &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; properties;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; property &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; deadprops;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; device_node &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; parent;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; device_node &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; child;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; device_node &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; sibling;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; kobject kobj;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; _flags;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; data;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#if defined(CONFIG_SPARC)
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; path_component_name;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;unsigned&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; unique_id;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; of_irq_controller &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; irq_trans;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#endif
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;查找节点的openfirmware函数&#34;&gt;查找节点的openfirmware函数&lt;/h4&gt;
-&lt;p&gt;node_name&lt;/p&gt;</description>
+&lt;p&gt;进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb&lt;/p&gt;</description>
     </item>
     <item>
       <title>Linux驱动开发｜uboot网络启动与SD卡启动</title>
