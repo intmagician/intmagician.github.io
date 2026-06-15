@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Linux_drv_key | Intmagician</title>
+<meta name="keywords" content="">
+<meta name="description" content="非中断版本
+跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
+static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset)
+{
+    struct key_dev *key = file-&gt;private_data;
+    int value;
+    if (*offset &gt; 0)
+        return 0;
+
+    value = gpiod_get_value(key-&gt;key_gpio);
+
+    if(copy_to_user(user_buffer, &amp;value, sizeof(value)))
+        return -EFAULT;
+
+    return sizeof(value);
+}
+设备树修改
+添加key的gpio节点
+key {
+    compatible = &#34;key-gpio&#34;;
+    pinctrl_names = &#34;default&#34;;
+    pinctrl_0 = &lt;&amp;pinctrl_key&gt;;
+    key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;;
+    status = &#34;okay&#34;;
+}
+在pinctrl里补充该gpio的配置
+pinctrl_key: key {
+    fsl,pins = &lt;
+        MX6UL_PAD_UART1_CTS_B__GPIO1_IO18   0Xf080
+    &gt;;
+}
+中断版本
+设备树修改
+宏定义
+路径：
+
+
+/include/linux/irq.h
+enum {
+    IRQ_TYPE_NONE = 0x00000000,
+    IRQ_TYPE_EDGE_RISING = 0x00000001,
+    IRQ_TYPE_EDGE_FALLING = 0x00000002,
+    IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING),
+}
+
+
+/include/dt-bindings/interrupt-controller/arm-gic.h
+#define GIC_SPI 0
+#define GIC_PPI 1
+
+
+添加key的gpio节点">
+<meta name="author" content="">
+<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_key/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://intmagician.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_drv_key/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_key/">
+  <meta property="og:site_name" content="Intmagician">
+  <meta property="og:title" content="Linux_drv_key">
+  <meta property="og:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
+static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
+key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
+pinctrl_key: key { fsl,pins = &lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 &gt;; } 中断版本 设备树修改 宏定义
+路径：
+/include/linux/irq.h
+enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h
+#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="notes">
+    <meta property="article:published_time" content="2026-06-10T17:20:21+08:00">
+    <meta property="article:modified_time" content="2026-06-10T17:20:21+08:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Linux_drv_key">
+  <meta name="twitter:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
+static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
+key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
+pinctrl_key: key { fsl,pins = &lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 &gt;; } 中断版本 设备树修改 宏定义
+路径：
+/include/linux/irq.h
+enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h
+#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Notes",
+      "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "再战Linux驱动",
+      "item": "https://intmagician.github.io/notes/linux/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Linux_drv_key",
+      "item": "https://intmagician.github.io/notes/linux/linux_drv_key/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Linux_drv_key",
+  "name": "Linux_drv_key",
+  "description": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u0026gt;private_data; int value; if (*offset \u0026gt; 0) return 0; value = gpiod_get_value(key-\u0026gt;key_gpio); if(copy_to_user(user_buffer, \u0026amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \u0026#34;key-gpio\u0026#34;; pinctrl_names = \u0026#34;default\u0026#34;; pinctrl_0 = \u0026lt;\u0026amp;pinctrl_key\u0026gt;; key-gpios = \u0026lt;\u0026amp;gpio1 18 GPIO_ACTIVE_LOW\u0026gt;; status = \u0026#34;okay\u0026#34;; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u0026lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u0026gt;; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u003eprivate_data; int value; if (*offset \u003e 0) return 0; value = gpiod_get_value(key-\u003ekey_gpio); if(copy_to_user(user_buffer, \u0026value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; status = \"okay\"; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u003c MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u003e; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; + interrupt-parent = \u003c\u0026gpio1\u003e; + interrupts = \u003c18 IRQ_TYPE_EDGE_BOTH\u003e; status = \"okay\"; } timer 在按键中断中，更新定时器，在定时回调函数做主要处理\nstatic int key_probe(struct platform_device *pdev) { /* 在注册中断前*/ + init_timer(\u0026key-\u003etimer); + setup_timer(\u0026key-\u003etimer, key_timer_callback, (unsigned long)key); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; mod_timer(\u0026key-\u003etimer, jiffies + msecs_to_jiffies(20)); return IRQ_HANDLED; } static void key_timer_callback(unsigned long data) { struct key_dev *key = (struct key_dev *)data; /* */ } workqueue delayed_work ",
+  "wordCount" : "186",
+  "inLanguage": "en",
+  "datePublished": "2026-06-10T17:20:21+08:00",
+  "dateModified": "2026-06-10T17:20:21+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://intmagician.github.io/notes/linux/linux_drv_key/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Intmagician",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://intmagician.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://intmagician.github.io/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/notes/" title="Notes">
+                    <span>Notes</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/aboutme" title="About me">
+                    <span>About me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://intmagician.github.io/resume" title="Resume">
+                    <span>Resume</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    <a href='https://intmagician.github.io/'>Home</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+    <h1 class="post-title entry-hint-parent">
+      Linux_drv_key
+    </h1>
+    <div class="post-meta"><span title='2026-06-10 17:20:21 +0800 CST'>June 10, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><h2 id="非中断版本">非中断版本<a hidden class="anchor" aria-hidden="true" href="#非中断版本">#</a></h2>
+<p>跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">ssize_t</span> <span style="color:#a6e22e">key_read</span>(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file, <span style="color:#66d9ef">char</span> __user <span style="color:#f92672">*</span>user_buffer, <span style="color:#66d9ef">size_t</span> size, <span style="color:#66d9ef">loff_t</span> <span style="color:#f92672">*</span>offset)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> file<span style="color:#f92672">-&gt;</span>private_data;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> value;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>offset <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    value <span style="color:#f92672">=</span> <span style="color:#a6e22e">gpiod_get_value</span>(key<span style="color:#f92672">-&gt;</span>key_gpio);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">copy_to_user</span>(user_buffer, <span style="color:#f92672">&amp;</span>value, <span style="color:#66d9ef">sizeof</span>(value)))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>EFAULT;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">sizeof</span>(value);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="设备树修改">设备树修改<a hidden class="anchor" aria-hidden="true" href="#设备树修改">#</a></h3>
+<p>添加key的gpio节点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">key</span><span style="color:#75715e"> </span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;key-gpio&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pinctrl_names</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pinctrl_0</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;pinctrl_key<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">key-gpios</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;gpio1 <span style="color:#ae81ff">18</span> GPIO_ACTIVE_LOW<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">status</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;okay&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在pinctrl里补充该gpio的配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span>pinctrl_key: <span style="color:#a6e22e">key</span><span style="color:#75715e"> </span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fsl</span>,<span style="color:#a6e22e">pins</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>        MX6UL_PAD_UART1_CTS_B__GPIO1_IO18   <span style="color:#ae81ff">0</span>Xf080
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="中断版本">中断版本<a hidden class="anchor" aria-hidden="true" href="#中断版本">#</a></h2>
+<h3 id="设备树修改-1">设备树修改<a hidden class="anchor" aria-hidden="true" href="#设备树修改-1">#</a></h3>
+<p>宏定义</p>
+<p>路径：</p>
+<ol>
+<li>
+<p>/include/linux/irq.h</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">enum</span> {
+</span></span><span style="display:flex;"><span>    IRQ_TYPE_NONE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00000000</span>,
+</span></span><span style="display:flex;"><span>    IRQ_TYPE_EDGE_RISING <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00000001</span>,
+</span></span><span style="display:flex;"><span>    IRQ_TYPE_EDGE_FALLING <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00000002</span>,
+</span></span><span style="display:flex;"><span>    IRQ_TYPE_EDGE_BOTH <span style="color:#f92672">=</span> (IRQ_TYPE_EDGE_FALLING <span style="color:#f92672">|</span> IRQ_TYPE_EDGE_RISING),
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>/include/dt-bindings/interrupt-controller/arm-gic.h</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">#define GIC_SPI 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define GIC_PPI 1
+</span></span></span></code></pre></div></li>
+</ol>
+<p>添加key的gpio节点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-dts" data-lang="dts"><span style="display:flex;"><span><span style="color:#a6e22e">key</span><span style="color:#75715e"> </span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">compatible</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;key-gpio&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pinctrl_names</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pinctrl_0</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;pinctrl_key<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">key-gpios</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;gpio1 <span style="color:#ae81ff">18</span> GPIO_ACTIVE_LOW<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">interrupt-parent</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span>&amp;gpio1<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">interrupts</span> <span style="color:#f92672">=</span> <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">18</span> IRQ_TYPE_EDGE_BOTH<span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">status</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;okay&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="timer">timer<a hidden class="anchor" aria-hidden="true" href="#timer">#</a></h3>
+<p>在按键中断中，更新定时器，在定时回调函数做主要处理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">key_probe</span>(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>pdev)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* 在注册中断前*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">init_timer</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>timer);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">setup_timer</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>timer, key_timer_callback, (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>)key);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">irqreturn_t</span> <span style="color:#a6e22e">key_irq_handler</span>(<span style="color:#66d9ef">int</span> irq, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>dev_id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> dev_id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mod_timer</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>timer, jiffies <span style="color:#f92672">+</span> <span style="color:#a6e22e">msecs_to_jiffies</span>(<span style="color:#ae81ff">20</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> IRQ_HANDLED;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">key_timer_callback</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> data)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>)data;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="workqueue">workqueue<a hidden class="anchor" aria-hidden="true" href="#workqueue">#</a></h3>
+<h3 id="delayed_work">delayed_work<a hidden class="anchor" aria-hidden="true" href="#delayed_work">#</a></h3>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>© 2026 intmagician | Embedded Systems | Control | Learning by Building</span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
