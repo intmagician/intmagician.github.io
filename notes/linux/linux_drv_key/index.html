@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Linux_drv_key | Intmagician</title>
+<title>Linux驱动开发｜ 按键驱动 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="非中断版本
 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
@@ -117,7 +117,7 @@ enum {
 
 </script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_key/">
   <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux_drv_key">
+  <meta property="og:title" content="Linux驱动开发｜ 按键驱动">
   <meta property="og:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
 static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
 key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
@@ -133,7 +133,7 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
     <meta property="article:modified_time" content="2026-06-10T17:20:21+08:00">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux_drv_key">
+  <meta name="twitter:title" content="Linux驱动开发｜ 按键驱动">
   <meta name="twitter:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
 static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
 key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
@@ -164,7 +164,7 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "Linux_drv_key",
+      "name": "Linux驱动开发｜ 按键驱动",
       "item": "https://intmagician.github.io/notes/linux/linux_drv_key/"
     }
   ]
@@ -174,14 +174,14 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Linux_drv_key",
-  "name": "Linux_drv_key",
+  "headline": "Linux驱动开发｜ 按键驱动",
+  "name": "Linux驱动开发｜ 按键驱动",
   "description": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u0026gt;private_data; int value; if (*offset \u0026gt; 0) return 0; value = gpiod_get_value(key-\u0026gt;key_gpio); if(copy_to_user(user_buffer, \u0026amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \u0026#34;key-gpio\u0026#34;; pinctrl_names = \u0026#34;default\u0026#34;; pinctrl_0 = \u0026lt;\u0026amp;pinctrl_key\u0026gt;; key-gpios = \u0026lt;\u0026amp;gpio1 18 GPIO_ACTIVE_LOW\u0026gt;; status = \u0026#34;okay\u0026#34;; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u0026lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u0026gt;; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\n",
   "keywords": [
     
   ],
-  "articleBody": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u003eprivate_data; int value; if (*offset \u003e 0) return 0; value = gpiod_get_value(key-\u003ekey_gpio); if(copy_to_user(user_buffer, \u0026value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; status = \"okay\"; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u003c MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u003e; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; + interrupt-parent = \u003c\u0026gpio1\u003e; + interrupts = \u003c18 IRQ_TYPE_EDGE_BOTH\u003e; status = \"okay\"; } timer 在按键中断中，更新定时器，在定时回调函数做主要处理\nstatic int key_probe(struct platform_device *pdev) { /* 在注册中断前*/ + init_timer(\u0026key-\u003etimer); + setup_timer(\u0026key-\u003etimer, key_timer_callback, (unsigned long)key); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; mod_timer(\u0026key-\u003etimer, jiffies + msecs_to_jiffies(20)); return IRQ_HANDLED; } static void key_timer_callback(unsigned long data) { struct key_dev *key = (struct key_dev *)data; /* */ } workqueue delayed_work ",
-  "wordCount" : "186",
+  "articleBody": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u003eprivate_data; int value; if (*offset \u003e 0) return 0; value = gpiod_get_value(key-\u003ekey_gpio); if(copy_to_user(user_buffer, \u0026value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; status = \"okay\"; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u003c MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u003e; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; + interrupt-parent = \u003c\u0026gpio1\u003e; + interrupts = \u003c18 IRQ_TYPE_EDGE_BOTH\u003e; status = \"okay\"; } timer 在按键中断中，更新定时器，在定时回调函数做主要处理\nstatic int key_probe(struct platform_device *pdev) { /* 在注册中断前*/ + init_timer(\u0026key-\u003etimer); + setup_timer(\u0026key-\u003etimer, key_timer_callback, (unsigned long)key); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; mod_timer(\u0026key-\u003etimer, jiffies + msecs_to_jiffies(20)); return IRQ_HANDLED; } static void key_timer_callback(unsigned long data) { struct key_dev *key = (struct key_dev *)data; /* */ } workqueue delayed_work struct key_dev { + struct delayed_work dwork; } static int key_probe(struct platform_device *pdev) { + INIT_DELAYED_WORK(\u0026key-\u003edwork, key_work_func); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; + schedule_delayed_work(\u0026key-\u003edwork, jiffies + msecs_to_jiffies(20)); } static void key_work_func(struct work_struct *work) { // // } input子系统 误打误撞，用了gpio-keys的框架，驱动啥也不用干，dts按照dts-binding写好，启动内核时就能找到\ninput: gpio-keys as /devices/platform/gpio-keys/input/input2 费这么大劲写input驱动，毛用没有，问ChatGPT，才知道，gpio-keys是官方写好驱动了，就加个gpio-keys node，然后列出一堆key，系统在启动时会注册gpio-keys。\n自定义input子系统key驱动 至于这个系统怎么实现的，先不去管。 如果要自己写，也不是很麻烦\nstruct key_dev { struct input_dev *input; struct gpio_desc *gpiod; int irq; struct delayed_work dwork; } //删除字符设备注册那一个流程 static int key_probe(struct platform_device *pdev) { + key-\u003einput = devm_input_allocate_device(\u0026pdev-\u003edev); + key-\u003einput-\u003ename = \"key\"; + input_set_capability(key-\u003einput, EV_KEY, KEY_A); + ret = input_register_device(key-\u003einput); + if (ret) + { + dev_info(\u0026pdev-\u003edev, \"input register failed: %d\\n\", ret); + return ret; + } } static int key_remove(struct platform_device *pdev) { struct key_dev *key = platform_get_drvdata(pdev); cancel_delayed_work_sync(\u0026key-\u003edwork); dev_info(\u0026pdev-\u003edev, \"key removed\\n\"); return 0; } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; + mod_delayed_work(system_wq, \u0026key-\u003edwork, jiffies + msecs_to_jiffies(20)); } static void key_work_func(struct work_struct *work) { struct key_dev *key = container_of(work, struct key_dev, dwork.work); int value; value = gpiod_get_value(key-\u003egpiod); input_report_key(key-\u003einput, KEY_A, value); input_sync(key-\u003einput); // } //没装evtest //如果有就用evtest //先查看是否insmod cat /proc/bus/input/devices I: N: Name=\"key\" P: S: H: handlers=kbd event1 ... //然后 hexdump /dev/input/event1 //在work_func打印输出，容易出现重复，误触发的错觉，其实没有。 ",
+  "wordCount" : "378",
   "inLanguage": "en",
   "datePublished": "2026-06-10T17:20:21+08:00",
   "dateModified": "2026-06-10T17:20:21+08:00",
@@ -274,9 +274,9 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
             </svg>
             <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
-      Linux_drv_key
+      Linux驱动开发｜ 按键驱动
     </h1>
-    <div class="post-meta"><span title='2026-06-10 17:20:21 +0800 CST'>June 10, 2026</span>&nbsp;·&nbsp;<span>1 min</span>
+    <div class="post-meta"><span title='2026-06-10 17:20:21 +0800 CST'>June 10, 2026</span>&nbsp;·&nbsp;<span>2 min</span>
 
 </div>
   </header> 
@@ -368,7 +368,100 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="workqueue">workqueue<a hidden class="anchor" aria-hidden="true" href="#workqueue">#</a></h3>
 <h3 id="delayed_work">delayed_work<a hidden class="anchor" aria-hidden="true" href="#delayed_work">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> key_dev
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#66d9ef">struct</span> delayed_work dwork;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">key_probe</span>(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>pdev)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">INIT_DELAYED_WORK</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>dwork, key_work_func);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">irqreturn_t</span> <span style="color:#a6e22e">key_irq_handler</span>(<span style="color:#66d9ef">int</span> irq, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>dev_id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> dev_id;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>    <span style="color:#a6e22e">schedule_delayed_work</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>dwork, jiffies <span style="color:#f92672">+</span> <span style="color:#a6e22e">msecs_to_jiffies</span>(<span style="color:#ae81ff">20</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">key_work_func</span>(<span style="color:#66d9ef">struct</span> work_struct <span style="color:#f92672">*</span>work)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span>    <span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="input子系统">input子系统<a hidden class="anchor" aria-hidden="true" href="#input子系统">#</a></h2>
+<p>误打误撞，用了gpio-keys的框架，驱动啥也不用干，dts按照dts-binding写好，启动内核时就能找到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>input: gpio<span style="color:#f92672">-</span>keys as <span style="color:#f92672">/</span>devices<span style="color:#f92672">/</span>platform<span style="color:#f92672">/</span>gpio<span style="color:#f92672">-</span>keys<span style="color:#f92672">/</span>input<span style="color:#f92672">/</span>input2
+</span></span></code></pre></div><p>费这么大劲写input驱动，毛用没有，问ChatGPT，才知道，gpio-keys是官方写好驱动了，就加个gpio-keys node，然后列出一堆key，系统在启动时会注册gpio-keys。</p>
+<h3 id="自定义input子系统key驱动">自定义input子系统key驱动<a hidden class="anchor" aria-hidden="true" href="#自定义input子系统key驱动">#</a></h3>
+<p>至于这个系统怎么实现的，先不去管。
+如果要自己写，也不是很麻烦</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> key_dev
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> input_dev <span style="color:#f92672">*</span>input;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> gpio_desc <span style="color:#f92672">*</span>gpiod;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> irq;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> delayed_work dwork;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//删除字符设备注册那一个流程
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">key_probe</span>(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>pdev)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   key<span style="color:#f92672">-&gt;</span>input <span style="color:#f92672">=</span> <span style="color:#a6e22e">devm_input_allocate_device</span>(<span style="color:#f92672">&amp;</span>pdev<span style="color:#f92672">-&gt;</span>dev);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   key<span style="color:#f92672">-&gt;</span>input<span style="color:#f92672">-&gt;</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;key&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#a6e22e">input_set_capability</span>(key<span style="color:#f92672">-&gt;</span>input, EV_KEY, KEY_A);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">input_register_device</span>(key<span style="color:#f92672">-&gt;</span>input);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   <span style="color:#66d9ef">if</span> (ret)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   {
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>       <span style="color:#a6e22e">dev_info</span>(<span style="color:#f92672">&amp;</span>pdev<span style="color:#f92672">-&gt;</span>dev, <span style="color:#e6db74">&#34;input register failed: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ret);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>       <span style="color:#66d9ef">return</span> ret;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">key_remove</span>(<span style="color:#66d9ef">struct</span> platform_device <span style="color:#f92672">*</span>pdev)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> <span style="color:#a6e22e">platform_get_drvdata</span>(pdev);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cancel_delayed_work_sync</span>(<span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>dwork);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">dev_info</span>(<span style="color:#f92672">&amp;</span>pdev<span style="color:#f92672">-&gt;</span>dev, <span style="color:#e6db74">&#34;key removed</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">irqreturn_t</span> <span style="color:#a6e22e">key_irq_handler</span>(<span style="color:#66d9ef">int</span> irq, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>dev_id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> dev_id;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span>    <span style="color:#a6e22e">mod_delayed_work</span>(system_wq, <span style="color:#f92672">&amp;</span>key<span style="color:#f92672">-&gt;</span>dwork, jiffies <span style="color:#f92672">+</span> <span style="color:#a6e22e">msecs_to_jiffies</span>(<span style="color:#ae81ff">20</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">key_work_func</span>(<span style="color:#66d9ef">struct</span> work_struct <span style="color:#f92672">*</span>work)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> key_dev <span style="color:#f92672">*</span>key <span style="color:#f92672">=</span> <span style="color:#a6e22e">container_of</span>(work, <span style="color:#66d9ef">struct</span> key_dev, dwork.work);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> value;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    value <span style="color:#f92672">=</span> <span style="color:#a6e22e">gpiod_get_value</span>(key<span style="color:#f92672">-&gt;</span>gpiod);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">input_report_key</span>(key<span style="color:#f92672">-&gt;</span>input, KEY_A, value);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">input_sync</span>(key<span style="color:#f92672">-&gt;</span>input);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//没装evtest
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//如果有就用evtest
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//先查看是否insmod
+</span></span></span><span style="display:flex;"><span>cat <span style="color:#f92672">/</span>proc<span style="color:#f92672">/</span>bus<span style="color:#f92672">/</span>input<span style="color:#f92672">/</span>devices
+</span></span><span style="display:flex;"><span>I:
+</span></span><span style="display:flex;"><span>N: Name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;key&#34;</span>
+</span></span><span style="display:flex;"><span>P:
+</span></span><span style="display:flex;"><span>S:
+</span></span><span style="display:flex;"><span>H: handlers<span style="color:#f92672">=</span>kbd event1
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//然后
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hexdump <span style="color:#f92672">/</span>dev<span style="color:#f92672">/</span>input<span style="color:#f92672">/</span>event1
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//在work_func打印输出，容易出现重复，误触发的错觉，其实没有。
+</span></span></span></code></pre></div>
 
   </div>
 
