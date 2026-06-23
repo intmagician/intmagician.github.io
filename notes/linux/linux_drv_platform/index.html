@@ -161,8 +161,8 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
   "keywords": [
     
   ],
-  "articleBody": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册\nstatic const struct of_device_id led_of_match[] = { {.compatible = \"led-gpio\"}, {}, }; static struct platform_driver led_driver = { .probe = led_probe, .remove = led_remove, .driver = { .name = \"led\", .of_match_table = led_of_match, }, }; ",
-  "wordCount" : "123",
+  "articleBody": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册\nstatic const struct of_device_id led_of_match[] = { {.compatible = \"led-gpio\"}, {}, }; static struct platform_driver led_driver = { .probe = led_probe, .remove = led_remove, .driver = { .name = \"led\", .of_match_table = led_of_match, }, }; paltform的注册流程是\n__platform_driver_register driver_register bus_add_driver driver_attach bus_for_each_dev __driver_attach driver_match_device driver_probe_device really_probe your_platform_probe 这些函数分布在/driver/base/目录下 主要是\npaltform.c driver.c bus.c dd.c base.h 简单点就是通过bus_for_each_dev来把klist里的设备遍历一边，先通过driver_match_device,匹配上就调用driver_probe_device。然后调用really_probe,在这个函数里会调用platform_driver的probe函数。\n",
+  "wordCount" : "142",
   "inLanguage": "en",
   "datePublished": "2026-05-27T14:05:49+08:00",
   "dateModified": "2026-05-27T14:05:49+08:00",
@@ -303,7 +303,30 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
 </span></span><span style="display:flex;"><span>		.of_match_table <span style="color:#f92672">=</span> led_of_match,
 </span></span><span style="display:flex;"><span>	},
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div>
+</span></span></code></pre></div><p>paltform的注册流程是</p>
+<ol>
+<li>__platform_driver_register</li>
+<li>driver_register</li>
+<li>bus_add_driver</li>
+<li>driver_attach</li>
+<li>bus_for_each_dev</li>
+<li>__driver_attach</li>
+<li>driver_match_device</li>
+<li>driver_probe_device</li>
+<li>really_probe</li>
+<li>your_platform_probe</li>
+</ol>
+<p>这些函数分布在/driver/base/目录下
+主要是</p>
+<ol>
+<li>paltform.c</li>
+<li>driver.c</li>
+<li>bus.c</li>
+<li>dd.c</li>
+<li>base.h</li>
+</ol>
+<p>简单点就是通过bus_for_each_dev来把klist里的设备遍历一边，先通过driver_match_device,匹配上就调用driver_probe_device。然后调用really_probe,在这个函数里会调用platform_driver的probe函数。</p>
+
 
   </div>
 
