@@ -196,6 +196,8 @@ Interrupt 关于版本变化趋势 devm_系列在4.x时代稳定，之后推荐�
   <div class="entry-content">
     <p>简介 这个驱动是ap3216c的驱动，它是一个环境光，红外，距离，传感器。在linux下属于IIO设备，因此这个芯片驱动 主要是I2C驱动的注册，i2c设备的匹配，然后在probe时，申请iio设备，将iio设备挂到i2c设备的通用设备的驱动数据下，然后是regmap芯片配置和数据读取。
 可以参考内核驱动目录下的一些驱动程序，比如js1212.c
+还可以参考中文linux kernel文档工业I/O设备
+官方的内核文档实现细节很少，
 设备树 &amp;i2c1 { ap3216c@1e { compatible = &#34;ap3216c&#34;; reg = &lt;0x1e&gt;; interrupt-parent = &lt;&amp;gpio1&gt;; interrupts = &lt;1 IRQ_TYPE_EDGE_RISING&gt;; pinctrl-names = &#34;default&#34;; pinctrl-0 = &lt;&amp;pinctrl_ap3216c&gt;; }; }; &amp;iomuxc { imx6ul_evk { pinctrl_ap3216c: ap3216cgrp { fsl,pins = &lt; MX6UL_PAD_GPIO1_IO01__GPIO1_IO01 0xb0 &gt;; }; }; }; I2C 驱动 struct ap3216c_data { struct i2c_client *client; struct regmap *regmap; struct mutex lock; }; i2c_driver 的注册比较简单，很少内容，就是of_device_id, i2c_device_id, struct i2c_driver.
 在4.1.15版本下，i2c_driver的匹配路径不完全支持设备树，大致是它会串到非设备树下。
 因此，需要同时写of_device_id, i2c_device_id。然后才能probe。不写i2c_device_id的话，insmod会不进probe，在match阶段就找不到设备。

@@ -18,6 +18,8 @@
 &lt;p&gt;这个驱动是ap3216c的驱动，它是一个环境光，红外，距离，传感器。在linux下属于IIO设备，因此这个芯片驱动
 主要是I2C驱动的注册，i2c设备的匹配，然后在probe时，申请iio设备，将iio设备挂到i2c设备的通用设备的驱动数据下，然后是regmap芯片配置和数据读取。&lt;/p&gt;
 &lt;p&gt;可以参考内核驱动目录下的一些驱动程序，比如js1212.c&lt;/p&gt;
+&lt;p&gt;还可以参考中文linux kernel文档&lt;a href=&#34;https://docs.linuxkernel.org.cn/driver-api/iio/index.html&#34;&gt;工业I/O设备&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;官方的内核文档实现细节很少，&lt;/p&gt;
 &lt;h2 id=&#34;设备树&#34;&gt;设备树&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-dts&#34; data-lang=&#34;dts&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;amp;i2c1 {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ap3216c&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;e {
