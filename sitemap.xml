@@ -2,76 +2,76 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/projects/linuxdriver/i2c-ap3216/</loc>
+    <loc>https://intmagician.github.io/projects/linuxdriver/i2c-ap3216/</loc>
     <lastmod>2026-06-25T20:06:20+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://intmagician.github.io/</loc>
     <lastmod>2026-06-25T20:06:20+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/projects/linuxdriver/</loc>
+    <loc>https://intmagician.github.io/projects/linuxdriver/</loc>
     <lastmod>2026-06-25T20:06:20+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/projects/</loc>
+    <loc>https://intmagician.github.io/projects/</loc>
     <lastmod>2026-06-25T20:06:20+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_i2c/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_i2c/</loc>
     <lastmod>2026-06-22T11:26:22+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/</loc>
+    <loc>https://intmagician.github.io/notes/</loc>
     <lastmod>2026-06-22T11:26:22+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/</loc>
+    <loc>https://intmagician.github.io/notes/linux/</loc>
     <lastmod>2026-06-22T11:26:22+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_conc_race/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_conc_race/</loc>
     <lastmod>2026-06-14T08:13:29+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_key/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_key/</loc>
     <lastmod>2026-06-10T17:20:21+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/algorithm/</loc>
+    <loc>https://intmagician.github.io/notes/algorithm/</loc>
     <lastmod>2026-05-31T09:10:38+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_cdev/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_cdev/</loc>
     <lastmod>2026-05-28T09:44:47+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_header/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_header/</loc>
     <lastmod>2026-05-27T14:13:30+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_platform/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_platform/</loc>
     <lastmod>2026-05-27T14:05:49+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_drv_led/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_drv_led/</loc>
     <lastmod>2026-05-26T19:21:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_dts/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_dts/</loc>
     <lastmod>2026-05-24T10:20:17+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_startup/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_startup/</loc>
     <lastmod>2026-05-16T16:56:50+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/work/</loc>
+    <loc>https://intmagician.github.io/notes/work/</loc>
     <lastmod>2026-05-09T21:51:07+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</loc>
+    <loc>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</loc>
     <lastmod>2026-05-09T21:51:07+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/linux/linux_env_config/</loc>
+    <loc>https://intmagician.github.io/notes/linux/linux_env_config/</loc>
     <lastmod>2026-05-06T12:26:09+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/control/realtimesystemdebug/</loc>
+    <loc>https://intmagician.github.io/notes/control/realtimesystemdebug/</loc>
     <lastmod>2026-05-04T14:28:23+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/notes/control/</loc>
+    <loc>https://intmagician.github.io/notes/control/</loc>
     <lastmod>2026-05-04T14:28:23+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/resume/</loc>
+    <loc>https://intmagician.github.io/resume/</loc>
     <lastmod>2026-05-03T10:36:58+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://intmagician.github.io/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://intmagician.github.io/tags/</loc>
   </url><url>
-    <loc>http://localhost:1313/projects/balance-car/</loc>
+    <loc>https://intmagician.github.io/projects/balance-car/</loc>
   </url>
 </urlset>

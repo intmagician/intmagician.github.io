@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Linux驱动 on Intmagician</title>
-    <link>http://localhost:1313/projects/linuxdriver/</link>
+    <link>https://intmagician.github.io/projects/linuxdriver/</link>
     <description>Recent content in Linux驱动 on Intmagician</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
     <lastBuildDate>Thu, 25 Jun 2026 20:06:20 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/projects/linuxdriver/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://intmagician.github.io/projects/linuxdriver/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ap3216c</title>
-      <link>http://localhost:1313/projects/linuxdriver/i2c-ap3216/</link>
+      <link>https://intmagician.github.io/projects/linuxdriver/i2c-ap3216/</link>
       <pubDate>Thu, 25 Jun 2026 20:06:20 +0800</pubDate>
-      <guid>http://localhost:1313/projects/linuxdriver/i2c-ap3216/</guid>
+      <guid>https://intmagician.github.io/projects/linuxdriver/i2c-ap3216/</guid>
       <description>&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#ifndef _AP3216C_H_
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define _AP3216C_H_
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;

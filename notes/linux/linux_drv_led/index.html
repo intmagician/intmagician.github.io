@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Linux驱动开发｜LED设备树驱动(一) | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="设备树相关的内容，已经算是入门的，现在就是要动手实操。
@@ -52,16 +52,16 @@ static int imx6ul_pinctrl_probe(struct platform_device *pdev)
 }
 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/notes/linux/linux_drv_led/">
+<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_led/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://intmagician.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_drv_led/">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_drv_led/">
 <noscript>
     <style>
         #theme-toggle,
@@ -107,13 +107,100 @@ static int imx6ul_pinctrl_probe(struct platform_device *pdev)
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_led/">
+  <meta property="og:site_name" content="Intmagician">
+  <meta property="og:title" content="Linux驱动开发｜LED设备树驱动(一)">
+  <meta property="og:description" content="设备树相关的内容，已经算是入门的，现在就是要动手实操。
+第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。
+现阶段大慨率网驱不行 开发环境：debian13 启动方式：uboot -&gt; Get zImage and dtb from SDcard. 开发方式：修改dts -&gt; dtb. copy到SDcard的boot分区. LED驱动实验 刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。
+手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。
+binding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt
+仔细看会发现两个node 一个是pinctrl，一个是gpio。
+pinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。
+PINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html
+大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。
+static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="notes">
+    <meta property="article:published_time" content="2026-05-26T19:21:05+08:00">
+    <meta property="article:modified_time" content="2026-05-26T19:21:05+08:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Linux驱动开发｜LED设备树驱动(一)">
+  <meta name="twitter:description" content="设备树相关的内容，已经算是入门的，现在就是要动手实操。
+第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。
+现阶段大慨率网驱不行 开发环境：debian13 启动方式：uboot -&gt; Get zImage and dtb from SDcard. 开发方式：修改dts -&gt; dtb. copy到SDcard的boot分区. LED驱动实验 刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。
+手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。
+binding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt
+仔细看会发现两个node 一个是pinctrl，一个是gpio。
+pinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。
+PINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html
+大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。
+static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fsl,imx6ul-iomuxc&#34;, .data = &amp;imx6ul_pinctrl_info, }, { .compatible = &#34;fsl,imx6ull-iomuxc-snvs&#34;, .data = &amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, &amp;pdev-&gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-&gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Notes",
+      "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "再战Linux驱动",
+      "item": "https://intmagician.github.io/notes/linux/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Linux驱动开发｜LED设备树驱动(一)",
+      "item": "https://intmagician.github.io/notes/linux/linux_drv_led/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Linux驱动开发｜LED设备树驱动(一)",
+  "name": "Linux驱动开发｜LED设备树驱动(一)",
+  "description": "设备树相关的内容，已经算是入门的，现在就是要动手实操。\n第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。\n现阶段大慨率网驱不行 开发环境：debian13 启动方式：uboot -\u0026gt; Get zImage and dtb from SDcard. 开发方式：修改dts -\u0026gt; dtb. copy到SDcard的boot分区. LED驱动实验 刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。\n手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。\nbinding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt\n仔细看会发现两个node 一个是pinctrl，一个是gpio。\npinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。\nPINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html\n大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。\nstatic struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = \u0026#34;fsl,imx6ul-iomuxc\u0026#34;, .data = \u0026amp;imx6ul_pinctrl_info, }, { .compatible = \u0026#34;fsl,imx6ull-iomuxc-snvs\u0026#34;, .data = \u0026amp;imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, \u0026amp;pdev-\u0026gt;dev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-\u0026gt;data; return imx_pinctrl_probe(pdev, pinctrl_info); } 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "设备树相关的内容，已经算是入门的，现在就是要动手实操。\n第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。\n现阶段大慨率网驱不行 开发环境：debian13 启动方式：uboot -\u003e Get zImage and dtb from SDcard. 开发方式：修改dts -\u003e dtb. copy到SDcard的boot分区. LED驱动实验 刚创建myboard.dts。目标是添加一个GPIO节点来驱动LED。看着dts里边的内容，有点不知所措。\n手边有imx6ull的数据手册。还有内核源码。看一看内核源码里的binding文档。\nbinding目录 内核binding目录下查看gpio规范。/Documentation/devicetree/bindings/gpio/gpio.txt\n仔细看会发现两个node 一个是pinctrl，一个是gpio。\npinctrl node and gpio node 如果做过8位mcu、32位mcu的裸机，那就会对驱动很熟悉，第一步就是查手册配寄存器做初始化。\nPINCTRL Subsystem Linux PINCTRL subsystem 链接点击👉pin-control.html\n大概就是定义了有多少个引脚，编号是多少，名字叫啥。然后注册进linux, fsl官方把这块做好了。\nstatic struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = \"fsl,imx6ul-iomuxc\", .data = \u0026imx6ul_pinctrl_info, }, { .compatible = \"fsl,imx6ull-iomuxc-snvs\", .data = \u0026imx6ull_snvs_pinctrl_info, }, { /* sentinel */ } }; static int imx6ul_pinctrl_probe(struct platform_device *pdev) { const struct of_device_id *match; struct imx_pinctrl_soc_info *pinctrl_info; /* const struct of_device_id *of_match_device(const struct of_device_id *match, const struct device *dev); Description Used by a driver to check whether an platform_device present in the system is in its list of supported devices. */ match = of_match_device(imx6ul_pinctrl_of_match, \u0026pdev-\u003edev); if (!match) return -ENODEV; pinctrl_info = (struct imx_pinctrl_soc_info *) match-\u003edata; return imx_pinctrl_probe(pdev, pinctrl_info); } 官方自己的pin头文件，里定义了一组宏，表示一组寄存器的定义，最终通过解析这个宏来注册引脚的寄存器配置\n// imx6ul-pinfunc.h /* * The pin function ID is a tuple of * */ #define MX6UL_PAD_BOOT_MODE0__GPIO5_IO10 0x0014 0x02A0 0x0000 0x5 0x0 #define MX6UL_PAD_BOOT_MODE1__GPIO5_IO11 0x0018 0x02A4 0x0000 0x5 0x0 // pinctrl-imx.h struct imx_pinctrl_soc_info { struct device *dev; const struct pinctrl_pin_desc *pins; unsigned int npins; struct imx_pin_reg *pin_regs; struct imx_pin_group *groups; unsigned int ngroups; struct imx_pmx_func *functions; unsigned int nfunctions; unsigned int flags; u32 grp_index; }; struct imx_pin_reg { s16 mux_reg; s16 conf_reg; }; struct imx_pin { unsigned int pin; unsigned int mux_mode; u16 input_reg; unsigned int input_val; unsigned long config; }; 观察官方的dts会发现除了官方自己的宏，后边还跟了一个变量，这个变量是config，对应conf_reg。通过自定义config我们配置对应引脚的寄存器模式。\nimx6ull.dtsi gpio node:\ngpio1: gpio@0209c000 { compatible = \"fsl,imx6ul-gpio\", \"fsl,imx35-gpio\"; reg = \u003c0x0209c000 0x4000\u003e; interrupts = \u003cGIC_SPI 66 IRQ_TYPE_LEVEL_HIGH\u003e, \u003cGIC_SPI 67 IRQ_TYPE_LEVEL_HIGH\u003e; gpio-controller; #gpio-cells = \u003c2\u003e; interrupt-controller; #interrupt-cells = \u003c2\u003e; }; 修改dts 在根节点下添加\nled1 { compatible = \"led-gpio\"; pinctrl-names = \"default\"; pinctrl-0 = \u003c\u0026pinctrl_led1\u003e; led-gpios = \u003c\u0026gpio1 3 GPIO_ACTIVE_LOW\u003e; status = \"okay\"; }; 在\u0026iomuxc节点的imx6ul-evk子节点添加\npinctrl_led1: led1 { fsl,pins = \u003c MX6UL_PAD_GPIO1_IO03__GPIO1_IO03 0Xb0 \u003e; }; 编写myled.c static int led_probe(struct platform_device *pdev) { int gpio, ret; gpio = of_get_named_gpio(pdev-\u003edev.of_node, \"led-gpios\", 0); if(gpio \u003c 0) { printk(\"get led-gpio failed: %d\\n\", gpio); return gpio; } ret = gpio_request(gpio, \"myled\"); if (ret) { printk(\"gpio request failed\\n\"); return ret; } ret = gpio_direction_output(gpio, 1); // 板子上电启动后灯是亮的，因此在这里把它关了 if(ret) { printk(\"gpio direction failed\\n\"); gpio_free(gpio); return ret; } return 0; } static int led_remove(struct platform_device *pdev) { printk(\"led remove\\n\"); return 0; } platform_driver static const struct of_device_id led_of_match[] = { {.compatible = \"led-gpio\"}, {}, }; static struct platform_driver led_driver = { .probe = led_probe, .remove = led_remove, .driver = { .name = \"led\", .of_match_table = led_of_match, }, }; register and unregister 这一块是一个固定模版。当内核加载和卸载驱动程序时，会调用__init和__exit函数。\n最简单的驱动程序就是在这两个函数中加printk来打印信息。在加载和卸载时就会在终端上打印。\n常用命令：\ninsmod\t加载 rmmod\t卸载 lsmod\t列出加载到内核的所有模块 depmod\t更新模块间的依赖关系 modinfo\t模块的信息-\u003e filename/license/description/depends/vermagic/parm modprobe\t加载时自动发现依赖关系 static int __init led_init(void) { return platform_driver_register(\u0026led_driver); } static void __exit led_exit(void) { platform_driver_unregister(\u0026led_driver); } module_init(led_init); module_exit(led_exit); MODULE_LICENSE(\"GPL\"); MODULE_AUTHOR(\"Intmagician\"); MODULE_DESCRIPTION(\"A simple platform led driver\");s 添加cdev #include #include #include #include #include #include #include #include #include #include #include struct led_dev { struct cdev cdev; dev_t devid; struct class *class; struct device *device; struct gpio_desc *led_gpio; }; static int led_open(struct inode *inode, struct file *file) { struct led_dev *led = container_of(inode-\u003ei_cdev, struct led_dev, cdev); file-\u003eprivate_data = led; return 0; } static ssize_t led_write(struct file *file, const char __user *user_buffer, size_t size, loff_t * offset) { struct led_dev *led = file-\u003eprivate_data; char kernel_buffer; if (size \u003c 1) return -EINVAL; if (copy_from_user(\u0026kernel_buffer, user_buffer, 1)) return -EINVAL; if (kernel_buffer == '1') gpiod_set_value(led-\u003eled_gpio, 1); else if ( kernel_buffer == '0') gpiod_set_value(led-\u003eled_gpio, 0); else return -EINVAL; return size; } static struct file_operations led_fops = { .owner = THIS_MODULE, .open = led_open, .read = led_read, .write = led_write, .release = led_release, }; static int led_probe(struct platform_device *pdev) { struct led_dev *led; int ret; led = devm_kzalloc(\u0026pdev-\u003edev, sizeof(*led), GFP_KERNEL); if (!led) return -ENOMEM; //led-\u003edev = \u0026pdev-\u003edev; platform_set_drvdata(pdev, led); led-\u003eled_gpio = devm_gpiod_get(\u0026pdev-\u003edev, \"led\", GPIOD_OUT_LOW); if (IS_ERR(led-\u003eled_gpio)) { ret = PTR_ERR(led-\u003eled_gpio); dev_info(\u0026pdev-\u003edev, \"failed to get led gpio: %d\\n\", ret); return ret; } ret = alloc_chrdev_region(\u0026led-\u003edevid, 0, 1, \"led\"); if (ret) return ret; cdev_init(\u0026led-\u003ecdev, \u0026led_fops); led-\u003ecdev.owner = THIS_MODULE; ret = cdev_add(\u0026led-\u003ecdev, led-\u003edevid, 1); if (ret) goto error_unregister_chrdev; led-\u003eclass = class_create(THIS_MODULE, \"led_class\"); if (IS_ERR(led-\u003eclass)) { ret = PTR_ERR(led-\u003eclass); goto error_cdev_del; } led-\u003edevice = device_create(led-\u003eclass, NULL, led-\u003edevid, NULL, \"led1\"); if (IS_ERR(led-\u003edevice)) { ret = PTR_ERR(led-\u003edevice); goto error_class_destroy; } dev_info(\u0026pdev-\u003edev, \"led probe\\n\"); return 0; error_class_destroy: class_destroy(led-\u003eclass); error_cdev_del: cdev_del(\u0026led-\u003ecdev); error_unregister_chrdev: unregister_chrdev_region(led-\u003edevid, 1); return ret; } static int led_remove(struct platform_device *pdev) { struct led_dev *led; led = platform_get_drvdata(pdev); device_destroy(led-\u003eclass, led-\u003edevid); class_destroy(led-\u003eclass); cdev_del(\u0026led-\u003ecdev); unregister_chrdev_region(led-\u003edevid, 1); dev_info(\u0026pdev-\u003edev, \"led removed\\n\"); return 0; } 编译dtb 在内核目录下 make dtbs 记得在/arch/arm/boot/dts/Makefile里加上自己的myboard.dtb。\n错误处理 错误1 加载模块时出现disagrees about version of symbol _dev_info\nunmae -r ls /proc/version\nzImage不对，用虚拟机里编译过的zImage就可以了。\n错误2 devm_gpiod_get(\u0026pdev-\u003edev, “led-gpios”, GPIOD_OUT_LOW);\n这里的字符串匹配机制跟of的不一样\nof是led-gpios-\u003eled-gpios devm是led-\u003eled-gpios xxx-\u003exxx-gpios 错误3 编译dtb时，多重定义yylloc\n找到kernel下的/scripts/dtc/dtc-lexer.lex.c_shipped YYLTYPE yylloc extern YYLTYPE yylloc over 同样的蜂鸣器也是一样的，只需要再添加一个蜂鸣器gpio节点和pinctrl节点，然后配置gpio，在probe里改一下名字。\n",
+  "wordCount" : "754",
+  "inLanguage": "en",
+  "datePublished": "2026-05-26T19:21:05+08:00",
+  "dateModified": "2026-05-26T19:21:05+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://intmagician.github.io/notes/linux/linux_drv_led/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Intmagician",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://intmagician.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -139,22 +226,22 @@ static int imx6ul_pinctrl_probe(struct platform_device *pdev)
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="http://localhost:1313/" title="Home">
+                <a href="https://intmagician.github.io/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/notes/" title="Notes">
+                <a href="https://intmagician.github.io/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/projects/" title="Projects">
+                <a href="https://intmagician.github.io/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/resume" title="Resume">
+                <a href="https://intmagician.github.io/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -166,17 +253,17 @@ static int imx6ul_pinctrl_probe(struct platform_device *pdev)
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='http://localhost:1313/'>Home</a>
+    <a href='https://intmagician.github.io/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="http://localhost:1313/notes/">Notes</a>
+            <a href="https://intmagician.github.io/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
+            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜LED设备树驱动(一)
     </h1>

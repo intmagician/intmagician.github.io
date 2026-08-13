@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>再战Linux驱动 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。
@@ -16,17 +16,17 @@ threaded irq在5.x成为主流, 之后逐步减少tasklet和workqueue。推荐�
 tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threaded irq 和 workqueue
 ">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/notes/linux/">
+<link rel="canonical" href="https://intmagician.github.io/notes/linux/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://intmagician.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/linux/index.xml" title="rss">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/">
+<link rel="alternate" type="application/rss+xml" href="https://intmagician.github.io/notes/linux/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/">
 <noscript>
     <style>
         #theme-toggle,
@@ -72,13 +72,46 @@ tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threa
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/">
+  <meta property="og:site_name" content="Intmagician">
+  <meta property="og:title" content="再战Linux驱动">
+  <meta property="og:description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。
+Interrupt 关于版本变化趋势 devm_系列在4.x时代稳定，之后推荐使用自动生命周期的devm_request_threaded_irq() threaded irq在5.x成为主流, 之后逐步减少tasklet和workqueue。推荐使用request_threaded_irq tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threaded irq 和 workqueue">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="再战Linux驱动">
+  <meta name="twitter:description" content="这是一个系列的关于个人自学Linux驱动的记录，然后方便日后回看，持续改进。
+Interrupt 关于版本变化趋势 devm_系列在4.x时代稳定，之后推荐使用自动生命周期的devm_request_threaded_irq() threaded irq在5.x成为主流, 之后逐步减少tasklet和workqueue。推荐使用request_threaded_irq tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threaded irq 和 workqueue">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Notes",
+      "item": "https://intmagician.github.io/notes/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "再战Linux驱动",
+      "item": "https://intmagician.github.io/notes/linux/"
+    }
+  ]
+}
 </script>
 </head>
 <body class="list" id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -104,22 +137,22 @@ tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threa
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="http://localhost:1313/" title="Home">
+                <a href="https://intmagician.github.io/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/notes/" title="Notes">
+                <a href="https://intmagician.github.io/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/projects/" title="Projects">
+                <a href="https://intmagician.github.io/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/resume" title="Resume">
+                <a href="https://intmagician.github.io/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -128,12 +161,12 @@ tasklet 在6.x被边缘化，新驱动不应使用tasklet，下半部推荐threa
 </header>
 <main class="main"> 
 <header class="page-header"><nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='http://localhost:1313/'>Home</a>
+    <a href='https://intmagician.github.io/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="http://localhost:1313/notes/">Notes</a></nav>
+            <a href="https://intmagician.github.io/notes/">Notes</a></nav>
   <h1>
     再战Linux驱动
   </h1>
@@ -169,7 +202,7 @@ static const struct regmap_config ap3216c_regmap_config = { .reg_bits = 8, .val_
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-06-22 11:26:22 +0800 CST'>June 22, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux 驱动开发｜ I2C驱动 &#43; I2C Bus &#43; I2C&lt;-&gt;IIO设备" href="http://localhost:1313/notes/linux/linux_drv_i2c/"></a>
+  <a class="entry-link" aria-label="post link to Linux 驱动开发｜ I2C驱动 &#43; I2C Bus &#43; I2C&lt;-&gt;IIO设备" href="https://intmagician.github.io/notes/linux/linux_drv_i2c/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -184,7 +217,7 @@ Mutexes Spinlocks 在进程必须等待锁时，没有上下文切换，因此�
 </p>
   </div>
   <footer class="entry-footer"><span title='2026-06-14 08:13:29 +0800 CST'>June 14, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜并发与竞争" href="http://localhost:1313/notes/linux/linux_conc_race/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜并发与竞争" href="https://intmagician.github.io/notes/linux/linux_conc_race/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -204,7 +237,7 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-06-10 17:20:21 +0800 CST'>June 10, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜ 按键驱动" href="http://localhost:1313/notes/linux/linux_drv_key/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜ 按键驱动" href="https://intmagician.github.io/notes/linux/linux_drv_key/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -220,7 +253,7 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
 device_destroy class_destroy cdev_del unregister_chrdev_region </p>
   </div>
   <footer class="entry-footer"><span title='2026-05-28 09:44:47 +0800 CST'>May 28, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜字符设备" href="http://localhost:1313/notes/linux/linux_drv_cdev/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜字符设备" href="https://intmagician.github.io/notes/linux/linux_drv_cdev/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -233,7 +266,7 @@ device_destroy class_destroy cdev_del unregister_chrdev_region </p>
 linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; linux/platform_device.h #include &lt;linux/platform_device.h&gt; struct platform_device; extern int platform_device_register(struct platform_device *); extern void platform_device_unregister(struct platform_device *); struct platform_driver; extern int __platform_driver_regsiter(struct platform_driver *, struct module *); extern void platform_deriver_unregister(struct platform_driver *); linux/fs.h #include &lt;linux/fs.h&gt; struct file_operations; int register_chrdev_region(dev_t first, unsigned int count, char * name); void unregister_chrdev_region(dev_t first, unsigend int count); linux/kdev_t.h #include &lt;linux/kdev_t.h&gt; #define MAJOR(dev) ((unsigned int) ((dev) &gt;&gt; MINORBITS)) #define MINOR(dev) ((unsigned int) ((dev) &amp; MINORMASK)) #define MKDEV(ma,mi) (((ma) &lt;&lt; MINORBITS) | (mi)) asm/uaccess.h #include &lt;asm/uacccess.h&gt; put_user(type val, type *address); get_user(type val, type *address); unsigned long copy_to_user(void __user *to, const void *from, unsigned long n); unsigned long copy_from_user(void *to, const void __user *from, unsigned long n); linux/interrupt.h #include &lt;linux/interrupt.h&gt; #define IRQF_TRIGGER_NONE 0x00000000 #define IRQF_TRIGGER_RISING 0x00000001 #define IRQF_TRIGGER_FALLING 0x00000002 typedef irqreturn_t (*irq_handler_t)(int, void *); static inline int __must_check devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id) { return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags, devname, dev_id); } linux/spinlock.h #include &lt;linux/spinlock.h&gt; #define spin_lock_irqsave(lock, flags) \ do { \ raw_spin_lock_irqsave(spinlock_check(lock), flags); \ } while (0) static inline spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags) { raw_spin_unlock_irqrestore(&amp;lock-&gt;rlock, flags); } linux/gpio/consumer.h #include &lt;linux/gpio/consumer.h&gt; devm_gpiod_get(); gpiod_get_value(); gpiod_set_value(); linux/timer.h #include &lt;linux/timer.h&gt; struct timer_list timer; //旧版 //传参是unsigned long init_timer(&amp;dev-&gt;timer); setup_timer(&amp;dev-&gt;timer, timer_callback, (unsigned long)dev); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(unsigned long data) { struct dev_t *dev = (struct dev_t *) data; } //新版 //原本的传参被废弃，必须传struct timer_list * //别的参数通过container_of / from_timer====&gt;类似通过类成员反推类 timer_setup(&amp;dev-&gt;timer, timer_callback, 0); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(struct timer_list * timer) { struct dev_t *dev = from_timer(dev, timer, timer); } linux/workqueue.h #include &lt;linux/workqueue.h&gt; struct work_struct { atomic_long_t data; struct list_head entry; work_func_t func; }; struct delayed_work { struct work_struct work; struct timer_list timer; struct workqueue_struct *wq; int cpu; }; #define INIT_WORK(_work, _func) __INIT_WORK((_work), (_func), 0) // _work: struct work_struct // _func: void (*)(struct work_struct *work) #define __INIT_WORK(_work, _func, _onstack) \ do { \ __init_work((_work), _onstack); \ (_work)-&gt;data = (atomic_long_t) WORK_DATA_INIT(); \ INIT_LIST_HEAD(&amp;(_work)-&gt;entry); \ (_work)-&gt;func = (_func); \ } while (0) #define INIT_DELAYED_WORK(_work, _func) __INIT_DELAYED_WORK(_work, _func, _tflags) #define __INIT_DELAYED_WORK(_work, _func, _tflags) \ do { \ INIT_WORK(&amp;(_work)-&gt;work, (_func)); \ __setup_timer(&amp;(_work)-&gt;timer, delayed_work_timer_fn, \ (unsigned long)(_work), \ (_tflags) | TIMER_IRQSAFE); \ } while (0) extern bool cancel_delayed_work_sync(struct delayed_work *dwork); static inline bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay) { return queue_delayed_work(system_wq, dwork, delay); } </p>
   </div>
   <footer class="entry-footer"><span title='2026-05-27 14:13:30 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜常用.h文件及其函数" href="http://localhost:1313/notes/linux/linux_drv_header/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜常用.h文件及其函数" href="https://intmagician.github.io/notes/linux/linux_drv_header/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -255,7 +288,7 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-27 14:05:49 +0800 CST'>May 27, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构" href="http://localhost:1313/notes/linux/linux_drv_platform/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构" href="https://intmagician.github.io/notes/linux/linux_drv_platform/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -277,7 +310,7 @@ static struct of_device_id imx6ul_pinctrl_of_match[] = { { .compatible = &#34;fs
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-26 19:21:05 +0800 CST'>May 26, 2026</span>&nbsp;·&nbsp;<span>4 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜LED设备树驱动(一)" href="http://localhost:1313/notes/linux/linux_drv_led/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜LED设备树驱动(一)" href="https://intmagician.github.io/notes/linux/linux_drv_led/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -310,7 +343,7 @@ interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-24 10:20:17 +0800 CST'>May 24, 2026</span>&nbsp;·&nbsp;<span>3 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜设备树学习笔记" href="http://localhost:1313/notes/linux/linux_dts/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜设备树学习笔记" href="https://intmagician.github.io/notes/linux/linux_dts/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -336,7 +369,7 @@ make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK�
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2026-05-16 16:56:50 +0800 CST'>May 16, 2026</span>&nbsp;·&nbsp;<span>2 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜uboot网络启动与SD卡启动" href="http://localhost:1313/notes/linux/linux_startup/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜uboot网络启动与SD卡启动" href="https://intmagician.github.io/notes/linux/linux_startup/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -359,7 +392,7 @@ Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6
 老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 </p>
   </div>
   <footer class="entry-footer"><span title='2026-05-06 12:26:09 +0800 CST'>May 6, 2026</span>&nbsp;·&nbsp;<span>1 min</span></footer>
-  <a class="entry-link" aria-label="post link to Linux驱动开发｜编译环境搭建" href="http://localhost:1313/notes/linux/linux_env_config/"></a>
+  <a class="entry-link" aria-label="post link to Linux驱动开发｜编译环境搭建" href="https://intmagician.github.io/notes/linux/linux_env_config/"></a>
 </article>
     </main>
     

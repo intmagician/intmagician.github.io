@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>工作累成狗 on Intmagician</title>
-    <link>http://localhost:1313/notes/work/</link>
+    <link>https://intmagician.github.io/notes/work/</link>
     <description>Recent content in 工作累成狗 on Intmagician</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
     <lastBuildDate>Sat, 09 May 2026 21:51:07 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/notes/work/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://intmagician.github.io/notes/work/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>调试记录</title>
-      <link>http://localhost:1313/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
+      <link>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
       <pubDate>Sat, 09 May 2026 21:51:07 +0800</pubDate>
-      <guid>http://localhost:1313/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
+      <guid>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
       <description>&lt;h1 id=&#34;目录&#34;&gt;目录&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#%E7%9B%AE%E5%BD%95&#34;&gt;目录&lt;/a&gt;&lt;/li&gt;
