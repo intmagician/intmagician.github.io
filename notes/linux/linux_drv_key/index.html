@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜ 按键驱动 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="非中断版本
@@ -60,16 +60,16 @@ enum {
 
 添加key的gpio节点">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_key/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_drv_key/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_drv_key/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_drv_key/">
 <noscript>
     <style>
         #theme-toggle,
@@ -115,96 +115,13 @@ enum {
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_key/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜ 按键驱动">
-  <meta property="og:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
-static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
-key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
-pinctrl_key: key { fsl,pins = &lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 &gt;; } 中断版本 设备树修改 宏定义
-路径：
-/include/linux/irq.h
-enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h
-#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-06-10T17:20:21+08:00">
-    <meta property="article:modified_time" content="2026-06-10T17:20:21+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜ 按键驱动">
-  <meta name="twitter:description" content="非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value
-static ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-&gt;private_data; int value; if (*offset &gt; 0) return 0; value = gpiod_get_value(key-&gt;key_gpio); if(copy_to_user(user_buffer, &amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点
-key { compatible = &#34;key-gpio&#34;; pinctrl_names = &#34;default&#34;; pinctrl_0 = &lt;&amp;pinctrl_key&gt;; key-gpios = &lt;&amp;gpio1 18 GPIO_ACTIVE_LOW&gt;; status = &#34;okay&#34;; } 在pinctrl里补充该gpio的配置
-pinctrl_key: key { fsl,pins = &lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 &gt;; } 中断版本 设备树修改 宏定义
-路径：
-/include/linux/irq.h
-enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h
-#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜ 按键驱动",
-      "item": "https://intmagician.github.io/notes/linux/linux_drv_key/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜ 按键驱动",
-  "name": "Linux驱动开发｜ 按键驱动",
-  "description": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u0026gt;private_data; int value; if (*offset \u0026gt; 0) return 0; value = gpiod_get_value(key-\u0026gt;key_gpio); if(copy_to_user(user_buffer, \u0026amp;value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \u0026#34;key-gpio\u0026#34;; pinctrl_names = \u0026#34;default\u0026#34;; pinctrl_0 = \u0026lt;\u0026amp;pinctrl_key\u0026gt;; key-gpios = \u0026lt;\u0026amp;gpio1 18 GPIO_ACTIVE_LOW\u0026gt;; status = \u0026#34;okay\u0026#34;; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u0026lt; MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u0026gt;; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "非中断版本 跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value\nstatic ssize_t key_read(struct file *file, char __user *user_buffer, size_t size, loff_t *offset) { struct key_dev *key = file-\u003eprivate_data; int value; if (*offset \u003e 0) return 0; value = gpiod_get_value(key-\u003ekey_gpio); if(copy_to_user(user_buffer, \u0026value, sizeof(value))) return -EFAULT; return sizeof(value); } 设备树修改 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; status = \"okay\"; } 在pinctrl里补充该gpio的配置\npinctrl_key: key { fsl,pins = \u003c MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0Xf080 \u003e; } 中断版本 设备树修改 宏定义\n路径：\n/include/linux/irq.h\nenum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_EDGE_FALLING = 0x00000002, IRQ_TYPE_EDGE_BOTH = (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING), } /include/dt-bindings/interrupt-controller/arm-gic.h\n#define GIC_SPI 0 #define GIC_PPI 1 添加key的gpio节点\nkey { compatible = \"key-gpio\"; pinctrl_names = \"default\"; pinctrl_0 = \u003c\u0026pinctrl_key\u003e; key-gpios = \u003c\u0026gpio1 18 GPIO_ACTIVE_LOW\u003e; + interrupt-parent = \u003c\u0026gpio1\u003e; + interrupts = \u003c18 IRQ_TYPE_EDGE_BOTH\u003e; status = \"okay\"; } timer 在按键中断中，更新定时器，在定时回调函数做主要处理\nstatic int key_probe(struct platform_device *pdev) { /* 在注册中断前*/ + init_timer(\u0026key-\u003etimer); + setup_timer(\u0026key-\u003etimer, key_timer_callback, (unsigned long)key); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; mod_timer(\u0026key-\u003etimer, jiffies + msecs_to_jiffies(20)); return IRQ_HANDLED; } static void key_timer_callback(unsigned long data) { struct key_dev *key = (struct key_dev *)data; /* */ } workqueue delayed_work struct key_dev { + struct delayed_work dwork; } static int key_probe(struct platform_device *pdev) { + INIT_DELAYED_WORK(\u0026key-\u003edwork, key_work_func); } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; + schedule_delayed_work(\u0026key-\u003edwork, jiffies + msecs_to_jiffies(20)); } static void key_work_func(struct work_struct *work) { // // } input子系统 误打误撞，用了gpio-keys的框架，驱动啥也不用干，dts按照dts-binding写好，启动内核时就能找到\ninput: gpio-keys as /devices/platform/gpio-keys/input/input2 费这么大劲写input驱动，毛用没有，问ChatGPT，才知道，gpio-keys是官方写好驱动了，就加个gpio-keys node，然后列出一堆key，系统在启动时会注册gpio-keys。\n自定义input子系统key驱动 至于这个系统怎么实现的，先不去管。 如果要自己写，也不是很麻烦\nstruct key_dev { struct input_dev *input; struct gpio_desc *gpiod; int irq; struct delayed_work dwork; } //删除字符设备注册那一个流程 static int key_probe(struct platform_device *pdev) { + key-\u003einput = devm_input_allocate_device(\u0026pdev-\u003edev); + key-\u003einput-\u003ename = \"key\"; + input_set_capability(key-\u003einput, EV_KEY, KEY_A); + ret = input_register_device(key-\u003einput); + if (ret) + { + dev_info(\u0026pdev-\u003edev, \"input register failed: %d\\n\", ret); + return ret; + } } static int key_remove(struct platform_device *pdev) { struct key_dev *key = platform_get_drvdata(pdev); cancel_delayed_work_sync(\u0026key-\u003edwork); dev_info(\u0026pdev-\u003edev, \"key removed\\n\"); return 0; } static irqreturn_t key_irq_handler(int irq, void *dev_id) { struct key_dev *key = dev_id; + mod_delayed_work(system_wq, \u0026key-\u003edwork, jiffies + msecs_to_jiffies(20)); } static void key_work_func(struct work_struct *work) { struct key_dev *key = container_of(work, struct key_dev, dwork.work); int value; value = gpiod_get_value(key-\u003egpiod); input_report_key(key-\u003einput, KEY_A, value); input_sync(key-\u003einput); // } //没装evtest //如果有就用evtest //先查看是否insmod cat /proc/bus/input/devices I: N: Name=\"key\" P: S: H: handlers=kbd event1 ... //然后 hexdump /dev/input/event1 //在work_func打印输出，容易出现重复，误触发的错觉，其实没有。 ",
-  "wordCount" : "378",
-  "inLanguage": "en",
-  "datePublished": "2026-06-10T17:20:21+08:00",
-  "dateModified": "2026-06-10T17:20:21+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_drv_key/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -230,27 +147,22 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -262,17 +174,17 @@ enum { IRQ_TYPE_NONE = 0x00000000, IRQ_TYPE_EDGE_RISING = 0x00000001, IRQ_TYPE_E
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜ 按键驱动
     </h1>

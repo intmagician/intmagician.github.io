@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Intmagician&#39;s Home on Intmagician</title>
-    <link>https://intmagician.github.io/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content in Intmagician&#39;s Home on Intmagician</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
     <lastBuildDate>Thu, 25 Jun 2026 20:06:20 +0800</lastBuildDate>
-    <atom:link href="https://intmagician.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ap3216c</title>
-      <link>https://intmagician.github.io/projects/linuxdriver/i2c-ap3216/</link>
+      <link>http://localhost:1313/projects/linuxdriver/i2c-ap3216/</link>
       <pubDate>Thu, 25 Jun 2026 20:06:20 +0800</pubDate>
-      <guid>https://intmagician.github.io/projects/linuxdriver/i2c-ap3216/</guid>
+      <guid>http://localhost:1313/projects/linuxdriver/i2c-ap3216/</guid>
       <description>&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#ifndef _AP3216C_H_
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define _AP3216C_H_
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
@@ -625,9 +625,9 @@
     </item>
     <item>
       <title>Linux 驱动开发｜ I2C驱动 &#43; I2C Bus &#43; I2C&lt;-&gt;IIO设备</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_i2c/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_i2c/</link>
       <pubDate>Mon, 22 Jun 2026 11:26:22 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_i2c/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_i2c/</guid>
       <description>&lt;h2 id=&#34;简介&#34;&gt;简介&lt;/h2&gt;
 &lt;p&gt;这个驱动是ap3216c的驱动，它是一个环境光，红外，距离，传感器。在linux下属于IIO设备，因此这个芯片驱动
 主要是I2C驱动的注册，i2c设备的匹配，然后在probe时，申请iio设备，将iio设备挂到i2c设备的通用设备的驱动数据下，然后是regmap芯片配置和数据读取。&lt;/p&gt;
@@ -681,9 +681,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜并发与竞争</title>
-      <link>https://intmagician.github.io/notes/linux/linux_conc_race/</link>
+      <link>http://localhost:1313/notes/linux/linux_conc_race/</link>
       <pubDate>Sun, 14 Jun 2026 08:13:29 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_conc_race/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_conc_race/</guid>
       <description>&lt;h2 id=&#34;并发陷阱&#34;&gt;并发陷阱&lt;/h2&gt;
 &lt;h3 id=&#34;为什么有竞争&#34;&gt;为什么有竞争&lt;/h3&gt;
 &lt;h3 id=&#34;中断为什么不能休眠&#34;&gt;中断为什么不能休眠&lt;/h3&gt;
@@ -697,9 +697,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜ 按键驱动</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_key/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_key/</link>
       <pubDate>Wed, 10 Jun 2026 17:20:21 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_key/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_key/</guid>
       <description>&lt;h2 id=&#34;非中断版本&#34;&gt;非中断版本&lt;/h2&gt;
 &lt;p&gt;跟led驱动大体结构一致，多写一个read函数，用gpiod_get_value&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ssize_t&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;key_read&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; file &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;file, &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; __user &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;user_buffer, &lt;span style=&#34;color:#66d9ef&#34;&gt;size_t&lt;/span&gt; size, &lt;span style=&#34;color:#66d9ef&#34;&gt;loff_t&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;offset)
@@ -755,9 +755,9 @@
     </item>
     <item>
       <title>Leetcode 和 Nowcoder 刷题复习</title>
-      <link>https://intmagician.github.io/notes/algorithm/</link>
+      <link>http://localhost:1313/notes/algorithm/</link>
       <pubDate>Sun, 31 May 2026 09:10:38 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/algorithm/</guid>
+      <guid>http://localhost:1313/notes/algorithm/</guid>
       <description>&lt;h2 id=&#34;数组&#34;&gt;数组&lt;/h2&gt;
 &lt;h2 id=&#34;字符串&#34;&gt;字符串&lt;/h2&gt;
 &lt;h2 id=&#34;双指针&#34;&gt;双指针&lt;/h2&gt;
@@ -806,9 +806,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜字符设备</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_cdev/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_cdev/</link>
       <pubDate>Thu, 28 May 2026 09:44:47 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_cdev/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_cdev/</guid>
       <description>&lt;p&gt;公开教程文档点击👉&lt;a href=&#34;https://linux-kernel-labs.github.io/refs/heads/master/labs/device_drivers.html&#34;&gt;Character device drivers&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;仔细阅读了这篇教程，然后有点犯迷糊，看了好几个字符设备驱动，每个都有自己的写法，再加上我要配合Platform driver。不知道怎么往probe和remove里加。&lt;/p&gt;
 &lt;p&gt;注册字符设备流程-&amp;gt;probe&lt;/p&gt;
@@ -830,9 +830,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜常用.h文件及其函数</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_header/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_header/</link>
       <pubDate>Wed, 27 May 2026 14:13:30 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_header/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_header/</guid>
       <description>&lt;p&gt;[TOC]&lt;/p&gt;
 &lt;h2 id=&#34;linuxmoduleh&#34;&gt;linux/module.h&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//path:linux_kernel/include/linux/module.h
@@ -1039,9 +1039,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_platform/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_platform/</link>
       <pubDate>Wed, 27 May 2026 14:05:49 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_platform/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_platform/</guid>
       <description>&lt;p&gt;所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。&lt;/p&gt;
 &lt;h2 id=&#34;driver-bus-device模型&#34;&gt;Driver-Bus-Device模型&lt;/h2&gt;
 &lt;p&gt;在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。&lt;/p&gt;
@@ -1074,9 +1074,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜LED设备树驱动(一)</title>
-      <link>https://intmagician.github.io/notes/linux/linux_drv_led/</link>
+      <link>http://localhost:1313/notes/linux/linux_drv_led/</link>
       <pubDate>Tue, 26 May 2026 19:21:05 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_drv_led/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_drv_led/</guid>
       <description>&lt;p&gt;设备树相关的内容，已经算是入门的，现在就是要动手实操。&lt;/p&gt;
 &lt;p&gt;第一步就是拿到芯片厂的dts，依照教程篇章，自己思考试一下，然后实在没有思路，经过尝试不能完成，再去看教程内容。&lt;/p&gt;
 &lt;h2 id=&#34;现阶段大慨率网驱不行&#34;&gt;现阶段大慨率网驱不行&lt;/h2&gt;
@@ -1124,9 +1124,9 @@
     </item>
     <item>
       <title>Linux驱动开发｜设备树学习笔记</title>
-      <link>https://intmagician.github.io/notes/linux/linux_dts/</link>
+      <link>http://localhost:1313/notes/linux/linux_dts/</link>
       <pubDate>Sun, 24 May 2026 10:20:17 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_dts/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_dts/</guid>
       <description>&lt;p&gt;如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。&lt;/p&gt;
 &lt;p&gt;所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。&lt;/p&gt;
 &lt;p&gt;简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。&lt;/p&gt;
@@ -1240,9 +1240,9 @@ interrupt也一样。&lt;/p&gt;
     </item>
     <item>
       <title>Linux驱动开发｜uboot网络启动与SD卡启动</title>
-      <link>https://intmagician.github.io/notes/linux/linux_startup/</link>
+      <link>http://localhost:1313/notes/linux/linux_startup/</link>
       <pubDate>Sat, 16 May 2026 16:56:50 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_startup/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_startup/</guid>
       <description>&lt;p&gt;首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。&lt;/p&gt;
 &lt;p&gt;现阶段主要是devicetree还有linux驱动API和linux驱动。&lt;/p&gt;
 &lt;h2 id=&#34;准备&#34;&gt;准备&lt;/h2&gt;
@@ -1307,9 +1307,9 @@ interrupt也一样。&lt;/p&gt;
     </item>
     <item>
       <title>调试记录</title>
-      <link>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
+      <link>http://localhost:1313/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</link>
       <pubDate>Sat, 09 May 2026 21:51:07 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
+      <guid>http://localhost:1313/notes/work/%E8%B0%83%E8%AF%95%E6%97%A5%E8%AE%B0/</guid>
       <description>&lt;h1 id=&#34;目录&#34;&gt;目录&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#%E7%9B%AE%E5%BD%95&#34;&gt;目录&lt;/a&gt;&lt;/li&gt;
@@ -1356,9 +1356,9 @@ interrupt也一样。&lt;/p&gt;
     </item>
     <item>
       <title>Linux驱动开发｜编译环境搭建</title>
-      <link>https://intmagician.github.io/notes/linux/linux_env_config/</link>
+      <link>http://localhost:1313/notes/linux/linux_env_config/</link>
       <pubDate>Wed, 06 May 2026 12:26:09 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/linux/linux_env_config/</guid>
+      <guid>http://localhost:1313/notes/linux/linux_env_config/</guid>
       <description>&lt;h2 id=&#34;我是如何折腾环境的&#34;&gt;我是如何折腾环境的&lt;/h2&gt;
 &lt;p&gt;在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。&lt;/p&gt;
 &lt;p&gt;既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。&lt;/p&gt;
@@ -1392,9 +1392,9 @@ interrupt也一样。&lt;/p&gt;
     </item>
     <item>
       <title>RealTimeSystemDebug</title>
-      <link>https://intmagician.github.io/notes/control/realtimesystemdebug/</link>
+      <link>http://localhost:1313/notes/control/realtimesystemdebug/</link>
       <pubDate>Mon, 04 May 2026 14:28:23 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/control/realtimesystemdebug/</guid>
+      <guid>http://localhost:1313/notes/control/realtimesystemdebug/</guid>
       <description>&lt;h1 id=&#34;如何控制时序使得不影响控制节奏&#34;&gt;如何控制时序使得不影响控制节奏&lt;/h1&gt;
 &lt;p&gt;本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。&lt;/p&gt;
 &lt;h2 id=&#34;为什么要处理实时性&#34;&gt;为什么要处理实时性&lt;/h2&gt;
@@ -1446,9 +1446,9 @@ interrupt也一样。&lt;/p&gt;
     </item>
     <item>
       <title>Resume</title>
-      <link>https://intmagician.github.io/resume/</link>
+      <link>http://localhost:1313/resume/</link>
       <pubDate>Sun, 03 May 2026 10:36:58 +0800</pubDate>
-      <guid>https://intmagician.github.io/resume/</guid>
+      <guid>http://localhost:1313/resume/</guid>
       <description>&lt;h1 id=&#34;单片机嵌入式软件工程师&#34;&gt;单片机/嵌入式软件工程师&lt;/h1&gt;
 &lt;p&gt;单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)&lt;/p&gt;
 &lt;h2 id=&#34;个人技术栈&#34;&gt;个人技术栈&lt;/h2&gt;

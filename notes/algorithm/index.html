@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Leetcode 和 Nowcoder 刷题复习 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="数组
@@ -53,16 +53,16 @@ RTOS消息队列
 NC267:从上往下打印二叉树
 知识点：">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/algorithm/">
+<link rel="canonical" href="http://localhost:1313/notes/algorithm/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/algorithm/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/algorithm/">
 <noscript>
     <style>
         #theme-toggle,
@@ -108,84 +108,13 @@ NC267:从上往下打印二叉树
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/algorithm/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Leetcode 和 Nowcoder 刷题复习">
-  <meta property="og:description" content="数组 字符串 双指针 NC4: 判断链表是否有环 知识点：
-链表 快慢指针 主要思路：一个指针跑得快，一个指针跑得慢，如果有环，它俩一定会相遇。
-struct ListNode * fast = head; struct ListNode * slow = head; while(fast != NULL &amp;&amp; fast-&gt;next != NULL) { fast = fast-&gt;next-&gt;next; slow = slow-&gt;next; if(fast == slow) return true; } 链表 队列 First In First Out 实现：
-type queue[size]; int front,rear; enqueue(); dequeue(); is_empty(); is_full(); //循环队列/环形缓冲 empty: front == rear; full: (rear &#43; 1) % size == front; rear = (rear &#43; 1) % size; front = (front &#43; 1) % size; 应用场景：
-UART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC267:从上往下打印二叉树 知识点：">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-31T09:10:38+08:00">
-    <meta property="article:modified_time" content="2026-05-31T09:10:38+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Leetcode 和 Nowcoder 刷题复习">
-  <meta name="twitter:description" content="数组 字符串 双指针 NC4: 判断链表是否有环 知识点：
-链表 快慢指针 主要思路：一个指针跑得快，一个指针跑得慢，如果有环，它俩一定会相遇。
-struct ListNode * fast = head; struct ListNode * slow = head; while(fast != NULL &amp;&amp; fast-&gt;next != NULL) { fast = fast-&gt;next-&gt;next; slow = slow-&gt;next; if(fast == slow) return true; } 链表 队列 First In First Out 实现：
-type queue[size]; int front,rear; enqueue(); dequeue(); is_empty(); is_full(); //循环队列/环形缓冲 empty: front == rear; full: (rear &#43; 1) % size == front; rear = (rear &#43; 1) % size; front = (front &#43; 1) % size; 应用场景：
-UART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC267:从上往下打印二叉树 知识点：">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "Leetcode 和 Nowcoder 刷题复习",
-      "item": "https://intmagician.github.io/notes/algorithm/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Leetcode 和 Nowcoder 刷题复习",
-  "name": "Leetcode 和 Nowcoder 刷题复习",
-  "description": "数组 字符串 双指针 NC4: 判断链表是否有环 知识点：\n链表 快慢指针 主要思路：一个指针跑得快，一个指针跑得慢，如果有环，它俩一定会相遇。\nstruct ListNode * fast = head; struct ListNode * slow = head; while(fast != NULL \u0026amp;\u0026amp; fast-\u0026gt;next != NULL) { fast = fast-\u0026gt;next-\u0026gt;next; slow = slow-\u0026gt;next; if(fast == slow) return true; } 链表 队列 First In First Out 实现：\ntype queue[size]; int front,rear; enqueue(); dequeue(); is_empty(); is_full(); //循环队列/环形缓冲 empty: front == rear; full: (rear + 1) % size == front; rear = (rear + 1) % size; front = (front + 1) % size; 应用场景：\nUART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC267:从上往下打印二叉树 知识点：\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "数组 字符串 双指针 NC4: 判断链表是否有环 知识点：\n链表 快慢指针 主要思路：一个指针跑得快，一个指针跑得慢，如果有环，它俩一定会相遇。\nstruct ListNode * fast = head; struct ListNode * slow = head; while(fast != NULL \u0026\u0026 fast-\u003enext != NULL) { fast = fast-\u003enext-\u003enext; slow = slow-\u003enext; if(fast == slow) return true; } 链表 队列 First In First Out 实现：\ntype queue[size]; int front,rear; enqueue(); dequeue(); is_empty(); is_full(); //循环队列/环形缓冲 empty: front == rear; full: (rear + 1) % size == front; rear = (rear + 1) % size; front = (front + 1) % size; 应用场景：\nUART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC267:从上往下打印二叉树 知识点：\nBFS(广度优先算法)-\u003eDFS(深度优先算法) Queue tree 典型的BFS+Queue层次遍历二叉树。\nstruct TreeNode * queue[1000]; int front = 0, rear = 0; queue[rear++] = root; while (front \u003c rear) { struct TreeNode * node = queue[front++]; // if (node-\u003eleft != NULL) { queue[rear++] = node-\u003eleft; } if (node-\u003eright != NULL) { queue[rear++] = node-\u003eright; } } 堆/栈 NC90:包含main函数的栈\nstruct stack_t { int array[300]; int top; int ele_num; }; struct stack_t stack = { .top = 0, .ele_num = 0, }; void push(int value) { stack.array[stack.top++]= value; stack.top++; stack.ele_num++; } void pop() { if (stack.ele_num \u003e 0) { stack.top--; stack.ele_num--; } } int top() { return stack.array[stack.top - 1]; } int min() { if(stack.ele_num == 0) return 0; int min = stack.array[stack.top - 1]; int tmp = stack.top - 1; for (int i = 0; i \u003c stack.ele_num; i++) { if (min \u003e stack.array[tmp]) { min = stack.array[tmp]; } tmp--; } return min; } 二叉树 递归 排序 位运算 哈希 二分 前提：数据有序\n思想：在有序的区间里，每次检查中间值，然后丢掉不需要那一半区间。 NC32: 求平方根\nint left = 1; int right = x / 2; while (left \u003c= right) { int mid = left + (right - left) / 2; if (mid \u003c= x / mid) { left = mid + 1; //取值向下取整数 } else { right = mid - 1; //取值向上取整数 } } 线性代数 ",
-  "wordCount" : "296",
-  "inLanguage": "en",
-  "datePublished": "2026-05-31T09:10:38+08:00",
-  "dateModified": "2026-05-31T09:10:38+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/algorithm/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -211,27 +140,22 @@ UART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC26
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -243,12 +167,12 @@ UART接收数据 CAN消息收发 RTOS消息队列 循环队列/环形缓冲 NC26
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a></nav>
+            <a href="http://localhost:1313/notes/">Notes</a></nav>
     <h1 class="post-title entry-hint-parent">
       Leetcode 和 Nowcoder 刷题复习
     </h1>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜常用.h文件及其函数 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="[TOC]
@@ -211,16 +211,16 @@ static inline bool schedule_delayed_work(struct delayed_work *dwork,
 }
 ">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_header/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_drv_header/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_drv_header/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_drv_header/">
 <noscript>
     <style>
         #theme-toggle,
@@ -266,84 +266,13 @@ static inline bool schedule_delayed_work(struct delayed_work *dwork,
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_header/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜常用.h文件及其函数">
-  <meta property="og:description" content="[TOC]
-linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; linux/platform_device.h #include &lt;linux/platform_device.h&gt; struct platform_device; extern int platform_device_register(struct platform_device *); extern void platform_device_unregister(struct platform_device *); struct platform_driver; extern int __platform_driver_regsiter(struct platform_driver *, struct module *); extern void platform_deriver_unregister(struct platform_driver *); linux/fs.h #include &lt;linux/fs.h&gt; struct file_operations; int register_chrdev_region(dev_t first, unsigned int count, char * name); void unregister_chrdev_region(dev_t first, unsigend int count); linux/kdev_t.h #include &lt;linux/kdev_t.h&gt; #define MAJOR(dev) ((unsigned int) ((dev) &gt;&gt; MINORBITS)) #define MINOR(dev) ((unsigned int) ((dev) &amp; MINORMASK)) #define MKDEV(ma,mi) (((ma) &lt;&lt; MINORBITS) | (mi)) asm/uaccess.h #include &lt;asm/uacccess.h&gt; put_user(type val, type *address); get_user(type val, type *address); unsigned long copy_to_user(void __user *to, const void *from, unsigned long n); unsigned long copy_from_user(void *to, const void __user *from, unsigned long n); linux/interrupt.h #include &lt;linux/interrupt.h&gt; #define IRQF_TRIGGER_NONE 0x00000000 #define IRQF_TRIGGER_RISING 0x00000001 #define IRQF_TRIGGER_FALLING 0x00000002 typedef irqreturn_t (*irq_handler_t)(int, void *); static inline int __must_check devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id) { return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags, devname, dev_id); } linux/spinlock.h #include &lt;linux/spinlock.h&gt; #define spin_lock_irqsave(lock, flags) \ do { \ raw_spin_lock_irqsave(spinlock_check(lock), flags); \ } while (0) static inline spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags) { raw_spin_unlock_irqrestore(&amp;lock-&gt;rlock, flags); } linux/gpio/consumer.h #include &lt;linux/gpio/consumer.h&gt; devm_gpiod_get(); gpiod_get_value(); gpiod_set_value(); linux/timer.h #include &lt;linux/timer.h&gt; struct timer_list timer; //旧版 //传参是unsigned long init_timer(&amp;dev-&gt;timer); setup_timer(&amp;dev-&gt;timer, timer_callback, (unsigned long)dev); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(unsigned long data) { struct dev_t *dev = (struct dev_t *) data; } //新版 //原本的传参被废弃，必须传struct timer_list * //别的参数通过container_of / from_timer====&gt;类似通过类成员反推类 timer_setup(&amp;dev-&gt;timer, timer_callback, 0); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(struct timer_list * timer) { struct dev_t *dev = from_timer(dev, timer, timer); } linux/workqueue.h #include &lt;linux/workqueue.h&gt; struct work_struct { atomic_long_t data; struct list_head entry; work_func_t func; }; struct delayed_work { struct work_struct work; struct timer_list timer; struct workqueue_struct *wq; int cpu; }; #define INIT_WORK(_work, _func) __INIT_WORK((_work), (_func), 0) // _work: struct work_struct // _func: void (*)(struct work_struct *work) #define __INIT_WORK(_work, _func, _onstack) \ do { \ __init_work((_work), _onstack); \ (_work)-&gt;data = (atomic_long_t) WORK_DATA_INIT(); \ INIT_LIST_HEAD(&amp;(_work)-&gt;entry); \ (_work)-&gt;func = (_func); \ } while (0) #define INIT_DELAYED_WORK(_work, _func) __INIT_DELAYED_WORK(_work, _func, _tflags) #define __INIT_DELAYED_WORK(_work, _func, _tflags) \ do { \ INIT_WORK(&amp;(_work)-&gt;work, (_func)); \ __setup_timer(&amp;(_work)-&gt;timer, delayed_work_timer_fn, \ (unsigned long)(_work), \ (_tflags) | TIMER_IRQSAFE); \ } while (0) extern bool cancel_delayed_work_sync(struct delayed_work *dwork); static inline bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay) { return queue_delayed_work(system_wq, dwork, delay); }">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-27T14:13:30+08:00">
-    <meta property="article:modified_time" content="2026-05-27T14:13:30+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜常用.h文件及其函数">
-  <meta name="twitter:description" content="[TOC]
-linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/module.h&gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include &lt;linux/init.h&gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include &lt;linux/kernel.h&gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include &lt;linux/device.h&gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn&#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include &lt;linux/gpio.h&gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include &lt;linux/of.h&gt; linux/platform_device.h #include &lt;linux/platform_device.h&gt; struct platform_device; extern int platform_device_register(struct platform_device *); extern void platform_device_unregister(struct platform_device *); struct platform_driver; extern int __platform_driver_regsiter(struct platform_driver *, struct module *); extern void platform_deriver_unregister(struct platform_driver *); linux/fs.h #include &lt;linux/fs.h&gt; struct file_operations; int register_chrdev_region(dev_t first, unsigned int count, char * name); void unregister_chrdev_region(dev_t first, unsigend int count); linux/kdev_t.h #include &lt;linux/kdev_t.h&gt; #define MAJOR(dev) ((unsigned int) ((dev) &gt;&gt; MINORBITS)) #define MINOR(dev) ((unsigned int) ((dev) &amp; MINORMASK)) #define MKDEV(ma,mi) (((ma) &lt;&lt; MINORBITS) | (mi)) asm/uaccess.h #include &lt;asm/uacccess.h&gt; put_user(type val, type *address); get_user(type val, type *address); unsigned long copy_to_user(void __user *to, const void *from, unsigned long n); unsigned long copy_from_user(void *to, const void __user *from, unsigned long n); linux/interrupt.h #include &lt;linux/interrupt.h&gt; #define IRQF_TRIGGER_NONE 0x00000000 #define IRQF_TRIGGER_RISING 0x00000001 #define IRQF_TRIGGER_FALLING 0x00000002 typedef irqreturn_t (*irq_handler_t)(int, void *); static inline int __must_check devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id) { return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags, devname, dev_id); } linux/spinlock.h #include &lt;linux/spinlock.h&gt; #define spin_lock_irqsave(lock, flags) \ do { \ raw_spin_lock_irqsave(spinlock_check(lock), flags); \ } while (0) static inline spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags) { raw_spin_unlock_irqrestore(&amp;lock-&gt;rlock, flags); } linux/gpio/consumer.h #include &lt;linux/gpio/consumer.h&gt; devm_gpiod_get(); gpiod_get_value(); gpiod_set_value(); linux/timer.h #include &lt;linux/timer.h&gt; struct timer_list timer; //旧版 //传参是unsigned long init_timer(&amp;dev-&gt;timer); setup_timer(&amp;dev-&gt;timer, timer_callback, (unsigned long)dev); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(unsigned long data) { struct dev_t *dev = (struct dev_t *) data; } //新版 //原本的传参被废弃，必须传struct timer_list * //别的参数通过container_of / from_timer====&gt;类似通过类成员反推类 timer_setup(&amp;dev-&gt;timer, timer_callback, 0); mod_timer(&amp;dev-&gt;timer, jiffies &#43; msecs_to_jiffies(20)); del_timer_sync(&amp;dev-&gt;timer); static void timer_callback(struct timer_list * timer) { struct dev_t *dev = from_timer(dev, timer, timer); } linux/workqueue.h #include &lt;linux/workqueue.h&gt; struct work_struct { atomic_long_t data; struct list_head entry; work_func_t func; }; struct delayed_work { struct work_struct work; struct timer_list timer; struct workqueue_struct *wq; int cpu; }; #define INIT_WORK(_work, _func) __INIT_WORK((_work), (_func), 0) // _work: struct work_struct // _func: void (*)(struct work_struct *work) #define __INIT_WORK(_work, _func, _onstack) \ do { \ __init_work((_work), _onstack); \ (_work)-&gt;data = (atomic_long_t) WORK_DATA_INIT(); \ INIT_LIST_HEAD(&amp;(_work)-&gt;entry); \ (_work)-&gt;func = (_func); \ } while (0) #define INIT_DELAYED_WORK(_work, _func) __INIT_DELAYED_WORK(_work, _func, _tflags) #define __INIT_DELAYED_WORK(_work, _func, _tflags) \ do { \ INIT_WORK(&amp;(_work)-&gt;work, (_func)); \ __setup_timer(&amp;(_work)-&gt;timer, delayed_work_timer_fn, \ (unsigned long)(_work), \ (_tflags) | TIMER_IRQSAFE); \ } while (0) extern bool cancel_delayed_work_sync(struct delayed_work *dwork); static inline bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay) { return queue_delayed_work(system_wq, dwork, delay); }">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜常用.h文件及其函数",
-      "item": "https://intmagician.github.io/notes/linux/linux_drv_header/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜常用.h文件及其函数",
-  "name": "Linux驱动开发｜常用.h文件及其函数",
-  "description": "[TOC]\nlinux/module.h //path:linux_kernel/include/linux/module.h #include \u0026lt;linux/module.h\u0026gt; //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include \u0026lt;linux/init.h\u0026gt; #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \\ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include \u0026lt;linux/kernel.h\u0026gt; prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include \u0026lt;linux/device.h\u0026gt; struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn\u0026#39;t touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include \u0026lt;linux/gpio.h\u0026gt; gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include \u0026lt;linux/of.h\u0026gt; linux/platform_device.h #include \u0026lt;linux/platform_device.h\u0026gt; struct platform_device; extern int platform_device_register(struct platform_device *); extern void platform_device_unregister(struct platform_device *); struct platform_driver; extern int __platform_driver_regsiter(struct platform_driver *, struct module *); extern void platform_deriver_unregister(struct platform_driver *); linux/fs.h #include \u0026lt;linux/fs.h\u0026gt; struct file_operations; int register_chrdev_region(dev_t first, unsigned int count, char * name); void unregister_chrdev_region(dev_t first, unsigend int count); linux/kdev_t.h #include \u0026lt;linux/kdev_t.h\u0026gt; #define MAJOR(dev) ((unsigned int) ((dev) \u0026gt;\u0026gt; MINORBITS)) #define MINOR(dev) ((unsigned int) ((dev) \u0026amp; MINORMASK)) #define MKDEV(ma,mi) (((ma) \u0026lt;\u0026lt; MINORBITS) | (mi)) asm/uaccess.h #include \u0026lt;asm/uacccess.h\u0026gt; put_user(type val, type *address); get_user(type val, type *address); unsigned long copy_to_user(void __user *to, const void *from, unsigned long n); unsigned long copy_from_user(void *to, const void __user *from, unsigned long n); linux/interrupt.h #include \u0026lt;linux/interrupt.h\u0026gt; #define IRQF_TRIGGER_NONE 0x00000000 #define IRQF_TRIGGER_RISING 0x00000001 #define IRQF_TRIGGER_FALLING 0x00000002 typedef irqreturn_t (*irq_handler_t)(int, void *); static inline int __must_check devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id) { return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags, devname, dev_id); } linux/spinlock.h #include \u0026lt;linux/spinlock.h\u0026gt; #define spin_lock_irqsave(lock, flags) \\ do { \\ raw_spin_lock_irqsave(spinlock_check(lock), flags); \\ } while (0) static inline spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags) { raw_spin_unlock_irqrestore(\u0026amp;lock-\u0026gt;rlock, flags); } linux/gpio/consumer.h #include \u0026lt;linux/gpio/consumer.h\u0026gt; devm_gpiod_get(); gpiod_get_value(); gpiod_set_value(); linux/timer.h #include \u0026lt;linux/timer.h\u0026gt; struct timer_list timer; //旧版 //传参是unsigned long init_timer(\u0026amp;dev-\u0026gt;timer); setup_timer(\u0026amp;dev-\u0026gt;timer, timer_callback, (unsigned long)dev); mod_timer(\u0026amp;dev-\u0026gt;timer, jiffies + msecs_to_jiffies(20)); del_timer_sync(\u0026amp;dev-\u0026gt;timer); static void timer_callback(unsigned long data) { struct dev_t *dev = (struct dev_t *) data; } //新版 //原本的传参被废弃，必须传struct timer_list * //别的参数通过container_of / from_timer====\u0026gt;类似通过类成员反推类 timer_setup(\u0026amp;dev-\u0026gt;timer, timer_callback, 0); mod_timer(\u0026amp;dev-\u0026gt;timer, jiffies + msecs_to_jiffies(20)); del_timer_sync(\u0026amp;dev-\u0026gt;timer); static void timer_callback(struct timer_list * timer) { struct dev_t *dev = from_timer(dev, timer, timer); } linux/workqueue.h #include \u0026lt;linux/workqueue.h\u0026gt; struct work_struct { atomic_long_t data; struct list_head entry; work_func_t func; }; struct delayed_work { struct work_struct work; struct timer_list timer; struct workqueue_struct *wq; int cpu; }; #define INIT_WORK(_work, _func) __INIT_WORK((_work), (_func), 0) // _work: struct work_struct // _func: void (*)(struct work_struct *work) #define __INIT_WORK(_work, _func, _onstack) \\ do { \\ __init_work((_work), _onstack); \\ (_work)-\u0026gt;data = (atomic_long_t) WORK_DATA_INIT(); \\ INIT_LIST_HEAD(\u0026amp;(_work)-\u0026gt;entry); \\ (_work)-\u0026gt;func = (_func); \\ } while (0) #define INIT_DELAYED_WORK(_work, _func) __INIT_DELAYED_WORK(_work, _func, _tflags) #define __INIT_DELAYED_WORK(_work, _func, _tflags) \\ do { \\ INIT_WORK(\u0026amp;(_work)-\u0026gt;work, (_func)); \\ __setup_timer(\u0026amp;(_work)-\u0026gt;timer, delayed_work_timer_fn, \\ (unsigned long)(_work), \\ (_tflags) | TIMER_IRQSAFE); \\ } while (0) extern bool cancel_delayed_work_sync(struct delayed_work *dwork); static inline bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay) { return queue_delayed_work(system_wq, dwork, delay); } ",
-  "keywords": [
-    
-  ],
-  "articleBody": "[TOC]\nlinux/module.h //path:linux_kernel/include/linux/module.h #include //Content: #define MODULE_INFO(tag, info) __MODULE_INFO(tag, tag, info) #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias) #define MODULE_LICENSE(_license) MODULE_INFO(license, _license) #define MODULE_AUTHOR(_author) MODULE_INFO(author, _author) #define MODULE_DESCRIPTION(description) MODULE_INFO(description, _description) linux/init.h //path:linux_kernel/include/linux/init.h #include #define module_init(x) __initcall(x); #define module_exit(x) __exitcall(x); #define __initcall(fn) device_initcall(fn) #define __exitcall(fn) \\ static exitcall_t __exitcall_##fn __exit_call = fn linux/kernel.h //path:linux_kernel/include/linux/kernel.h #include prink() pr_info() pr_err() container_of() linux/device.h //path:linux_kernel/include/linux/device.h #include struct device { struct device *parent; struct device_private *p; struct kobject kobj; const char *init_name; /* initial name of the device */ const struct device_type *type; struct mutex mutex; /* mutex to synchronize calls to * its driver. */ struct bus_type *bus; /* type of bus device is on */ struct device_driver *driver; /* which driver has allocated this device */ void *platform_data; /* platform specific data, device core doesn't touch it */ void *driver_data; /* driver data, set and get with dev_set/get_drvdata */ struct dev_pm_info power; struct dev_pm_domain *pm_domain; #ifdef CONFIG_PINCTRL struct dev_pin_info *pins; #endif ...... }; linux/gpio.h //path:linux_kernel/include/linux/gpio.h #include gpio_request() gpio_direction_output() linux/of.h //path:linux_kernel/include/linux/of.h #include linux/platform_device.h #include struct platform_device; extern int platform_device_register(struct platform_device *); extern void platform_device_unregister(struct platform_device *); struct platform_driver; extern int __platform_driver_regsiter(struct platform_driver *, struct module *); extern void platform_deriver_unregister(struct platform_driver *); linux/fs.h #include struct file_operations; int register_chrdev_region(dev_t first, unsigned int count, char * name); void unregister_chrdev_region(dev_t first, unsigend int count); linux/kdev_t.h #include #define MAJOR(dev) ((unsigned int) ((dev) \u003e\u003e MINORBITS)) #define MINOR(dev) ((unsigned int) ((dev) \u0026 MINORMASK)) #define MKDEV(ma,mi) (((ma) \u003c\u003c MINORBITS) | (mi)) asm/uaccess.h #include put_user(type val, type *address); get_user(type val, type *address); unsigned long copy_to_user(void __user *to, const void *from, unsigned long n); unsigned long copy_from_user(void *to, const void __user *from, unsigned long n); linux/interrupt.h #include #define IRQF_TRIGGER_NONE 0x00000000 #define IRQF_TRIGGER_RISING 0x00000001 #define IRQF_TRIGGER_FALLING 0x00000002 typedef irqreturn_t (*irq_handler_t)(int, void *); static inline int __must_check devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id) { return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags, devname, dev_id); } linux/spinlock.h #include #define spin_lock_irqsave(lock, flags) \\ do { \\ raw_spin_lock_irqsave(spinlock_check(lock), flags); \\ } while (0) static inline spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags) { raw_spin_unlock_irqrestore(\u0026lock-\u003erlock, flags); } linux/gpio/consumer.h #include devm_gpiod_get(); gpiod_get_value(); gpiod_set_value(); linux/timer.h #include struct timer_list timer; //旧版 //传参是unsigned long init_timer(\u0026dev-\u003etimer); setup_timer(\u0026dev-\u003etimer, timer_callback, (unsigned long)dev); mod_timer(\u0026dev-\u003etimer, jiffies + msecs_to_jiffies(20)); del_timer_sync(\u0026dev-\u003etimer); static void timer_callback(unsigned long data) { struct dev_t *dev = (struct dev_t *) data; } //新版 //原本的传参被废弃，必须传struct timer_list * //别的参数通过container_of / from_timer====\u003e类似通过类成员反推类 timer_setup(\u0026dev-\u003etimer, timer_callback, 0); mod_timer(\u0026dev-\u003etimer, jiffies + msecs_to_jiffies(20)); del_timer_sync(\u0026dev-\u003etimer); static void timer_callback(struct timer_list * timer) { struct dev_t *dev = from_timer(dev, timer, timer); } linux/workqueue.h #include struct work_struct { atomic_long_t data; struct list_head entry; work_func_t func; }; struct delayed_work { struct work_struct work; struct timer_list timer; struct workqueue_struct *wq; int cpu; }; #define INIT_WORK(_work, _func) __INIT_WORK((_work), (_func), 0) // _work: struct work_struct // _func: void (*)(struct work_struct *work) #define __INIT_WORK(_work, _func, _onstack) \\ do { \\ __init_work((_work), _onstack); \\ (_work)-\u003edata = (atomic_long_t) WORK_DATA_INIT(); \\ INIT_LIST_HEAD(\u0026(_work)-\u003eentry); \\ (_work)-\u003efunc = (_func); \\ } while (0) #define INIT_DELAYED_WORK(_work, _func) __INIT_DELAYED_WORK(_work, _func, _tflags) #define __INIT_DELAYED_WORK(_work, _func, _tflags) \\ do { \\ INIT_WORK(\u0026(_work)-\u003ework, (_func)); \\ __setup_timer(\u0026(_work)-\u003etimer, delayed_work_timer_fn, \\ (unsigned long)(_work), \\ (_tflags) | TIMER_IRQSAFE); \\ } while (0) extern bool cancel_delayed_work_sync(struct delayed_work *dwork); static inline bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay) { return queue_delayed_work(system_wq, dwork, delay); } ",
-  "wordCount" : "541",
-  "inLanguage": "en",
-  "datePublished": "2026-05-27T14:13:30+08:00",
-  "dateModified": "2026-05-27T14:13:30+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_drv_header/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -369,27 +298,22 @@ linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/mod
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -401,17 +325,17 @@ linux/module.h //path:linux_kernel/include/linux/module.h #include &lt;linux/mod
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜常用.h文件及其函数
     </h1>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜设备树学习笔记 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。
@@ -118,16 +118,16 @@ chosen node
 如何生成dtb
 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_dts/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_dts/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_dts/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_dts/">
 <noscript>
     <style>
         #theme-toggle,
@@ -173,122 +173,13 @@ chosen node
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_dts/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜设备树学习笔记">
-  <meta property="og:description" content="如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。
-所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。
-简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。
-dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
-node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
-property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
-compatible
-compatible = &#34;manufacturer,model&#34;; compatible = &#34;arm,cortex-a7&#34;; compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
-device_type
-device_type = &#34;cpu&#34;; cells
-#address-cells = &lt;&gt; #size-cells = &lt;&gt; #interrupt-cells = &lt;&gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。
-reg
-reg = &lt;address, size&gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
-ranges
-ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
-phandle
-phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
-interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
-status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
-interrupt and mapping(important)
-interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-24T10:20:17+08:00">
-    <meta property="article:modified_time" content="2026-05-24T10:20:17+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜设备树学习笔记">
-  <meta name="twitter:description" content="如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。
-所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。
-简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。
-dts语法 node node有以下三种形式，带label的方便其他node引用，&amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。
-node_name { } label: node_name@address { } &amp;label { } &amp;label可以用来补充被引用的node
-property 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。
-compatible
-compatible = &#34;manufacturer,model&#34;; compatible = &#34;arm,cortex-a7&#34;; compatible = &#34;fsl,imx6ull-gpmi-nand&#34;, &#34;fsl,imx6ull-gpmi-nand&#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。
-device_type
-device_type = &#34;cpu&#34;; cells
-#address-cells = &lt;&gt; #size-cells = &lt;&gt; #interrupt-cells = &lt;&gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。
-reg
-reg = &lt;address, size&gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。
-ranges
-ranges = &lt;child-bus-address parent-bus-address length&gt; / &lt;empty&gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。
-phandle
-phandle = &lt;1&gt;; phandle跟label的作用一样，label需要&amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。
-interrupt-parent = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; status
-status = &#34;okay&#34;/&#34;disable&#34;/&#34;fail&#34;/&#34;fail-ass&#34;; 用于指示设备的状态
-interrupt and mapping(important)
-interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;label&gt;; dts一般有哪些node root node / { compatible = &#34;fsl,imx6ull-alientek-evk&#34;, &#34;fsl,imx6ull&#34;; } cpus node /{ ............ cpus { #address-cells = &lt;1&gt;; #size-cells = &lt;0&gt;; cpu0: cpu@0 { compatible = &#34;arm,cortex-a7&#34;; device_type = &#34;cpu&#34;; reg = &lt;0&gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜设备树学习笔记",
-      "item": "https://intmagician.github.io/notes/linux/linux_dts/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜设备树学习笔记",
-  "name": "Linux驱动开发｜设备树学习笔记",
-  "description": "如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。\n所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。\n简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。\ndts语法 node node有以下三种形式，带label的方便其他node引用，\u0026amp;label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026amp;label { } \u0026amp;label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible\ncompatible = \u0026#34;manufacturer,model\u0026#34;; compatible = \u0026#34;arm,cortex-a7\u0026#34;; compatible = \u0026#34;fsl,imx6ull-gpmi-nand\u0026#34;, \u0026#34;fsl,imx6ull-gpmi-nand\u0026#34;; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。\ndevice_type\ndevice_type = \u0026#34;cpu\u0026#34;; cells\n#address-cells = \u0026lt;\u0026gt; #size-cells = \u0026lt;\u0026gt; #interrupt-cells = \u0026lt;\u0026gt; cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。\nreg\nreg = \u0026lt;address, size\u0026gt; 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。\nranges\nranges = \u0026lt;child-bus-address parent-bus-address length\u0026gt; / \u0026lt;empty\u0026gt;; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。\nphandle\nphandle = \u0026lt;1\u0026gt;; phandle跟label的作用一样，label需要\u0026amp;label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。\ninterrupt-parent = \u0026lt;1\u0026gt;; interrupt-parent = \u0026lt;\u0026amp;label\u0026gt;; status\nstatus = \u0026#34;okay\u0026#34;/\u0026#34;disable\u0026#34;/\u0026#34;fail\u0026#34;/\u0026#34;fail-ass\u0026#34;; 用于指示设备的状态\ninterrupt and mapping(important)\ninterrupt-controller; #interrupt-cells = \u0026lt;1\u0026gt;; interrupt-parent = \u0026lt;\u0026amp;label\u0026gt;; dts一般有哪些node root node / { compatible = \u0026#34;fsl,imx6ull-alientek-evk\u0026#34;, \u0026#34;fsl,imx6ull\u0026#34;; } cpus node /{ ............ cpus { #address-cells = \u0026lt;1\u0026gt;; #size-cells = \u0026lt;0\u0026gt;; cpu0: cpu@0 { compatible = \u0026#34;arm,cortex-a7\u0026#34;; device_type = \u0026#34;cpu\u0026#34;; reg = \u0026lt;0\u0026gt;; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node \u0026hellip;\u0026hellip;\u0026hellip;\u0026hellip; 如何生成dtb 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "如果你了解linux原始的驱动编写，你就会明白，设备树只是一个更优、更便捷的数据结构，如果把设备信息写成.c的结构体，那么每次修改都要编译内核，内核里边也有一堆.c文件，它们都是内核外围的，很臃肿。\n所以在学设备树之前，一定要建立这样一个思想，我写设备树跟写C结构体描述设备是在做同一件事情，这样的话，你可能就不会很疑惑，比如：设备树是在干什么，设备树里一堆搞不清楚怎么来的名字是怎么回事，内核是怎么获取的这些东西，最终又是怎么成功驱动设备的。\n简单来说dtb就是描述设备信息的文本，内核里边有个查找函数来查想要的信息，然后给驱动程序。就一个复杂版二叉树，dtb就是把二叉树遍历一遍，也就是flatten扁平化，然后给uboot和内核使用。\ndts语法 node node有以下三种形式，带label的方便其他node引用，\u0026label则是引用。类似C语言的变量名与取变量地址，还有一个特殊的根节点是/。\nnode_name { } label: node_name@address { } \u0026label { } \u0026label可以用来补充被引用的node\nproperty 除了node_name还有它的起始地址外，它还包含了很多属性，用来补充node信息。\ncompatible\ncompatible = \"manufacturer,model\"; compatible = \"arm,cortex-a7\"; compatible = \"fsl,imx6ull-gpmi-nand\", \"fsl,imx6ull-gpmi-nand\"; compatible需要设备树跟驱动模块能够匹配。命名一般都有现成的。\ndevice_type\ndevice_type = \"cpu\"; cells\n#address-cells = \u003c\u003e #size-cells = \u003c\u003e #interrupt-cells = \u003c\u003e cells的单位是32位，0指的是0x32位,1指的是1x32位,2指的是2x32位，这几个常用。 address-cells指的是地址是多少位的。 size-cells指的是最大需要用多少位数来表示，没大小就是0，1代表u32，2代表u64。 interrupt也一样。\nreg\nreg = \u003caddress, size\u003e 对应#address-cells和#size-cells的值。address是起始地址，size是大小。可以去手册的Memory Maps这个章节查看，一般reg配置看这里就行了。\nranges\nranges = \u003cchild-bus-address parent-bus-address length\u003e / \u003cempty\u003e; 对应#address-cells和#size-cells的值。 ranges用于总线地址映射，就是把子总线地址翻译到父总线地址，一个地址翻译表。子节点里的reg地址，不一定是cpu看到的物理地址，需要经过ranges翻译。\nphandle\nphandle = \u003c1\u003e; phandle跟label的作用一样，label需要\u0026label来引用，但phandle不行，它必须是独一无二的，不能跟别的一样，应用的时候需要引用对应数字。\ninterrupt-parent = \u003c1\u003e; interrupt-parent = \u003c\u0026label\u003e; status\nstatus = \"okay\"/\"disable\"/\"fail\"/\"fail-ass\"; 用于指示设备的状态\ninterrupt and mapping(important)\ninterrupt-controller; #interrupt-cells = \u003c1\u003e; interrupt-parent = \u003c\u0026label\u003e; dts一般有哪些node root node / { compatible = \"fsl,imx6ull-alientek-evk\", \"fsl,imx6ull\"; } cpus node /{ ............ cpus { #address-cells = \u003c1\u003e; #size-cells = \u003c0\u003e; cpu0: cpu@0 { compatible = \"arm,cortex-a7\"; device_type = \"cpu\"; reg = \u003c0\u003e; } } } soc node memory node bus node gpio node interrupt-controller node spi node uart node aliases node chosen node ………… 如何生成dtb 进入/arch/arm/boot/dts目录，添加自己的dts，在makefile里对应系列添加自己的target文件也就是myboard.dtb\n在Linux kernel下\nmake dtbs linux的dts规范 芯片厂的dts规范 原厂dts修改方法 uboot-\u003edtb怎么交接给linux uboot 流程 linux怎么解析dtb openfirmware 函数 struct device_node{ const char * name; const char * type; phandle phandle; const char * full_name; struct fwnode_handle fwnode; struct property * properties; struct property * deadprops; struct device_node * parent; struct device_node * child; struct device_node * sibling; struct kobject kobj; unsigned long _flags; void * data; #if defined(CONFIG_SPARC) const char * path_component_name; unsigned int unique_id; struct of_irq_controller * irq_trans; #endif }; 查找节点的openfirmware函数 node_name\nstruct device_node * of_find_node_by_name(struct device_node * from, const char * name); device_type\nstruct device_node * of_find_node_by_type(struct device_node * from, const char * type); device_type and compatible\nstruct device_node * of_find_compatible_node(struct device_node * from, const char * type, const char * compatible); of_device_id\nstruct device_node * of_find_matching_node_and_match(struct device_node * from, const struct of_device_id * matches, const struct of_device_id ** match); path\ninline struct device_node * of_find_node_by_path(const char * path); 查找父/子节点 struct device_node * of_get_parent(const struct device_node * node); struct device_node * of_get_next_child(const struct device_node * node, struct device_node * prev); 获取property struct property { char * name; int length; void * value; struct property * next; unsigned long _flags; unsigned int unique_id; struct bin_attribute attr; }; property * of_find_property(const struct device_node * np, const char * name, int * lenp); int of_property_count_elems_of_size(const struct device_node * np, const char * propname, int elem_size) int of_property_read_u32_index(const struct device_node * np, const char * propname, u32 index, u32 * out_value); int of_property_read_u8/u16/u32/u64_array(const struct device_node * np, const char * propname, u8/u16/u32/u64 * out_values, size_t sz); int of_property_read_u8/u16/u32/u64(const struct device_node * np, const char * propname, u8/u16/u32/u64 * out_value); int of_property_read_string(struct device_node * np, const char * propname, const char ** out_string); int of_n_addr_cells(struct device_node * np); int of_n_size_cells(struct device_node * np); *compat == compatible ?\nint of_device_is_compatible(const struct device_node * device, const char * compat); 获得地址相关属性，index用啥值没搞懂，标记。\nconst __be32 * of_get_address(struct device_node * dev, int index, u64 * size, unsigned int * flags); 将从设备树读取的地址转换为物理地址\nu64 of_translate_address(struct device_node * dev, const __be32 * in_addr); 将物理地址映射为虚拟地址，index用啥值没搞懂，标记。\nvoid __iomem * of_iomap(struct device_node * np, int index); struct resource { resource_size_t start; resource_size_t end; const char * name; unsigned long flags; struct resource * parent, * sibling, * child; } int of_address_to_resource(struct device_node * dev, int index, struct resource * r); ",
-  "wordCount" : "520",
-  "inLanguage": "en",
-  "datePublished": "2026-05-24T10:20:17+08:00",
-  "dateModified": "2026-05-24T10:20:17+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_dts/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -314,27 +205,22 @@ interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -346,17 +232,17 @@ interrupt-controller; #interrupt-cells = &lt;1&gt;; interrupt-parent = &lt;&amp;
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜设备树学习笔记
     </h1>

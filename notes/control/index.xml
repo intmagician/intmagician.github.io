@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>再战控制系统 on Intmagician</title>
-    <link>https://intmagician.github.io/notes/control/</link>
+    <link>http://localhost:1313/notes/control/</link>
     <description>Recent content in 再战控制系统 on Intmagician</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <copyright>2026 intmagician | Embedded Systems | Control | Learning by Building</copyright>
     <lastBuildDate>Mon, 04 May 2026 14:28:23 +0800</lastBuildDate>
-    <atom:link href="https://intmagician.github.io/notes/control/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/notes/control/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>RealTimeSystemDebug</title>
-      <link>https://intmagician.github.io/notes/control/realtimesystemdebug/</link>
+      <link>http://localhost:1313/notes/control/realtimesystemdebug/</link>
       <pubDate>Mon, 04 May 2026 14:28:23 +0800</pubDate>
-      <guid>https://intmagician.github.io/notes/control/realtimesystemdebug/</guid>
+      <guid>http://localhost:1313/notes/control/realtimesystemdebug/</guid>
       <description>&lt;h1 id=&#34;如何控制时序使得不影响控制节奏&#34;&gt;如何控制时序使得不影响控制节奏&lt;/h1&gt;
 &lt;p&gt;本篇主要内容是对两轮倒立摆平衡车实时性问题的总结。&lt;/p&gt;
 &lt;h2 id=&#34;为什么要处理实时性&#34;&gt;为什么要处理实时性&lt;/h2&gt;

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Resume | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="单片机/嵌入式软件工程师
@@ -62,16 +62,16 @@ $$\theta_{true} = \theta &#43; \theta_a$$
 所以
 $$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p * \theta &#43; K_d * \omega $$">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/resume/">
+<link rel="canonical" href="http://localhost:1313/resume/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/resume/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/resume/">
 <noscript>
     <style>
         #theme-toggle,
@@ -117,115 +117,13 @@ $$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p 
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/resume/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Resume">
-  <meta property="og:description" content="单片机/嵌入式软件工程师 单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)
-个人技术栈 嵌入式开发的基础(C，单片机，外设，常用通信协议，makefile交叉编译，ARM工具链) 调试能力（通信bug，系统bug等） 调试工具（串口打印调试，示波器分析时钟频率，定时器频率，逻辑分析仪分析通信bug，串口&#43;Python绘图） 能快速梳理复杂SDK系统结构（基于事件 &#43; task模型） 理解事件驱动机制（SYS_EVENT_HANDLER） 能通过有限源码分析任务调度与事件流转 控制系统 个人目前想做的其中一个方向
-偏向于传感器、滤波器、控制器、执行机构、被控对象。
-技术栈 裸机开发或者是RTOS开发(控制比较强调实时性) 从传感器信号，到模拟电路，再到ADC进到MCU，然后对这个信号进行处理，滤波，偏向于传感器，运放电路，还有数据处理、滤波算法。 物理建模，简化为理想模型，做简单的物理分析。 控制系统建模，针对物理模型，大致分析一下输出与输入的关系。或者MatLab Simulink的仿真。 设计控制器，常用的如PID，然后调参。 执行机构的驱动，常用的PWM。 主要内容 传感器原理，数据的获取和处理 控制算法、信号滤波算法。 执行机构的原理，驱动方法。 整个系统的调试与测试。 执行机构一般是电机和舵机这种的，如果是工业上的话可能是控制阀这种。
-个人的话，对于FOC算法，第一份工作接触了一点，一个几百页pdf，深深的恐惧。很多控制算法仅仅停留于了解。
-项目一：温控系统 一个IGBT模块，控制一个加热线圈，加热线圈绕着一个管道。水经过进水口，到出水口，温度需要达到目标温度。
-输入是水流，水温，输出是IGBT的PWM。
-主要的干扰是水流的变化，这个干扰很致命，因为水压突然不够，水流小了，速度变慢了，在管道里时间长，出来温度就过高，然后水压又够了，恢复正常。控制器就这样被这个干扰捉弄，一上一下。
-我的工作内容：尝试把控制算法改成了PID，自己调了几天参数，结果不理想，干扰来了就崩，实现不了±2°C的误差，前馈也不太会。还想尝试模糊控制&#43;PID，但是当时不知道怎么写成程序，然后赶时间，就在已有控制算法上改参数。如果能有稳定水压和水流，就比较好做。
-这个是我第一份工作接手的第一个项目，很棘手，完全没有经验，信息缺失，我只能看电路原理图。我对这个干扰是束手无策，虽然知道要前馈，但时间不允许。原有程序的控制器算法是一个公式，很多数字乘一些变量，看不太懂。
-项目二：55kw三相电机的软启动控制 输入是三相电，输出也是三相电，主要技术就是三相PWM控制还有调相。原理的话就是降压启动，限流启动，突跳启动这些。
-传感器数据: 输入电压，输出电压，输出电流，温度
-防反接：过零检测还有相序检测，接错了很危险，而且电机很大，在现场挺吓人的。我对强电这块还是很恐惧。
-一般常用滤波：平均滤波，IIR滤波。
-调试主要是拿示波器看三相输出，是不是符合要求，经过测试确定控制没问题，才接电机测试。
-我的工作内容：将原本复杂的控制算法，改成了三相PWM控制，然后通过示波器调试，直到三相PWM的输出波形符合预期，然后上机测试。通过三相PWM的调相使得相序发生变化，实现反转。然后设计按键显示的交互程序。
-项目三：两轮自平衡车（个人项目） 输入主要是加速度计和陀螺仪的数据，输出是用于驱动电机的PWM占空比。
-物理模型：带轮子而且能动的倒立摆系统。
-控制原理就是让支撑点位于重心的正下方。被控制对象实际上是倾斜角 $\theta$.让它接近0.单用加速度计计算的倾斜角不能完全控制平衡，因为存在一个$\omega$,一个隐藏的倾斜角:
-$$ \theta_a = \omega * dt $$
-实际上的倾斜角
-$$\theta_{true} = \theta &#43; \theta_a$$
-所以
-$$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p * \theta &#43; K_d * \omega $$">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:published_time" content="2026-05-03T10:36:58+08:00">
-    <meta property="article:modified_time" content="2026-05-03T10:36:58+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Resume">
-  <meta name="twitter:description" content="单片机/嵌入式软件工程师 单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)
-个人技术栈 嵌入式开发的基础(C，单片机，外设，常用通信协议，makefile交叉编译，ARM工具链) 调试能力（通信bug，系统bug等） 调试工具（串口打印调试，示波器分析时钟频率，定时器频率，逻辑分析仪分析通信bug，串口&#43;Python绘图） 能快速梳理复杂SDK系统结构（基于事件 &#43; task模型） 理解事件驱动机制（SYS_EVENT_HANDLER） 能通过有限源码分析任务调度与事件流转 控制系统 个人目前想做的其中一个方向
-偏向于传感器、滤波器、控制器、执行机构、被控对象。
-技术栈 裸机开发或者是RTOS开发(控制比较强调实时性) 从传感器信号，到模拟电路，再到ADC进到MCU，然后对这个信号进行处理，滤波，偏向于传感器，运放电路，还有数据处理、滤波算法。 物理建模，简化为理想模型，做简单的物理分析。 控制系统建模，针对物理模型，大致分析一下输出与输入的关系。或者MatLab Simulink的仿真。 设计控制器，常用的如PID，然后调参。 执行机构的驱动，常用的PWM。 主要内容 传感器原理，数据的获取和处理 控制算法、信号滤波算法。 执行机构的原理，驱动方法。 整个系统的调试与测试。 执行机构一般是电机和舵机这种的，如果是工业上的话可能是控制阀这种。
-个人的话，对于FOC算法，第一份工作接触了一点，一个几百页pdf，深深的恐惧。很多控制算法仅仅停留于了解。
-项目一：温控系统 一个IGBT模块，控制一个加热线圈，加热线圈绕着一个管道。水经过进水口，到出水口，温度需要达到目标温度。
-输入是水流，水温，输出是IGBT的PWM。
-主要的干扰是水流的变化，这个干扰很致命，因为水压突然不够，水流小了，速度变慢了，在管道里时间长，出来温度就过高，然后水压又够了，恢复正常。控制器就这样被这个干扰捉弄，一上一下。
-我的工作内容：尝试把控制算法改成了PID，自己调了几天参数，结果不理想，干扰来了就崩，实现不了±2°C的误差，前馈也不太会。还想尝试模糊控制&#43;PID，但是当时不知道怎么写成程序，然后赶时间，就在已有控制算法上改参数。如果能有稳定水压和水流，就比较好做。
-这个是我第一份工作接手的第一个项目，很棘手，完全没有经验，信息缺失，我只能看电路原理图。我对这个干扰是束手无策，虽然知道要前馈，但时间不允许。原有程序的控制器算法是一个公式，很多数字乘一些变量，看不太懂。
-项目二：55kw三相电机的软启动控制 输入是三相电，输出也是三相电，主要技术就是三相PWM控制还有调相。原理的话就是降压启动，限流启动，突跳启动这些。
-传感器数据: 输入电压，输出电压，输出电流，温度
-防反接：过零检测还有相序检测，接错了很危险，而且电机很大，在现场挺吓人的。我对强电这块还是很恐惧。
-一般常用滤波：平均滤波，IIR滤波。
-调试主要是拿示波器看三相输出，是不是符合要求，经过测试确定控制没问题，才接电机测试。
-我的工作内容：将原本复杂的控制算法，改成了三相PWM控制，然后通过示波器调试，直到三相PWM的输出波形符合预期，然后上机测试。通过三相PWM的调相使得相序发生变化，实现反转。然后设计按键显示的交互程序。
-项目三：两轮自平衡车（个人项目） 输入主要是加速度计和陀螺仪的数据，输出是用于驱动电机的PWM占空比。
-物理模型：带轮子而且能动的倒立摆系统。
-控制原理就是让支撑点位于重心的正下方。被控制对象实际上是倾斜角 $\theta$.让它接近0.单用加速度计计算的倾斜角不能完全控制平衡，因为存在一个$\omega$,一个隐藏的倾斜角:
-$$ \theta_a = \omega * dt $$
-实际上的倾斜角
-$$\theta_{true} = \theta &#43; \theta_a$$
-所以
-$$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p * \theta &#43; K_d * \omega $$">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Resume",
-      "item": "https://intmagician.github.io/resume/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Resume",
-  "name": "Resume",
-  "description": "单片机/嵌入式软件工程师 单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)\n个人技术栈 嵌入式开发的基础(C，单片机，外设，常用通信协议，makefile交叉编译，ARM工具链) 调试能力（通信bug，系统bug等） 调试工具（串口打印调试，示波器分析时钟频率，定时器频率，逻辑分析仪分析通信bug，串口+Python绘图） 能快速梳理复杂SDK系统结构（基于事件 + task模型） 理解事件驱动机制（SYS_EVENT_HANDLER） 能通过有限源码分析任务调度与事件流转 控制系统 个人目前想做的其中一个方向\n偏向于传感器、滤波器、控制器、执行机构、被控对象。\n技术栈 裸机开发或者是RTOS开发(控制比较强调实时性) 从传感器信号，到模拟电路，再到ADC进到MCU，然后对这个信号进行处理，滤波，偏向于传感器，运放电路，还有数据处理、滤波算法。 物理建模，简化为理想模型，做简单的物理分析。 控制系统建模，针对物理模型，大致分析一下输出与输入的关系。或者MatLab Simulink的仿真。 设计控制器，常用的如PID，然后调参。 执行机构的驱动，常用的PWM。 主要内容 传感器原理，数据的获取和处理 控制算法、信号滤波算法。 执行机构的原理，驱动方法。 整个系统的调试与测试。 执行机构一般是电机和舵机这种的，如果是工业上的话可能是控制阀这种。\n个人的话，对于FOC算法，第一份工作接触了一点，一个几百页pdf，深深的恐惧。很多控制算法仅仅停留于了解。\n项目一：温控系统 一个IGBT模块，控制一个加热线圈，加热线圈绕着一个管道。水经过进水口，到出水口，温度需要达到目标温度。\n输入是水流，水温，输出是IGBT的PWM。\n主要的干扰是水流的变化，这个干扰很致命，因为水压突然不够，水流小了，速度变慢了，在管道里时间长，出来温度就过高，然后水压又够了，恢复正常。控制器就这样被这个干扰捉弄，一上一下。\n我的工作内容：尝试把控制算法改成了PID，自己调了几天参数，结果不理想，干扰来了就崩，实现不了±2°C的误差，前馈也不太会。还想尝试模糊控制+PID，但是当时不知道怎么写成程序，然后赶时间，就在已有控制算法上改参数。如果能有稳定水压和水流，就比较好做。\n这个是我第一份工作接手的第一个项目，很棘手，完全没有经验，信息缺失，我只能看电路原理图。我对这个干扰是束手无策，虽然知道要前馈，但时间不允许。原有程序的控制器算法是一个公式，很多数字乘一些变量，看不太懂。\n项目二：55kw三相电机的软启动控制 输入是三相电，输出也是三相电，主要技术就是三相PWM控制还有调相。原理的话就是降压启动，限流启动，突跳启动这些。\n传感器数据: 输入电压，输出电压，输出电流，温度\n防反接：过零检测还有相序检测，接错了很危险，而且电机很大，在现场挺吓人的。我对强电这块还是很恐惧。\n一般常用滤波：平均滤波，IIR滤波。\n调试主要是拿示波器看三相输出，是不是符合要求，经过测试确定控制没问题，才接电机测试。\n我的工作内容：将原本复杂的控制算法，改成了三相PWM控制，然后通过示波器调试，直到三相PWM的输出波形符合预期，然后上机测试。通过三相PWM的调相使得相序发生变化，实现反转。然后设计按键显示的交互程序。\n项目三：两轮自平衡车（个人项目） 输入主要是加速度计和陀螺仪的数据，输出是用于驱动电机的PWM占空比。\n物理模型：带轮子而且能动的倒立摆系统。\n控制原理就是让支撑点位于重心的正下方。被控制对象实际上是倾斜角 $\\theta$.让它接近0.单用加速度计计算的倾斜角不能完全控制平衡，因为存在一个$\\omega$,一个隐藏的倾斜角:\n$$ \\theta_a = \\omega * dt $$\n实际上的倾斜角\n$$\\theta_{true} = \\theta + \\theta_a$$\n所以\n$$ Out_{pwm} = K_p * \\theta_{true} = K_p * \\theta + K_p * dt * \\omega = K_p * \\theta + K_d * \\omega $$\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "单片机/嵌入式软件工程师 单片机/嵌入式(32位MCU、8位MCU、RTOS、控制系统、Linux驱动)\n个人技术栈 嵌入式开发的基础(C，单片机，外设，常用通信协议，makefile交叉编译，ARM工具链) 调试能力（通信bug，系统bug等） 调试工具（串口打印调试，示波器分析时钟频率，定时器频率，逻辑分析仪分析通信bug，串口+Python绘图） 能快速梳理复杂SDK系统结构（基于事件 + task模型） 理解事件驱动机制（SYS_EVENT_HANDLER） 能通过有限源码分析任务调度与事件流转 控制系统 个人目前想做的其中一个方向\n偏向于传感器、滤波器、控制器、执行机构、被控对象。\n技术栈 裸机开发或者是RTOS开发(控制比较强调实时性) 从传感器信号，到模拟电路，再到ADC进到MCU，然后对这个信号进行处理，滤波，偏向于传感器，运放电路，还有数据处理、滤波算法。 物理建模，简化为理想模型，做简单的物理分析。 控制系统建模，针对物理模型，大致分析一下输出与输入的关系。或者MatLab Simulink的仿真。 设计控制器，常用的如PID，然后调参。 执行机构的驱动，常用的PWM。 主要内容 传感器原理，数据的获取和处理 控制算法、信号滤波算法。 执行机构的原理，驱动方法。 整个系统的调试与测试。 执行机构一般是电机和舵机这种的，如果是工业上的话可能是控制阀这种。\n个人的话，对于FOC算法，第一份工作接触了一点，一个几百页pdf，深深的恐惧。很多控制算法仅仅停留于了解。\n项目一：温控系统 一个IGBT模块，控制一个加热线圈，加热线圈绕着一个管道。水经过进水口，到出水口，温度需要达到目标温度。\n输入是水流，水温，输出是IGBT的PWM。\n主要的干扰是水流的变化，这个干扰很致命，因为水压突然不够，水流小了，速度变慢了，在管道里时间长，出来温度就过高，然后水压又够了，恢复正常。控制器就这样被这个干扰捉弄，一上一下。\n我的工作内容：尝试把控制算法改成了PID，自己调了几天参数，结果不理想，干扰来了就崩，实现不了±2°C的误差，前馈也不太会。还想尝试模糊控制+PID，但是当时不知道怎么写成程序，然后赶时间，就在已有控制算法上改参数。如果能有稳定水压和水流，就比较好做。\n这个是我第一份工作接手的第一个项目，很棘手，完全没有经验，信息缺失，我只能看电路原理图。我对这个干扰是束手无策，虽然知道要前馈，但时间不允许。原有程序的控制器算法是一个公式，很多数字乘一些变量，看不太懂。\n项目二：55kw三相电机的软启动控制 输入是三相电，输出也是三相电，主要技术就是三相PWM控制还有调相。原理的话就是降压启动，限流启动，突跳启动这些。\n传感器数据: 输入电压，输出电压，输出电流，温度\n防反接：过零检测还有相序检测，接错了很危险，而且电机很大，在现场挺吓人的。我对强电这块还是很恐惧。\n一般常用滤波：平均滤波，IIR滤波。\n调试主要是拿示波器看三相输出，是不是符合要求，经过测试确定控制没问题，才接电机测试。\n我的工作内容：将原本复杂的控制算法，改成了三相PWM控制，然后通过示波器调试，直到三相PWM的输出波形符合预期，然后上机测试。通过三相PWM的调相使得相序发生变化，实现反转。然后设计按键显示的交互程序。\n项目三：两轮自平衡车（个人项目） 输入主要是加速度计和陀螺仪的数据，输出是用于驱动电机的PWM占空比。\n物理模型：带轮子而且能动的倒立摆系统。\n控制原理就是让支撑点位于重心的正下方。被控制对象实际上是倾斜角 $\\theta$.让它接近0.单用加速度计计算的倾斜角不能完全控制平衡，因为存在一个$\\omega$,一个隐藏的倾斜角:\n$$ \\theta_a = \\omega * dt $$\n实际上的倾斜角\n$$\\theta_{true} = \\theta + \\theta_a$$\n所以\n$$ Out_{pwm} = K_p * \\theta_{true} = K_p * \\theta + K_p * dt * \\omega = K_p * \\theta + K_d * \\omega $$\n这个就是内环的控制公式。\nLinux驱动 个人考虑的另一个方向\n偏向于操作系统层面，Uboot、DeviceTrees、Linux Kernel、驱动程序。\n目前仅停留于想，没有拿得出手的项目。\n",
-  "wordCount" : "93",
-  "inLanguage": "en",
-  "datePublished": "2026-05-03T10:36:58+08:00",
-  "dateModified": "2026-05-03T10:36:58+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/resume/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -251,27 +149,22 @@ $$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p 
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span class="active">Resume</span>
                 </a>
             </li>
@@ -283,7 +176,7 @@ $$ Out_{pwm} = K_p * \theta_{true} = K_p * \theta &#43; K_p * dt * \omega = K_p 
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a></nav>
+    <a href='http://localhost:1313/'>Home</a></nav>
     <h1 class="post-title entry-hint-parent">
       Resume
     </h1>

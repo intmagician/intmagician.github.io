@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜编译环境搭建 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="我是如何折腾环境的
@@ -38,16 +38,16 @@ Mac环境不适合老旧项目
 Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。
 ">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_env_config/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_env_config/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_env_config/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_env_config/">
 <noscript>
     <style>
         #theme-toggle,
@@ -93,104 +93,13 @@ Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题�
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_env_config/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜编译环境搭建">
-  <meta property="og:description" content="我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
-既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
-一如既往，先瞎折腾，踩一遍坑。
-找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)
-依然是不看官网教程pdf，然后瞎搞。
-我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
-通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
-知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
-打开PC linux虚拟机，下载4.9 x86_64的版本。
-编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
-Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
-老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-06T12:26:09+08:00">
-    <meta property="article:modified_time" content="2026-05-06T12:26:09+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜编译环境搭建">
-  <meta name="twitter:description" content="我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。
-既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。
-一如既往，先瞎折腾，踩一遍坑。
-找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)
-依然是不看官网教程pdf，然后瞎搞。
-我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。
-通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)
-知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。
-打开PC linux虚拟机，下载4.9 x86_64的版本。
-编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=&#34;-fcommon&#34;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。
-Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题
-老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜编译环境搭建",
-      "item": "https://intmagician.github.io/notes/linux/linux_env_config/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜编译环境搭建",
-  "name": "Linux驱动开发｜编译环境搭建",
-  "description": "我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。\n既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。\n一如既往，先瞎折腾，踩一遍坑。\n找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)\n依然是不看官网教程pdf，然后瞎搞。\n我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。\n通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)\n知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。\n打开PC linux虚拟机，下载4.9 x86_64的版本。\n编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=\u0026quot;-fcommon\u0026quot;，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\nLinux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
-  "keywords": [
-    
-  ],
-  "articleBody": "我是如何折腾环境的 在两轮自平衡车项目里，用mac搭建了裸机开发交叉编译环境，通过stm32flash进行串口烧录和调试，直到小车电池没电了，充电器又找不到，就先放下，学Linux驱动。\n既然mac能编stm32裸机程序，那linux的驱动应该也可以，mac不是原生linux，可能会出很多关于依赖的问题，所以，改用Docker上轻量Ubuntu20.04。\n一如既往，先瞎折腾，踩一遍坑。\n找到板子的内核，然后用docker写了最基本的hello.c，然后编译，报错，编译失败，缺少module.symvers。(这里是因为内核没有编译通过，没有编译defconfig，还有zImage)\n依然是不看官网教程pdf，然后瞎搞。\n我用defconfig编译了一下生成.config。然后执行了.sh脚本。编译成功没成功也不知道，然后编译了hello.c，生成了hello.ko。\n通过scp -O到板子上，然后insmod，失败，没有layout信息。(这里是因为内核没有编译通过，docker下的交叉编译工具链版本高，工具链不适配)\n知道内核没编译过，就折腾了好几轮，1～2小时，受不了了。看官方教程，看了工具链版本与下载地址。没有Mac版本，不搞Mac了，这个临时搞不来。\n打开PC linux虚拟机，下载4.9 x86_64的版本。\n编译内核，过了几秒钟，一个错误，找不到依赖，编译不过menuconfig，图形界面配置注释掉，再编译一下，在看yylloc重定义，查了资料后，加了HOSTCFLAGS=\"-fcommon\"，终于舒服啦，zImage is ready。编译hello.ko，然后scp -O，insmod，搞定。\nLinux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6ull 4.1.15) 拥有同版本的编译工具链(arm-linux-gnueabihf-gcc 4.9) 进入内核目录执行脚本(或者自己编译zImage) 要看到zImage is ready。 Linux驱动编译以及测试 然后用这个内核去编译你的驱动程序 将驱动程序通过网络传到板子上 insmod 然后 rmmod。 Mac环境不适合老旧项目 在Mac上交叉编译Linux的内核会有哪些问题\n老旧项目用的工具链没有Mac平台，有x86_64. Docker Ubuntu环境下, 工具链版本新，还是解决不了⬆️个问题。 ",
-  "wordCount" : "38",
-  "inLanguage": "en",
-  "datePublished": "2026-05-06T12:26:09+08:00",
-  "dateModified": "2026-05-06T12:26:09+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_env_config/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -216,27 +125,22 @@ Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -248,17 +152,17 @@ Linux驱动编译的前提 拥有板子对应的原厂或者厂商的内核(imx6
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜编译环境搭建
     </h1>

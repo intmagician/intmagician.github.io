@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
@@ -37,16 +37,16 @@ struct platform_driver {
 怎么注册Platform_driver
 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_drv_platform/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_drv_platform/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_drv_platform/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_drv_platform/">
 <noscript>
     <style>
         #theme-toggle,
@@ -92,100 +92,13 @@ struct platform_driver {
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_drv_platform/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构">
-  <meta property="og:description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
-Driver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
-设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
-pci bus 下会有 pci_driver and pci_device.
-i2c bus 下会有 i2c_driver and i2c_device.
-platform bus 下会有 platform_driver and platform_device.
-Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
-像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
-官方公开文档点击👉Platform devices and drivers
-struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-27T14:05:49+08:00">
-    <meta property="article:modified_time" content="2026-05-27T14:05:49+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构">
-  <meta name="twitter:description" content="所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。
-Driver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。
-设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。
-pci bus 下会有 pci_driver and pci_device.
-i2c bus 下会有 i2c_driver and i2c_device.
-platform bus 下会有 platform_driver and platform_device.
-Bus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。
-像很多嵌入式外设：led、电机驱动芯片、adc、key等等。
-官方公开文档点击👉Platform devices and drivers
-struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
-      "item": "https://intmagician.github.io/notes/linux/linux_drv_platform/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
-  "name": "Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构",
-  "description": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "所有的Device在驱动模型里，都挂在总线上，没有例外。其中Platform属于其中一种，它是Platform Drivers - Platform Bus - Platform Devices。\nDriver-Bus-Device模型 在/sys/bus/可以看到众多bus，这其中能看到常见的usb、spi、serial、platform、pci、i2c、gpio这些。\n设备会事先挂载在某一种总线上，然后通过match compatible来将某类bus下driver与device匹配。匹配成功就会调用probe函数。\npci bus 下会有 pci_driver and pci_device.\ni2c bus 下会有 i2c_driver and i2c_device.\nplatform bus 下会有 platform_driver and platform_device.\nBus PCI Bus USB Bus I2C Bus SPI Bus Platform Bus Platform Bus 是一条虚拟总线。它是专门为一些设备准备的，这些设备不可热插拔，不能自动枚举。不能自动枚举的话就是，没有张嘴，只能靠别人找它，它不吭声，没有usb设备主动。目前是这么理解的。\n像很多嵌入式外设：led、电机驱动芯片、adc、key等等。\n官方公开文档点击👉Platform devices and drivers\nstruct platform_driver { int (*probe)(struct platform_device *); void (*remove)(struct platform_device *); void (*shutdown)(struct platform_device *); int (*suspend)(struct platform_device *, pm_message_t state); int (*resume)(struct platform_device *); struct device_driver driver; const struct platform_device_id *id_table; bool prevent_deferred_probe; bool driver_managed_dma; }; 怎么注册Platform_driver 自己编写probe和remove函数然后通过of_device_id和platform_driver结构体来注册\nstatic const struct of_device_id led_of_match[] = { {.compatible = \"led-gpio\"}, {}, }; static struct platform_driver led_driver = { .probe = led_probe, .remove = led_remove, .driver = { .name = \"led\", .of_match_table = led_of_match, }, }; paltform的注册流程是\n__platform_driver_register driver_register bus_add_driver driver_attach bus_for_each_dev __driver_attach driver_match_device driver_probe_device really_probe your_platform_probe 这些函数分布在/driver/base/目录下 主要是\npaltform.c driver.c bus.c dd.c base.h 简单点就是通过bus_for_each_dev来把klist里的设备遍历一边，先通过driver_match_device,匹配上就调用driver_probe_device。然后调用really_probe,在这个函数里会调用platform_driver的probe函数。\n",
-  "wordCount" : "142",
-  "inLanguage": "en",
-  "datePublished": "2026-05-27T14:05:49+08:00",
-  "dateModified": "2026-05-27T14:05:49+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_drv_platform/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -211,27 +124,22 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -243,17 +151,17 @@ struct platform_driver { int (*probe)(struct platform_device *); void (*remove)(
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜现代Linux“Driver-Bus-Device”总架构
     </h1>

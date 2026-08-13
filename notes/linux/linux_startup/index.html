@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Linux驱动开发｜uboot网络启动与SD卡启动 | Intmagician</title>
 <meta name="keywords" content="">
 <meta name="description" content="首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。
@@ -69,16 +69,16 @@ sudo mkfs.ext4 -O ^64bit,^metadata_csum -L &#34;ROOTFS&#34; /dev/sdb2
 #debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持
 然后通过MobaXterm控制uboot。">
 <meta name="author" content="">
-<link rel="canonical" href="https://intmagician.github.io/notes/linux/linux_startup/">
+<link rel="canonical" href="http://localhost:1313/notes/linux/linux_startup/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.34d91883bcea6e759c2d3a842c5975efd544bfec7ea2927692a4497df4c731c0.css" integrity="sha256-NNkYg7zqbnWcLTqELFl179VEv&#43;x&#43;opJ2kqRJffTHMcA=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://intmagician.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://intmagician.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://intmagician.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://intmagician.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://intmagician.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://intmagician.github.io/notes/linux/linux_startup/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/linux/linux_startup/">
 <noscript>
     <style>
         #theme-toggle,
@@ -124,108 +124,13 @@ sudo mkfs.ext4 -O ^64bit,^metadata_csum -L &#34;ROOTFS&#34; /dev/sdb2
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://intmagician.github.io/notes/linux/linux_startup/">
-  <meta property="og:site_name" content="Intmagician">
-  <meta property="og:title" content="Linux驱动开发｜uboot网络启动与SD卡启动">
-  <meta property="og:description" content="首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。
-现阶段主要是devicetree还有linux驱动API和linux驱动。
-准备 板子厂商提供的uboot 一个最小dts 一个被验证过能用的内核 一个rootfs 获得uboot 百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot 然后克隆到本地。实在是没人搬运，只能去下个百度网盘。
-关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。
-准备内核和rootfs 搜索busybox，然后选择自己需要的版本，比如1.29.0或者1.38.0 懒省事可以直接拿zImage还有dtb，rootfs直接用。
-busybox天坑，对于GCC14/15 我比较喜欢用Debian，刚好Debian13出来了，我就用了debian13.
-使用menuconfig时，出现找不到ncurses.h，依赖库全装，就是找不到
-首先，打开
-vim scrips/kconfig/lxdialog/check-lxdialog.sh 然后找到这里
-check(){ $cc -x c - -o $tmp 2&gt;/dev/null &lt;&lt;&#39;EOF&#39; #include CURSES_LOC main() {}#旧版本GCC不检查，写的也不规范，新版本直接Warning变error。 EOF -&gt;int main() {}#改成这个 然后
-make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK了
-相关链接点击👉原帖
-将uboot写进SD卡的MDR分区 通过imxdownload工具将uboot.bin写进SD卡。设置SD卡启动。
-分区 sudo fdisk /dev/sdb o#传统MBR分区 n#new p#partition enter#默认则回车键 enter &#43;256M t#type c#W95 FAT32 n#new p#partition enter enter enter w#write #格式化分区 sudo mkfs.vfat -F 32 -n “BOOT” /dev/sdb1 sudo mkfs.ext4 -O ^64bit,^metadata_csum -L &#34;ROOTFS&#34; /dev/sdb2 #debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持 然后通过MobaXterm控制uboot。">
-  <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="notes">
-    <meta property="article:published_time" content="2026-05-16T16:56:50+08:00">
-    <meta property="article:modified_time" content="2026-05-16T16:56:50+08:00">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动开发｜uboot网络启动与SD卡启动">
-  <meta name="twitter:description" content="首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。
-现阶段主要是devicetree还有linux驱动API和linux驱动。
-准备 板子厂商提供的uboot 一个最小dts 一个被验证过能用的内核 一个rootfs 获得uboot 百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot 然后克隆到本地。实在是没人搬运，只能去下个百度网盘。
-关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。
-准备内核和rootfs 搜索busybox，然后选择自己需要的版本，比如1.29.0或者1.38.0 懒省事可以直接拿zImage还有dtb，rootfs直接用。
-busybox天坑，对于GCC14/15 我比较喜欢用Debian，刚好Debian13出来了，我就用了debian13.
-使用menuconfig时，出现找不到ncurses.h，依赖库全装，就是找不到
-首先，打开
-vim scrips/kconfig/lxdialog/check-lxdialog.sh 然后找到这里
-check(){ $cc -x c - -o $tmp 2&gt;/dev/null &lt;&lt;&#39;EOF&#39; #include CURSES_LOC main() {}#旧版本GCC不检查，写的也不规范，新版本直接Warning变error。 EOF -&gt;int main() {}#改成这个 然后
-make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK了
-相关链接点击👉原帖
-将uboot写进SD卡的MDR分区 通过imxdownload工具将uboot.bin写进SD卡。设置SD卡启动。
-分区 sudo fdisk /dev/sdb o#传统MBR分区 n#new p#partition enter#默认则回车键 enter &#43;256M t#type c#W95 FAT32 n#new p#partition enter enter enter w#write #格式化分区 sudo mkfs.vfat -F 32 -n “BOOT” /dev/sdb1 sudo mkfs.ext4 -O ^64bit,^metadata_csum -L &#34;ROOTFS&#34; /dev/sdb2 #debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持 然后通过MobaXterm控制uboot。">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Notes",
-      "item": "https://intmagician.github.io/notes/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "再战Linux驱动",
-      "item": "https://intmagician.github.io/notes/linux/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Linux驱动开发｜uboot网络启动与SD卡启动",
-      "item": "https://intmagician.github.io/notes/linux/linux_startup/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Linux驱动开发｜uboot网络启动与SD卡启动",
-  "name": "Linux驱动开发｜uboot网络启动与SD卡启动",
-  "description": "首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。\n现阶段主要是devicetree还有linux驱动API和linux驱动。\n准备 板子厂商提供的uboot 一个最小dts 一个被验证过能用的内核 一个rootfs 获得uboot 百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot 然后克隆到本地。实在是没人搬运，只能去下个百度网盘。\n关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。\n准备内核和rootfs 搜索busybox，然后选择自己需要的版本，比如1.29.0或者1.38.0 懒省事可以直接拿zImage还有dtb，rootfs直接用。\nbusybox天坑，对于GCC14/15 我比较喜欢用Debian，刚好Debian13出来了，我就用了debian13.\n使用menuconfig时，出现找不到ncurses.h，依赖库全装，就是找不到\n首先，打开\nvim scrips/kconfig/lxdialog/check-lxdialog.sh 然后找到这里\ncheck(){ $cc -x c - -o $tmp 2\u0026gt;/dev/null \u0026lt;\u0026lt;\u0026#39;EOF\u0026#39; #include CURSES_LOC main() {}#旧版本GCC不检查，写的也不规范，新版本直接Warning变error。 EOF -\u0026gt;int main() {}#改成这个 然后\nmake defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK了\n相关链接点击👉原帖\n将uboot写进SD卡的MDR分区 通过imxdownload工具将uboot.bin写进SD卡。设置SD卡启动。\n分区 sudo fdisk /dev/sdb o#传统MBR分区 n#new p#partition enter#默认则回车键 enter +256M t#type c#W95 FAT32 n#new p#partition enter enter enter w#write #格式化分区 sudo mkfs.vfat -F 32 -n “BOOT” /dev/sdb1 sudo mkfs.ext4 -O ^64bit,^metadata_csum -L \u0026#34;ROOTFS\u0026#34; /dev/sdb2 #debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持 然后通过MobaXterm控制uboot。\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "首先，个人的学习方式是内核不动，改dts，然后编译成dtb，uboot加载dtb，启动linux，驱动程序通过insmod验证。\n现阶段主要是devicetree还有linux驱动API和linux驱动。\n准备 板子厂商提供的uboot 一个最小dts 一个被验证过能用的内核 一个rootfs 获得uboot 百度网盘还要注册有点麻烦，去github上找搬运，搜索：正点原子 uboot 然后克隆到本地。实在是没人搬运，只能去下个百度网盘。\n关于uboot源码还有linux源码先不管，太硬核，现阶段不要碰，很多linux社区的工程师也未必吃得透整个linux，大部分是专注一个模块。而且也不是闭关修行一个月就能攻破的，他们刚开始也是慢慢精读，花了很长时间。\n准备内核和rootfs 搜索busybox，然后选择自己需要的版本，比如1.29.0或者1.38.0 懒省事可以直接拿zImage还有dtb，rootfs直接用。\nbusybox天坑，对于GCC14/15 我比较喜欢用Debian，刚好Debian13出来了，我就用了debian13.\n使用menuconfig时，出现找不到ncurses.h，依赖库全装，就是找不到\n首先，打开\nvim scrips/kconfig/lxdialog/check-lxdialog.sh 然后找到这里\ncheck(){ $cc -x c - -o $tmp 2\u003e/dev/null \u003c\u003c'EOF' #include CURSES_LOC main() {}#旧版本GCC不检查，写的也不规范，新版本直接Warning变error。 EOF -\u003eint main() {}#改成这个 然后\nmake defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK了\n相关链接点击👉原帖\n将uboot写进SD卡的MDR分区 通过imxdownload工具将uboot.bin写进SD卡。设置SD卡启动。\n分区 sudo fdisk /dev/sdb o#传统MBR分区 n#new p#partition enter#默认则回车键 enter +256M t#type c#W95 FAT32 n#new p#partition enter enter enter w#write #格式化分区 sudo mkfs.vfat -F 32 -n “BOOT” /dev/sdb1 sudo mkfs.ext4 -O ^64bit,^metadata_csum -L \"ROOTFS\" /dev/sdb2 #debian13特性导致不要64bit和metadata_csum,防止旧版本可能不支持 然后通过MobaXterm控制uboot。\nuboot 通过SD卡启动linux 在bring-up阶段，很有可能网络驱动是不对的，需要调试的，这个时候没办法通过网络启动调试，那就得用笨方法了。\n上边已经对SD卡分过区了，下边就直接用了\n挂载boot分区(如果遇到无法挂载，就修复一下，问AI或者Google AI Mode) cp zImage 还有 *.dtb 到boot分区 推出挂载目录，sync， umount fatload mmc 0:1 80800000 zImage fatload mmc 0:1 83000000 *.dtb bootz 80800000 - 83000000 设置网络环境变量 确保网络通信正常。主机与板子在路由器下或者板子通过网线连到板子上。 先dhcp看到板子的ip\nsetenv serverip= #主机的ip setenv ipaddr= #根据主机的ip设置一个 #就这两个就行了 配置tftp 系统：Debian13\n由于Debian13版本引入了严格沙箱和内核级别隔离，所以现在网络服务(TFTP，NFS，FTP)必须放/srv/。\nsudo apt update sudo apt install tftp-hpa tftpd-hpa sudo apt install xinetd mkdir /srv/tftp #这里默认应该就可以了 vim /etc/default/tftpd-hpa #确认路径是不是/srv/tftp #其他的建议不动，不用加-l，-c，-s sudo systemctl restart tftpd-hpa #不成功的话查看状态 sudo systemctl status tftpd-hpa 将zImage和dtb复制到/srv/tftp,记得查看权限，至少可读\nls -l sudo chmod +004 zImage sudo chmod +004 *.dtb 测试 tftp 80800000 zImage tftp 83000000 *.dtb 没问题就算搭建成功。\n配置nfs 系统：Debian13\n由于Debian13版本引入了严格沙箱和内核级别隔离，所以现在网络服务(TFTP，NFS，FTP)必须放/srv/。\nsudo apt install nfs-kernel-server rpcbind #依然是不建议改路径 sudo vim /etc/exports /srv/nfs *(rw,sync,no_root_squash,no_subtree_check) #no_root_squash意思是允许板子以root的身份访问该目录。 debian13 默认不支持NFSv3\nsudo vim /etc/nfs.conf [nfsd] udp=y vers3=y [mountd] udp=y vers3=y 重启并查看是否支持v3\nsudo systemctl restart nfs-server cat /proc/fs/nfsd/versions #显示+3 +4 +4.1 +4.2 在uboot命令行设置\nsetenv bootargs \"console=ttymxc0,115200 root=/dev/nfs nfsroot=192.168.x.xxxx:/srv/nfs/rootfs,v3,udp ip=dhcp rw\" saveenv 然后设置bootcmd\nsetenv bootcmd \"tftp 80800000 zImage; tftp 83000000 *.dtb;bootz 80800000 - 83000000\" saveenv 如果配置正确，boot之后应该能进到到命令行ls能看到主机的/srv/nfs/rootfs下的文件\n还有通过SD卡挂载rootfs，\nsetenv bootargs \"console=ttymxc0,115200 root=dev/mmcblk0p2 rootwait rw\" saveenv boot 如果碰到Starting kernel … 后边乱码了，应该是console配置有错误。看一下是不是打错了。\nsd卡挂载在网络驱动没有调通时，还是很重要的。\n总结 整个环境的搭建流程\n准备完整的zImage，uboot，rootfs，dtb。 烧录uboot 启动uboot 配置tftp和nfs tftp加载zImage和dtb nfs挂载rootfs 设置uboot环境变量 boot 其中最容易出错，出错就很折磨的是关于不同的系统，不同的版本下配置tftp和nfs，这个不通的话网络环境就没了。\n",
-  "wordCount" : "260",
-  "inLanguage": "en",
-  "datePublished": "2026-05-16T16:56:50+08:00",
-  "dateModified": "2026-05-16T16:56:50+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://intmagician.github.io/notes/linux/linux_startup/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Intmagician",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://intmagician.github.io/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://intmagician.github.io/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Intmagician (Alt + H)">Intmagician</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -251,27 +156,22 @@ make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK�
         </div>
         <ul id="menu" class="menu">
             <li>
-                <a href="https://intmagician.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/notes/" title="Notes">
+                <a href="http://localhost:1313/notes/" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/projects/" title="Projects">
+                <a href="http://localhost:1313/projects/" title="Projects">
                     <span>Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://intmagician.github.io/aboutme" title="About me">
-                    <span>About me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://intmagician.github.io/resume" title="Resume">
+                <a href="http://localhost:1313/resume" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -283,17 +183,17 @@ make defconfig make menuconfig make install CONFIG_PREFIX=../rootfs 最后就OK�
 <article class="post-single">
   <header class="post-header">
     <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    <a href='https://intmagician.github.io/'>Home</a>
+    <a href='http://localhost:1313/'>Home</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/">Notes</a>
+            <a href="http://localhost:1313/notes/">Notes</a>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <a href="https://intmagician.github.io/notes/linux/">再战Linux驱动</a></nav>
+            <a href="http://localhost:1313/notes/linux/">再战Linux驱动</a></nav>
     <h1 class="post-title entry-hint-parent">
       Linux驱动开发｜uboot网络启动与SD卡启动
     </h1>
